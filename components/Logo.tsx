@@ -1,39 +1,40 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 import { site } from "@/lib/content";
 
-/**
- * Wordmark = the motif itself: a line ending in a node, then `coreline.`
- * `animate` is only true on the very first page load, never on route changes.
- */
+/** Dimensions are explicit so the raster never scales unevenly or shifts layout. */
+const sizes = {
+  sm: { width: 120, height: 26 },
+  md: { width: 157, height: 34 },
+} as const;
+
 export function Logo({
   animate = false,
-  tone = "ink",
+  size = "sm",
   className,
 }: {
+  /** Draws in left to right; only true on the very first page load. */
   animate?: boolean;
-  tone?: "ink" | "paper";
+  size?: keyof typeof sizes;
   className?: string;
 }) {
+  const { width, height } = sizes[size];
+
   return (
     <Link
       href="/"
-      className={cn(
-        "group flex items-center gap-2.5 font-display text-[1.1875rem] font-semibold tracking-[-0.01em]",
-        tone === "paper" ? "text-paper" : "text-ink",
-        className,
-      )}
-      aria-label={`${site.legalName} - home`}
+      className={cn("inline-flex items-center", className)}
+      aria-label={`${site.legalName} — home`}
     >
-      <span className="flex items-center" aria-hidden="true">
-        <span
-          className={cn("block h-0.5 w-4 bg-accent", animate && "logo-rule")}
-        />
-        <span className="-ml-px block size-1.5 rounded-full bg-accent" />
-      </span>
-      <span>
-        coreline<span className="text-accent">.</span>
-      </span>
+      <Image
+        src="/logo-lockup.png"
+        alt=""
+        width={width}
+        height={height}
+        priority
+        className={animate ? "logo-reveal" : undefined}
+      />
     </Link>
   );
 }

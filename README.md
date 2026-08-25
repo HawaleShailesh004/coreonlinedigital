@@ -32,6 +32,7 @@ app/
   globals.css         Design tokens, keyframes, reduced-motion fallbacks
 components/
   LineNode.tsx        The brand motif - line ending in a node
+  LogoMark.tsx        Vector bracket mark, traced from the supplied logo
   Nav.tsx  Footer.tsx  Logo.tsx  WorkCard.tsx  FinalCta.tsx
   home/               One component per home section
   work/  contact/     Page-specific interactive pieces
@@ -39,7 +40,27 @@ components/
 lib/
   content.ts          All site copy - single source of truth
   useReducedMotion.ts cn.ts
+public/               Trimmed, web-ready logo files
+assets/logos/         Original logo exports (source of truth)
+scripts/              One-off asset prep
 ```
+
+## Logo
+
+`assets/logos/` holds the original exports. They carry a lot of transparent
+padding, so `node scripts/prepare-logos.mjs` trims them to their artwork and
+writes the files the site actually uses:
+
+| Output                 | Used for                                    |
+| ---------------------- | ------------------------------------------- |
+| `public/logo-lockup.png` | The wordmark lockup in the nav and footer |
+| `public/logo-mark.png`   | Raster mark for social profiles            |
+| `app/apple-icon.png`     | 180x180 iOS touch icon on a paper tile     |
+
+`app/icon.svg` and `components/LogoMark.tsx` are the same mark as vector, for
+the favicon and for places where it has to scale or inherit its colour (like
+the faint backdrop in the founder section). Re-run the script if the source
+logos change.
 
 ## Design system
 
@@ -86,7 +107,8 @@ visible without JavaScript.
   `coreonlinedigital@gmail.com`; it currently validates and logs only
 - `lib/content.ts` - `workSamples[].href` all point at `#` until the sample
   builds ship
-- Add an OG image and a favicon in `app/`
+- Add a social preview image (`app/opengraph-image`); the favicon and iOS icon
+  are already generated from the supplied logo
 
 Per the copy notes: no pricing, no testimonials, no client counts anywhere -
 none of that exists yet, and nothing on the site should imply it does.

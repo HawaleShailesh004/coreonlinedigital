@@ -108,6 +108,15 @@
   }
 }
 
+@keyframes cl-wipe-x {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
 @keyframes cl-marquee {
   from {
     transform: translateX(0);
@@ -175,9 +184,9 @@
   animation: cl-draw-x 0.4s var(--ease-line) both;
 }
 
-.logo-rule {
-  transform-origin: left center;
-  animation: cl-draw-x 0.7s var(--ease-line) both;
+/* The lockup wipes in left to right, echoing the line-draw motif. */
+.logo-reveal {
+  animation: cl-wipe-x 0.7s var(--ease-line) both;
 }
 
 /* Intentional infinite loop #1 - the industry ticker. */
@@ -247,9 +256,13 @@
   }
 
   .hero-rule,
-  .logo-rule,
   .line-hover::after {
     transform: scaleX(1) !important;
+  }
+
+  .logo-reveal {
+    animation: none !important;
+    clip-path: none !important;
   }
 
   .marquee-track {

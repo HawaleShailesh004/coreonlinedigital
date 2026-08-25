@@ -11,7 +11,7 @@ export function Footer() {
       <Container>
         <div className="flex flex-col gap-10 py-16 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-3">
-            <Logo />
+            <Logo size="md" />
             <p className="font-mono text-label uppercase text-grey">
               {site.location} · {site.region}
             </p>

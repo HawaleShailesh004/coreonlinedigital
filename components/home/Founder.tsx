@@ -1,3 +1,4 @@
+import { LogoMark } from "@/components/LogoMark";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
@@ -7,22 +8,12 @@ import { founder } from "@/lib/content";
 export function Founder() {
   return (
     <Section bordered className="relative overflow-hidden">
-      {/* The motif, rendered large and faint as a static backdrop. */}
+      {/* The mark, rendered large and faint as a static backdrop. */}
       <div
-        className="pointer-events-none absolute inset-y-0 right-0 flex w-1/2 items-center justify-end opacity-[0.06]"
+        className="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end pr-5 text-ink opacity-[0.06] md:pr-12"
         aria-hidden="true"
       >
-        <svg viewBox="0 0 200 40" className="h-40 w-full" role="presentation">
-          <line
-            x1="0"
-            y1="20"
-            x2="176"
-            y2="20"
-            stroke="var(--color-ink)"
-            strokeWidth="4"
-          />
-          <circle cx="184" cy="20" r="12" fill="var(--color-ink)" />
-        </svg>
+        <LogoMark className="h-56 w-auto md:h-72" />
       </div>
 
       <Reveal className="relative max-w-2xl">
