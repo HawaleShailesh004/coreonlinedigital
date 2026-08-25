@@ -1,0 +1,268 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens - Emerald & Ink (locked palette).
+   Do not add colors or a fourth typeface without a documented reason.
+   --------------------------------------------------------------------------- */
+@theme inline {
+  --color-ink: #0c1210;
+  --color-paper: #f6f7f5;
+  --color-accent: #1f5c4b;
+  --color-accent-soft: #2c7a63;
+  --color-grey: #6e7a75;
+  --color-body: #3e4541;
+  --color-hairline: rgba(12, 18, 16, 0.12);
+  --color-hairline-inverse: rgba(246, 247, 245, 0.16);
+  --color-card: rgba(12, 18, 16, 0.02);
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  /* Type scale from the build document. */
+  --text-h1: 3.5rem;
+  --text-h1--line-height: 1.08;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: 2.25rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.015em;
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.01em;
+  --text-lead: 1.0625rem;
+  --text-lead--line-height: 1.65;
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.12em;
+
+  --container-shell: 70rem; /* 1120px */
+
+  --ease-line: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@layer base {
+  /* Tailwind v4 defaults borders to currentColor; the brand default is a hairline. */
+  *,
+  ::after,
+  ::before {
+    border-color: var(--color-hairline);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Sharp corners are a brand rule, not an oversight. */
+  button,
+  input,
+  select,
+  textarea,
+  a {
+    border-radius: 0;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Motion primitives.
+   Every animation below has a static fallback in the reduced-motion block.
+   --------------------------------------------------------------------------- */
+
+@keyframes cl-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cl-draw-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cl-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes cl-breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes cl-trace {
+  from {
+    stroke-dashoffset: 240;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes cl-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(31, 92, 75, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(31, 92, 75, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(31, 92, 75, 0);
+  }
+}
+
+/* Scroll reveal: fires once, driven by IntersectionObserver. */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero "curtain up": one-time staggered entrance on first paint. */
+.hero-step {
+  opacity: 0;
+  animation: cl-fade-up 0.6s var(--ease-line) both;
+  animation-delay: var(--step-delay, 0ms);
+}
+
+.hero-rule {
+  transform-origin: left center;
+  animation: cl-draw-x 0.4s var(--ease-line) both;
+}
+
+.logo-rule {
+  transform-origin: left center;
+  animation: cl-draw-x 0.7s var(--ease-line) both;
+}
+
+/* Intentional infinite loop #1 - the industry ticker. */
+.marquee-track {
+  animation: cl-marquee 40s linear infinite;
+  will-change: transform;
+}
+
+.marquee-shell:hover .marquee-track,
+.marquee-shell:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Intentional infinite loop #2 - the "system is alive" waveform. */
+.pulse-path {
+  stroke-dasharray: 120 120;
+  animation: cl-trace 4s linear infinite;
+}
+
+/* System status light on the final CTA band. */
+.breathe {
+  animation: cl-breathe 3s ease-in-out infinite;
+}
+
+.ring-pulse::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  animation: cl-ring 2s ease-out infinite;
+}
+
+/* Line-motif hover: card top border draws left to right. */
+.line-hover::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: -1px;
+  height: 1px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.2s ease-out;
+}
+
+.line-hover:hover::after,
+.line-hover:focus-within::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .reveal,
+  .hero-step {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero-rule,
+  .logo-rule,
+  .line-hover::after {
+    transform: scaleX(1) !important;
+  }
+
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .pulse-path {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .ring-pulse::before {
+    display: none;
+  }
+}

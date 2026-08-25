@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Coreline - Hero</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0C1210;
+      --paper: #F6F7F5;
+      --accent: #1F5C4B;
+      --grey: #6E7A75;
+      --hair: rgba(12, 18, 16, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 44px 48px 0;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--hair);
+      margin-bottom: 120px;
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 19px;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 16px;
+      height: 2px;
+      background: var(--accent);
+      position: relative;
+    }
+
+    .logo-mark::after {
+      content: '';
+      position: absolute;
+      right: -2px;
+      top: -2px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .logo .dot {
+      color: var(--accent);
+    }
+
+    .btn-nav {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 12px 22px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s linear;
+    }
+
+    .btn-nav:hover {
+      background: var(--accent);
+    }
+
+    .hero {
+      text-align: center;
+      padding-bottom: 110px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--hair);
+      padding: 9px 16px;
+      margin-bottom: 40px;
+    }
+
+    .badge .node {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 64px;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin-bottom: 36px;
+    }
+
+    h1 .muted {
+      color: var(--grey);
+    }
+
+    h1 .accent {
+      color: var(--accent);
+    }
+
+    .sub {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #3E4541;
+      max-width: 560px;
+      margin: 0 auto 48px;
+    }
+
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 100px;
+    }
+
+    .btn-primary {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      background: var(--accent);
+      color: var(--paper);
+      padding: 15px 30px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s linear;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-secondary {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      background: transparent;
+      color: var(--ink);
+      padding: 15px 30px;
+      border: 1px solid var(--hair);
+      cursor: pointer;
+      transition: border-color 0.15s linear, color 0.15s linear;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .coreline {
+      width: 100%;
+      height: 1px;
+      background: var(--hair);
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .coreline .node {
+      position: absolute;
+      top: -3px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      padding-bottom: 90px;
+    }
+
+    .strip>div {
+      padding: 0 32px;
+      border-right: 1px solid var(--hair);
+    }
+
+    .strip>div:first-child {
+      padding-left: 0;
+    }
+
+    .strip>div:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+
+    .strip .num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .strip .t {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .strip .d {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--grey);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <nav>
+      <div class="logo">
+        <div class="logo-mark"></div>coreline<span class="dot">.</span>
+      </div>
+      <button class="btn-nav">Book strategy call</button>
+    </nav>
+
+    <div class="hero">
+      <div class="badge"><span class="node"></span>Accepting new clients</div>
+      <h1>Digital infrastructure<br>that <span class="accent">drives revenue</span>,<br><span class="muted">not just
+          traffic.</span></h1>
+      <p class="sub">We build the booking, triage, and follow-up systems behind a clinic, firm, or school's front door -
+        engineered for professionals who've outgrown templates.</p>
+      <div class="cta-row">
+        <button class="btn-primary">View case studies</button>
+        <button class="btn-secondary">Our services</button>
+      </div>
+    </div>
+
+    <div class="coreline">
+      <div class="node" style="left:0%"></div>
+      <div class="node" style="left:50%"></div>
+      <div class="node" style="left:100%"></div>
+    </div>
+
+    <div class="strip">
+      <div>
+        <div class="num">01</div>
+        <div class="t">Discovery</div>
+        <div class="d">We map every point where a client currently drops off.</div>
+      </div>
+      <div>
+        <div class="num">02</div>
+        <div class="t">Build</div>
+        <div class="d">A live system, not a mockup - booking, triage, follow-up wired together.</div>
+      </div>
+      <div>
+        <div class="num">03</div>
+        <div class="t">Operate</div>
+        <div class="d">Monitored and tuned monthly under retainer, not left to rot.</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>
