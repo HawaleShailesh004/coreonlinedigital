@@ -8,7 +8,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Work",
   description:
-    "Ten concept digital storefronts and acquisition systems — clinics, schools, traders, gyms, coaching, and more — showing how Coreline builds for local businesses.",
+    "Ten concept digital storefronts and acquisition systems - clinics, schools, traders, gyms, coaching, and more - showing how Coreline builds for local businesses.",
   path: "/work",
 });
 

@@ -9,7 +9,7 @@ import { coaching } from "@/lib/samples/coaching";
 export const metadata: Metadata = {
   title: "Courses | Summit Prep",
   description:
-    "JEE, NEET and Class 11–12 board batches at Summit Prep, Thane — schedules, duration and transparent fees.",
+    "JEE, NEET and Class 11–12 board batches at Summit Prep, Thane - schedules, duration and transparent fees.",
 };
 
 const heading =

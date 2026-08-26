@@ -54,7 +54,7 @@ export const products: Product[] = [
     category: "Textiles",
     blurb: "Handloom cotton in rust and stripe.",
     description:
-      "A pair of handloom covers in rust and a soft stripe — the kind of cotton that softens instead of pilling. Envelope backs, no zippers to snag. Sized for standard inserts; pick your cover size below.",
+      "A pair of handloom covers in rust and a soft stripe - the kind of cotton that softens instead of pilling. Envelope backs, no zippers to snag. Sized for standard inserts; pick your cover size below.",
     stock: "in",
     variants: ["16in", "18in", "20in"],
   },
@@ -75,7 +75,7 @@ export const products: Product[] = [
     category: "Bath & Body",
     blurb: "Vetiver, cedar and a little smoke.",
     description:
-      "A concentrated room oil for diffusers or a cotton pad tucked behind a shelf. Vetiver and cedar with a faint smoke note — warm without turning sweet. Once opened, this one can't be returned for hygiene reasons.",
+      "A concentrated room oil for diffusers or a cotton pad tucked behind a shelf. Vetiver and cedar with a faint smoke note - warm without turning sweet. Once opened, this one can't be returned for hygiene reasons.",
     stock: "in",
     variants: ["Vetiver", "Neroli"],
   },
@@ -97,7 +97,7 @@ export const products: Product[] = [
     category: "Textiles",
     blurb: "Softens with every wash, never thins.",
     description:
-      "A washed-cotton cover over a medium-fill insert — soft from day one, softer after a few washes. Piping stays clean; the fill doesn't migrate into corners. One size, shipped vacuum-packed.",
+      "A washed-cotton cover over a medium-fill insert - soft from day one, softer after a few washes. Piping stays clean; the fill doesn't migrate into corners. One size, shipped vacuum-packed.",
     stock: "in",
   },
   {
@@ -108,7 +108,7 @@ export const products: Product[] = [
     category: "Textiles",
     blurb: "Handwoven in Panipat, gold border.",
     description:
-      "A reversible flatweave from Panipat with a thin gold border that reads as trim, not flash. Low pile for under tables and entryways. Shake outdoors; spot-clean — no wet washing.",
+      "A reversible flatweave from Panipat with a thin gold border that reads as trim, not flash. Low pile for under tables and entryways. Shake outdoors; spot-clean - no wet washing.",
     stock: "low",
   },
   {
@@ -118,7 +118,7 @@ export const products: Product[] = [
     category: "Decor",
     blurb: "Silent sweep movement, solid brass ring.",
     description:
-      "A silent sweep movement inside a solid brass ring — no tick, no plastic face. The dial is matte off-white so it sits quietly on a pale wall. Currently between batches; restocking in about two weeks.",
+      "A silent sweep movement inside a solid brass ring - no tick, no plastic face. The dial is matte off-white so it sits quietly on a pale wall. Currently between batches; restocking in about two weeks.",
     stock: "out",
   },
   {
@@ -139,7 +139,7 @@ export const products: Product[] = [
     category: "Tableware",
     blurb: "Wide rim, microwave and dishwasher safe.",
     description:
-      "A wide-rim bowl for dal, noodles, or overnight oats — the shape that actually fits a spoon without chasing. Glazed inside, lightly speckled outside. Microwave and dishwasher safe.",
+      "A wide-rim bowl for dal, noodles, or overnight oats - the shape that actually fits a spoon without chasing. Glazed inside, lightly speckled outside. Microwave and dishwasher safe.",
     stock: "in",
     variants: ["Ivory", "Graphite"],
   },
@@ -162,7 +162,7 @@ export const products: Product[] = [
     category: "Bath & Body",
     blurb: "Two 120g soy candles, cotton wick.",
     description:
-      "Two soy candles in amber glass — one citrus-herb, one wood-smoke. Cotton wicks, roughly 25 hours each. Trim the wick before lighting; never leave burning unattended. Opened candles aren't returnable.",
+      "Two soy candles in amber glass - one citrus-herb, one wood-smoke. Cotton wicks, roughly 25 hours each. Trim the wick before lighting; never leave burning unattended. Opened candles aren't returnable.",
     stock: "in",
     variants: ["Citrus + Wood", "Both Wood"],
   },
@@ -173,7 +173,7 @@ export const products: Product[] = [
     category: "Decor",
     blurb: "Solid oak, hidden brackets included.",
     description:
-      "A solid oak shelf with hidden steel brackets — no visible hardware once it's up. Sanded smooth, lightly oiled. Rated for books and ceramics; not for hanging plants that swing.",
+      "A solid oak shelf with hidden steel brackets - no visible hardware once it's up. Sanded smooth, lightly oiled. Rated for books and ceramics; not for hanging plants that swing.",
     stock: "in",
     variants: ["60cm", "90cm"],
   },
@@ -184,7 +184,7 @@ export const products: Product[] = [
     category: "Bath & Body",
     blurb: "Three 100ml bottles, refill-friendly pumps.",
     description:
-      "Three gentle hand soaps in travel-friendly bottles with pumps you can refill from bulk. Scents stay light — citrus, sandalwood, unscented. Once a bottle is opened, it can't come back.",
+      "Three gentle hand soaps in travel-friendly bottles with pumps you can refill from bulk. Scents stay light - citrus, sandalwood, unscented. Once a bottle is opened, it can't come back.",
     stock: "low",
     variants: ["Mixed", "All unscented"],
   },
@@ -234,7 +234,7 @@ export const trader = {
     eyebrow: "Shop",
     heading: "Browse the full collection.",
     homeHeading: "A few things we keep in stock.",
-    homeSub: "Real photos, clear prices — open any card for sizes and details.",
+    homeSub: "Real photos, clear prices - open any card for sizes and details.",
     categories: [
       "All",
       "Tableware",
@@ -344,8 +344,8 @@ export const trader = {
       submitLabel: "Send message",
       successTitle: "Message received.",
       successBody:
-        "We'll reply by email within a working day — or sooner on WhatsApp if you prefer.",
-      note: "Demo form — nothing is emailed; use WhatsApp for a real reply on a live call.",
+        "We'll reply by email within a working day - or sooner on WhatsApp if you prefer.",
+      note: "Demo form - nothing is emailed; use WhatsApp for a real reply on a live call.",
     },
   },
 

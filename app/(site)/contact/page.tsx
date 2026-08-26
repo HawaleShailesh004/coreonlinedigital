@@ -8,7 +8,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Contact",
   description:
-    "Book a strategy call with Coreline Digital in Thane. WhatsApp, phone, or request a callback — usually same day before 6pm.",
+    "Book a strategy call with Coreline Digital in Thane. WhatsApp, phone, or request a callback - usually same day before 6pm.",
   path: "/contact",
 });
 
@@ -35,7 +35,9 @@ export default function ContactPage() {
 
             <dl className="mt-10 border-t border-hairline">
               <div className="border-b border-hairline py-6">
-                <dt className="font-mono text-label uppercase text-grey">Phone</dt>
+                <dt className="font-mono text-label uppercase text-grey">
+                  Phone
+                </dt>
                 <dd className="mt-2">
                   <a
                     href={site.phoneHref}
@@ -46,7 +48,9 @@ export default function ContactPage() {
                 </dd>
               </div>
               <div className="border-b border-hairline py-6">
-                <dt className="font-mono text-label uppercase text-grey">Email</dt>
+                <dt className="font-mono text-label uppercase text-grey">
+                  Email
+                </dt>
                 <dd className="mt-2">
                   <a
                     href={site.emailHref}
@@ -57,7 +61,9 @@ export default function ContactPage() {
                 </dd>
               </div>
               <div className="border-b border-hairline py-6">
-                <dt className="font-mono text-label uppercase text-grey">Location</dt>
+                <dt className="font-mono text-label uppercase text-grey">
+                  Location
+                </dt>
                 <dd className="mt-2 font-display text-lg font-medium">
                   {site.location}
                   <span className="text-grey">, {site.region}</span>

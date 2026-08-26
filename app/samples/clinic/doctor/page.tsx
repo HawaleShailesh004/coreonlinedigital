@@ -94,7 +94,7 @@ export default function ClinicDoctorPage() {
                   “{clinic.doctor.quote}”
                 </p>
                 <footer className="mt-4 text-sm text-[var(--s-grey)]">
-                  — Dr. Aditya Rao
+                  - Dr. Aditya Rao
                 </footer>
               </blockquote>
             </Reveal>

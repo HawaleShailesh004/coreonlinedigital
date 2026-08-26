@@ -10,7 +10,7 @@ import { gymMedia } from "@/lib/samples/media";
 export const metadata: Metadata = {
   title: "Trainers · Forge Strength Co.",
   description:
-    "Meet the certified coaches at Forge Strength Co. in Thane — strength, group classes, personal training and nutrition.",
+    "Meet the certified coaches at Forge Strength Co. in Thane - strength, group classes, personal training and nutrition.",
 };
 
 const heading =

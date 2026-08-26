@@ -7,7 +7,8 @@ import { trader } from "@/lib/samples/trader";
 
 export const metadata: Metadata = {
   title: "Shop · Nilaya Home",
-  description: "Browse the full Nilaya Home collection — tableware, textiles, decor and bath.",
+  description:
+    "Browse the full Nilaya Home collection - tableware, textiles, decor and bath.",
 };
 
 const heading =

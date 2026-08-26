@@ -30,7 +30,7 @@ import { traderMedia } from "@/lib/samples/media";
  * This is the one sample where the interaction *is* the pitch: the brief asks
  * for it to feel closest to a real, functioning store, because a working cart is
  * the thing the prospect is being sold. Filtering, cart maths, the free-shipping
- * threshold and checkout state are real — only payment and the order record are faked.
+ * threshold and checkout state are real - only payment and the order record are faked.
  *
  * State lives in a context because the cart count belongs in the nav while the
  * add buttons live on shop, PDP and home.
@@ -117,7 +117,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Cart control for the nav — links to the full cart page. */
+/** Cart control for the nav - links to the full cart page. */
 export function CartButton() {
   const { count } = useTraderStore();
   const [bump, setBump] = useState(false);
@@ -138,7 +138,9 @@ export function CartButton() {
       href={`${BASE}/cart`}
       className="relative flex size-9 items-center justify-center text-[var(--s-ink)] transition-opacity hover:opacity-70"
       aria-label={
-        count === 0 ? "Cart, empty" : `Cart, ${count} item${count > 1 ? "s" : ""}`
+        count === 0
+          ? "Cart, empty"
+          : `Cart, ${count} item${count > 1 ? "s" : ""}`
       }
     >
       <svg
@@ -405,7 +407,10 @@ export function ProductDetail({ product }: { product: Product }) {
               fill
               priority
               sizes="(min-width: 1024px) 48vw, 100vw"
-              className={cn("object-cover", soldOut && "opacity-55 saturate-50")}
+              className={cn(
+                "object-cover",
+                soldOut && "opacity-55 saturate-50",
+              )}
             />
             {product.was && !soldOut && (
               <SampleBadge className="s-badge-pulse absolute left-4 top-4">
@@ -466,7 +471,7 @@ export function ProductDetail({ product }: { product: Product }) {
           )}
           {soldOut && (
             <p className="mt-2 text-[0.8125rem] font-medium text-[var(--s-grey)]">
-              Sold out — restocking in about two weeks
+              Sold out - restocking in about two weeks
             </p>
           )}
 
@@ -545,9 +550,10 @@ export function ProductDetail({ product }: { product: Product }) {
 export function CartPage() {
   const { lines, setQty, clear } = useTraderStore();
   const [placed, setPlaced] = useState(false);
-  const [receipt, setReceipt] = useState<{ subtotal: number; freight: number } | null>(
-    null,
-  );
+  const [receipt, setReceipt] = useState<{
+    subtotal: number;
+    freight: number;
+  } | null>(null);
 
   const subtotal = lines.reduce((sum, line) => {
     const product = getProduct(line.id);
@@ -728,7 +734,9 @@ export function CartPage() {
             <dd className="tabular-nums">{rupees(subtotal)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-[var(--s-grey)]">{trader.cart.shippingLabel}</dt>
+            <dt className="text-[var(--s-grey)]">
+              {trader.cart.shippingLabel}
+            </dt>
             <dd className="tabular-nums">
               {freight === 0 ? trader.cart.freeShipping : rupees(freight)}
             </dd>
@@ -739,11 +747,7 @@ export function CartPage() {
           </div>
         </dl>
 
-        <SampleButton
-          type="button"
-          onClick={checkout}
-          className="mt-6 w-full"
-        >
+        <SampleButton type="button" onClick={checkout} className="mt-6 w-full">
           {trader.cart.checkout} · {rupees(subtotal + freight)}
         </SampleButton>
         <p className="mt-3 text-center text-[0.6875rem] text-[var(--s-grey)]">
@@ -762,7 +766,7 @@ export function CartPage() {
   );
 }
 
-/** Horizontal post-order automation steps — lights up on scroll. */
+/** Horizontal post-order automation steps - lights up on scroll. */
 export function AutomationFlowDiagram() {
   return (
     <ol className="mt-12 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-5">
@@ -802,11 +806,7 @@ export function AutomationFlowDiagram() {
   );
 }
 
-export function FaqAccordion({
-  faqs,
-}: {
-  faqs: { q: string; a: string }[];
-}) {
+export function FaqAccordion({ faqs }: { faqs: { q: string; a: string }[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (

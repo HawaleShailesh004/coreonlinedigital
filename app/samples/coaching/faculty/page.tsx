@@ -10,7 +10,7 @@ import { coachingMedia } from "@/lib/samples/media";
 export const metadata: Metadata = {
   title: "Faculty | Summit Prep",
   description:
-    "Subject specialists for JEE, NEET and board coaching at Summit Prep, Thane — qualifications, years teaching and credibility.",
+    "Subject specialists for JEE, NEET and board coaching at Summit Prep, Thane - qualifications, years teaching and credibility.",
 };
 
 const heading =

@@ -54,7 +54,7 @@ export function SampleNav({
   brandNote?: string;
   links: SampleNavLink[];
   cta?: { label: string; href: string };
-  /** Brand mark destination — use a route for multi-page samples. */
+  /** Brand mark destination - use a route for multi-page samples. */
   homeHref?: string;
   overlay?: boolean;
   soft?: boolean;

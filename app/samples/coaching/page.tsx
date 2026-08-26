@@ -12,7 +12,7 @@ import { coachingMedia } from "@/lib/samples/media";
 export const metadata: Metadata = {
   title: "Summit Prep · Thane",
   description:
-    "JEE, NEET and Class 11–12 board coaching in Thane — measurable results, transparent fees, free demo class.",
+    "JEE, NEET and Class 11–12 board coaching in Thane - measurable results, transparent fees, free demo class.",
 };
 
 const heading =
@@ -150,10 +150,10 @@ export default function CoachingHomePage() {
           </div>
         </Reveal>
 
-        <dl className="mt-12 grid gap-6 sm:grid-cols-3">
+        <dl className="mt-12 grid gap-6 sm:grid-cols-3 items-stretch">
           {homeStats.map((stat, index) => (
-            <Reveal key={stat.label} delay={index * 80}>
-              <div className="rounded-[var(--s-radius-lg)] border border-[var(--s-hair)] bg-[var(--s-bg)] px-6 py-7">
+            <Reveal key={stat.label} delay={index * 80} className="h-full">
+              <div className="flex h-full flex-col rounded-[var(--s-radius-lg)] border border-[var(--s-hair)] bg-[var(--s-bg)] px-6 py-7">
                 <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[var(--s-grey)]">
                   {stat.label}
                 </dt>
@@ -164,7 +164,7 @@ export default function CoachingHomePage() {
                     duration={1100}
                   />
                 </dd>
-                <p className="mt-3 text-sm leading-snug text-[var(--s-grey)]">
+                <p className="mt-auto pt-3 text-sm leading-snug text-[var(--s-grey)]">
                   {stat.detail}
                 </p>
               </div>

@@ -4,7 +4,7 @@ import { site } from "@/lib/content";
 export const siteUrl = site.url;
 
 export const defaultDescription =
-  "Coreline Digital builds high-converting digital storefronts for clinics, schools, traders, and local businesses in Thane and Mumbai. Strategy, design, and AI that drive revenue — not just traffic.";
+  "Coreline Digital builds high-converting digital storefronts for clinics, schools, traders, and local businesses in Thane and Mumbai. Strategy, design, and AI that drive revenue - not just traffic.";
 
 export const seoKeywords = [
   "Coreline Digital",
@@ -48,9 +48,7 @@ export function pageMetadata({
       title: `${title} | ${site.legalName}`,
       description,
     },
-    ...(noIndex
-      ? { robots: { index: false, follow: false } }
-      : {}),
+    ...(noIndex ? { robots: { index: false, follow: false } } : {}),
   };
 }
 

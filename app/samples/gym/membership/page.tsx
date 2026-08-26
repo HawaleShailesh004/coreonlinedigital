@@ -9,7 +9,7 @@ import { gym, type MembershipPlan } from "@/lib/samples/gym";
 export const metadata: Metadata = {
   title: "Membership · Forge Strength Co.",
   description:
-    "Basic, Standard and Premium membership plans at Forge Strength Co. in Thane — transparent monthly pricing, no joining fee.",
+    "Basic, Standard and Premium membership plans at Forge Strength Co. in Thane - transparent monthly pricing, no joining fee.",
 };
 
 const heading =
@@ -20,9 +20,7 @@ export default function GymMembershipPage() {
     <main id="main">
       <SampleSection size="tight">
         <Reveal>
-          <SampleEyebrow tone="accent">
-            {gym.membership.eyebrow}
-          </SampleEyebrow>
+          <SampleEyebrow tone="accent">{gym.membership.eyebrow}</SampleEyebrow>
           <h1 className={`${heading} mt-4 max-w-2xl`}>
             {gym.membership.heading}
           </h1>

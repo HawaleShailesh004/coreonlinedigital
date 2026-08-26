@@ -10,7 +10,7 @@ import { traderMedia } from "@/lib/samples/media";
 export const metadata: Metadata = {
   title: "About · Nilaya Home",
   description:
-    "How Nilaya Home started — four Indian workshops, clear prices, shipped from Thane.",
+    "How Nilaya Home started - four Indian workshops, clear prices, shipped from Thane.",
 };
 
 const heading =

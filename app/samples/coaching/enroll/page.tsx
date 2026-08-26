@@ -3,15 +3,12 @@ import { SampleEyebrow } from "@/components/samples/SampleEyebrow";
 import { SampleLeadForm } from "@/components/samples/SampleLeadForm";
 import { SampleSection } from "@/components/samples/SampleSection";
 import { Reveal } from "@/components/ui/Reveal";
-import {
-  coaching,
-  coachingCourseOptions,
-} from "@/lib/samples/coaching";
+import { coaching, coachingCourseOptions } from "@/lib/samples/coaching";
 
 export const metadata: Metadata = {
   title: "Enroll | Summit Prep",
   description:
-    "Book a free demo class at Summit Prep, Thane — student details, preferred batch and demo date.",
+    "Book a free demo class at Summit Prep, Thane - student details, preferred batch and demo date.",
 };
 
 const heading =
@@ -45,9 +42,7 @@ export default async function CoachingEnrollPage({
           <div>
             <Reveal>
               <SampleEyebrow>{coaching.enroll.eyebrow}</SampleEyebrow>
-              <h1 className={`${heading} mt-4`}>
-                {coaching.enroll.heading}
-              </h1>
+              <h1 className={`${heading} mt-4`}>{coaching.enroll.heading}</h1>
               <p className="mt-4 max-w-md text-[1.0625rem] leading-[1.75] text-[var(--s-grey)]">
                 {coaching.enroll.sub}
               </p>
@@ -55,9 +50,7 @@ export default async function CoachingEnrollPage({
 
             <Reveal delay={80}>
               <div className="mt-10">
-                <SampleEyebrow>
-                  {coaching.enroll.process.eyebrow}
-                </SampleEyebrow>
+                <SampleEyebrow>{coaching.enroll.process.eyebrow}</SampleEyebrow>
                 <h2 className="s-display mt-3 text-xl font-semibold">
                   {coaching.enroll.process.heading}
                 </h2>

@@ -239,7 +239,7 @@ export const samples: Sample[] = [
     city: "Thane",
     name: "Coaching Classes Results Site",
     summary:
-      "Sells exam outcomes to cautious parents — clear batch fees, faculty credibility, and a results page built around pass rates and named ranks.",
+      "Sells exam outcomes to cautious parents - clear batch fees, faculty credibility, and a results page built around pass rates and named ranks.",
     tags: ["Storefront", "Acquisition System"],
     demos: [
       "Multi-page coaching site",

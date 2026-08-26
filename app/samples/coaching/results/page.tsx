@@ -33,10 +33,10 @@ export default function CoachingResultsPage() {
           </p>
         </Reveal>
 
-        <dl className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
           {coaching.results.stats.map((stat, index) => (
-            <Reveal key={stat.label} delay={index * 70}>
-              <div className="relative overflow-hidden rounded-[var(--s-radius-lg)] border border-[var(--s-hair)] bg-[var(--s-ink)] px-5 py-7 text-[var(--s-bg)]">
+            <Reveal key={stat.label} delay={index * 70} className="h-full">
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[var(--s-radius-lg)] border border-[var(--s-hair)] bg-[var(--s-ink)] px-5 py-7 text-[var(--s-bg)]">
                 <div
                   className="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-[var(--s-primary)]/30"
                   aria-hidden
@@ -51,7 +51,7 @@ export default function CoachingResultsPage() {
                     duration={1200}
                   />
                 </dd>
-                <p className="relative mt-3 text-sm leading-snug text-white/55">
+                <p className="relative mt-auto pt-3 text-sm leading-snug text-white/55">
                   {stat.detail}
                 </p>
               </div>

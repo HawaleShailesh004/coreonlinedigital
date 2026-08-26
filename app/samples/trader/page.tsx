@@ -14,7 +14,7 @@ import { traderMedia } from "@/lib/samples/media";
 export const metadata: Metadata = {
   title: "Sample: Online Home Goods Store",
   description:
-    "Concept build for a small D2C brand — working cart and checkout, WhatsApp order automation, and a live AI assistant answering stock, shipping and returns.",
+    "Concept build for a small D2C brand - working cart and checkout, WhatsApp order automation, and a live AI assistant answering stock, shipping and returns.",
 };
 
 const heading =
@@ -136,9 +136,7 @@ export default function TraderHomePage() {
       <SampleSection id="flow" className="scroll-mt-20">
         <Reveal>
           <SampleEyebrow>{trader.flow.eyebrow}</SampleEyebrow>
-          <h2 className={`${heading} mt-3 max-w-2xl`}>
-            {trader.flow.heading}
-          </h2>
+          <h2 className={`${heading} mt-3 max-w-2xl`}>{trader.flow.heading}</h2>
           <p className="mt-4 max-w-xl leading-[1.7] text-[var(--s-grey)]">
             {trader.flow.sub}
           </p>

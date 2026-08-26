@@ -71,7 +71,7 @@ export const metadata: Metadata = {
         url: "/logo-lockup.png",
         width: 1200,
         height: 630,
-        alt: `${site.legalName} — digital infrastructure for local businesses`,
+        alt: `${site.legalName} - digital infrastructure for local businesses`,
       },
     ],
   },

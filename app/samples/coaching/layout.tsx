@@ -5,7 +5,7 @@ import { SampleFrame } from "@/components/samples/SampleFrame";
 import { SampleNav } from "@/components/samples/SampleNav";
 import { coaching } from "@/lib/samples/coaching";
 
-/** Punchy geometric sans — achievement-focused without looking childish. */
+/** Punchy geometric sans - achievement-focused without looking childish. */
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
@@ -16,7 +16,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "Sample: Coaching Classes",
   description:
-    "Concept build for a competitive exam coaching institute — transparent batch fees, faculty bios, and a results page built around measurable outcomes.",
+    "Concept build for a competitive exam coaching institute - transparent batch fees, faculty bios, and a results page built around measurable outcomes.",
 };
 
 export default function CoachingLayout({

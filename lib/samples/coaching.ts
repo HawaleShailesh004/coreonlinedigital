@@ -2,7 +2,7 @@
  * Copy for Sample 10 - Coaching Classes / Tuition Institute.
  * Brief: samples/coaching-classes-site-full-build-doc.md
  *
- * Positioning: sells proof of results to parents and adult students —
+ * Positioning: sells proof of results to parents and adult students -
  * scores improved, exams cleared, skills gained. Distinct from School
  * (belonging / small-class trust): here the outcome data carries the sale.
  */
@@ -51,7 +51,7 @@ const courses: CoachingCourse[] = [
     feeNote: "Full programme · payable in 4 instalments",
     teaser:
       "Physics, Chemistry and Maths from first principles through Advanced-level problem sets, with fortnightly full mocks.",
-    body: "Built for students entering Class 11 who want a measured path to JEE Main and Advanced — not a scramble in Class 12. Weekly chapter tests, fortnightly full-length mocks, and a rank-predictor dashboard so parents see progress in numbers, not vibes. Small sections (max 28) so doubt sessions stay real.",
+    body: "Built for students entering Class 11 who want a measured path to JEE Main and Advanced - not a scramble in Class 12. Weekly chapter tests, fortnightly full-length mocks, and a rank-predictor dashboard so parents see progress in numbers, not vibes. Small sections (max 28) so doubt sessions stay real.",
     schedule: [
       { day: "Mon · Wed · Fri", time: "5:30 – 8:30 PM" },
       { day: "Saturday", time: "9:00 AM – 1:00 PM (mock / revision)" },
@@ -66,7 +66,7 @@ const courses: CoachingCourse[] = [
     fee: "₹1,45,000",
     feeNote: "Full programme · payable in 3 instalments",
     teaser:
-      "Compressed syllabus coverage with heavy mock density — for Class 12 and serious droppers who already know the basics.",
+      "Compressed syllabus coverage with heavy mock density - for Class 12 and serious droppers who already know the basics.",
     body: "For Class 12 students and droppers who need volume and feedback, not another slow theory pass. Daily practice sets, three full mocks a month, and a personal scorecard after every test. Mentors flag weak chapters within 48 hours of each mock so the next week is spent closing gaps, not guessing.",
     schedule: [
       { day: "Tue · Thu · Sat", time: "5:30 – 8:30 PM" },
@@ -82,7 +82,7 @@ const courses: CoachingCourse[] = [
     fee: "₹1,75,000",
     feeNote: "Full programme · payable in 4 instalments",
     teaser:
-      "Biology-led with Physics and Chemistry paced to NEET pattern — NCERT depth first, then PYQ volume.",
+      "Biology-led with Physics and Chemistry paced to NEET pattern - NCERT depth first, then PYQ volume.",
     body: "Biology owns the timetable; Physics and Chemistry are paced to NEET's question mix rather than board chapter order. NCERT line-by-line for Bio, then PYQ and assertion-reason drills. Monthly full NEET mocks under exam conditions, with All-India percentile shared with parents the same week.",
     schedule: [
       { day: "Mon · Wed · Fri", time: "5:30 – 8:30 PM" },
@@ -99,7 +99,7 @@ const courses: CoachingCourse[] = [
     feeNote: "Per academic year · books & test series included",
     teaser:
       "Board-first Physics, Chemistry and Maths with enough Main-level stretch that JEE aspirants stay covered.",
-    body: "For students whose primary goal is a strong board percentage, with optional Main-level stretch modules. Chapter tests map to the board blueprint; pre-boards run in December and January under timed conditions. Parents get a term report with subject averages and attendance — the same clarity we use for competitive batches.",
+    body: "For students whose primary goal is a strong board percentage, with optional Main-level stretch modules. Chapter tests map to the board blueprint; pre-boards run in December and January under timed conditions. Parents get a term report with subject averages and attendance - the same clarity we use for competitive batches.",
     schedule: [
       { day: "Tue · Thu", time: "5:30 – 8:00 PM" },
       { day: "Saturday", time: "10:00 AM – 1:00 PM" },
@@ -114,7 +114,7 @@ const courses: CoachingCourse[] = [
     fee: "₹72,000",
     feeNote: "Per academic year · books & test series included",
     teaser:
-      "Board Biology, Physics and Chemistry with NEET-aware depth where it helps — without ignoring the board paper.",
+      "Board Biology, Physics and Chemistry with NEET-aware depth where it helps - without ignoring the board paper.",
     body: "Board paper patterns lead; NEET-style depth is added where it raises board scores and keeps medical aspirants warm. Practical viva prep and diagram drills are timetabled, not left to the last fortnight. Same term reports and attendance tracking as the PCM board batch.",
     schedule: [
       { day: "Mon · Wed", time: "5:30 – 8:00 PM" },
@@ -130,7 +130,7 @@ const courses: CoachingCourse[] = [
     fee: "₹28,000",
     feeNote: "Includes 18 full mocks + detailed solutions",
     teaser:
-      "Eighteen full-length mocks with All-India ranks — for students already enrolled elsewhere who need honest comparison.",
+      "Eighteen full-length mocks with All-India ranks - for students already enrolled elsewhere who need honest comparison.",
     body: "Weekend mocks under strict exam conditions, scanned OMR / CBT as applicable, and a percentile report within 48 hours. Solutions and video walkthroughs for every paper. Designed for students who already have a teacher but need a ranking signal before the real attempt.",
     schedule: [
       { day: "Alternate Sundays", time: "9:00 AM – 12:00 PM (JEE)" },
@@ -155,7 +155,7 @@ const faculty: CoachingFaculty[] = [
     qualification: "MSc Chemistry, University of Mumbai",
     years: 11,
     credibility:
-      "Known for mechanism maps that stick — her organic notes circulate across three Thane centres.",
+      "Known for mechanism maps that stick - her organic notes circulate across three Thane centres.",
   },
   {
     name: "Rahul Sawant",
@@ -171,7 +171,7 @@ const faculty: CoachingFaculty[] = [
     qualification: "MBBS, Grant Medical College",
     years: 8,
     credibility:
-      "NCERT-line teaching with clinical asides — 92% of her 2025 NEET batch cleared the cutoff.",
+      "NCERT-line teaching with clinical asides - 92% of her 2025 NEET batch cleared the cutoff.",
   },
   {
     name: "Vikrant Joshi",
@@ -187,7 +187,7 @@ const faculty: CoachingFaculty[] = [
     qualification: "MEd, SNDT · Data analytics cert",
     years: 7,
     credibility:
-      "Owns the scorecard system parents see — every mock mapped to chapter-level gaps within 48 hours.",
+      "Owns the scorecard system parents see - every mock mapped to chapter-level gaps within 48 hours.",
   },
 ];
 
@@ -240,7 +240,7 @@ const callouts: ResultCallout[] = [
   {
     name: "Aarav Mehta",
     achievement: "JEE Advanced AIR 412 · 2025",
-    line: "Two-year batch — Physics went from 42 to 88 in Main mocks before Advanced.",
+    line: "Two-year batch - Physics went from 42 to 88 in Main mocks before Advanced.",
   },
   {
     name: "Ishita Rao",
@@ -250,12 +250,12 @@ const callouts: ResultCallout[] = [
   {
     name: "Siddharth Kulkarni",
     achievement: "JEE Main 99.2 %ile · 2025",
-    line: "One-year dropper batch — Maths mentorship fixed the April panic pattern.",
+    line: "One-year dropper batch - Maths mentorship fixed the April panic pattern.",
   },
   {
     name: "Ananya Desai",
     achievement: "HSC PCM 94.2% · 2025",
-    line: "Board batch with Main stretch modules — Chemistry practical viva scored full.",
+    line: "Board batch with Main stretch modules - Chemistry practical viva scored full.",
   },
   {
     name: "Rohan Pawar",
@@ -265,7 +265,7 @@ const callouts: ResultCallout[] = [
   {
     name: "Kavya Iyer",
     achievement: "JEE Advanced AIR 1,840 · 2025",
-    line: "One-year batch — cleared Advanced after missing it by 12 marks the year before.",
+    line: "One-year batch - cleared Advanced after missing it by 12 marks the year before.",
   },
 ];
 
@@ -293,9 +293,9 @@ export const coaching = {
   },
 
   hero: {
-    eyebrow: "Admissions Open — April 2026 Batch",
+    eyebrow: "Admissions Open - April 2026 Batch",
     headline: "Results you can actually measure, not just promises.",
-    sub: "Summit Prep runs focused JEE, NEET and Class 11–12 board batches in Thane with real outcome tracking — so you always know if it's working, not just hoping it is.",
+    sub: "Summit Prep runs focused JEE, NEET and Class 11–12 board batches in Thane with real outcome tracking - so you always know if it's working, not just hoping it is.",
     primaryCta: "View Results",
     secondaryCta: "Book Free Demo",
   },
@@ -314,7 +314,7 @@ export const coaching = {
     heading: "The scoreboard, not the brochure.",
     pageHeading: "The numbers, not just the promise.",
     pageSub:
-      "Pass rates, percentile bands and named outcomes from recent batches. This is what parents ask for on the first call — we put it on the page.",
+      "Pass rates, percentile bands and named outcomes from recent batches. This is what parents ask for on the first call - we put it on the page.",
     stats: [
       {
         value: 87,
@@ -363,7 +363,7 @@ export const coaching = {
     heading: "Teachers whose results travel by word of mouth.",
     pageHeading: "The people who own the numbers.",
     pageSub:
-      "Subject specialists with years in competitive classrooms — not rotating guest lecturers. Bios below are what parents ask for before paying a deposit.",
+      "Subject specialists with years in competitive classrooms - not rotating guest lecturers. Bios below are what parents ask for before paying a deposit.",
     people: faculty,
   },
 
@@ -377,7 +377,7 @@ export const coaching = {
       steps: [
         {
           title: "Demo Class",
-          body: "One free session in the batch you're considering — same timing, same teacher, same room.",
+          body: "One free session in the batch you're considering - same timing, same teacher, same room.",
         },
         {
           title: "Assessment",
@@ -398,7 +398,7 @@ export const coaching = {
       successTitle: "Demo request received.",
       successBody:
         "We'll confirm the slot on WhatsApp within one working day and tell you which classroom to find.",
-      note: "Demo form — this sample isn't wired to a live admissions desk.",
+      note: "Demo form - this sample isn't wired to a live admissions desk.",
     },
   },
 
@@ -453,7 +453,7 @@ export const coaching = {
 
   footer: {
     blurb:
-      "JEE, NEET and board coaching in Naupada, Thane — batches capped, fees published, results tracked.",
+      "JEE, NEET and board coaching in Naupada, Thane - batches capped, fees published, results tracked.",
     legal: "This is a concept build, not a real coaching institute.",
   },
 };

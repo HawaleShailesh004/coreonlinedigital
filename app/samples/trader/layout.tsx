@@ -7,7 +7,7 @@ import { CartButton, StoreProvider } from "@/components/samples/TraderStore";
 import { personas } from "@/lib/samples/chat-personas";
 import { trader } from "@/lib/samples/trader";
 
-/** Geometric, unfussy, and legible at card sizes — e-commerce trust is clarity. */
+/** Geometric, unfussy, and legible at card sizes - e-commerce trust is clarity. */
 const manrope = Manrope({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -54,7 +54,10 @@ export default function TraderLayout({
             {
               title: "Help",
               items: [
-                { label: trader.help.email, href: `mailto:${trader.help.email}` },
+                {
+                  label: trader.help.email,
+                  href: `mailto:${trader.help.email}`,
+                },
                 { label: trader.help.phoneLabel, href: trader.help.phoneHref },
                 { label: "Contact & FAQ", href: `${BASE}/contact` },
               ],

@@ -9,7 +9,7 @@ import { coaching } from "@/lib/samples/coaching";
 export const metadata: Metadata = {
   title: "Contact | Summit Prep",
   description:
-    "Visit Summit Prep in Naupada, Thane — address, phone, WhatsApp, office hours and batch timing overview.",
+    "Visit Summit Prep in Naupada, Thane - address, phone, WhatsApp, office hours and batch timing overview.",
 };
 
 const heading =
