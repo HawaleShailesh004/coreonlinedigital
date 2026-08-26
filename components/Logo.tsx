@@ -25,7 +25,7 @@ export function Logo({
     <Link
       href="/"
       className={cn("inline-flex items-center", className)}
-      aria-label={`${site.legalName} — home`}
+      aria-label={`${site.legalName} - home`}
     >
       <Image
         src="/logo-lockup.png"

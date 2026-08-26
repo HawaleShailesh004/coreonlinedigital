@@ -7,14 +7,18 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-hairline">
+    <footer className="border-t border-hairline" itemScope itemType="https://schema.org/Organization">
       <Container>
         <div className="flex flex-col gap-10 py-16 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-3">
             <Logo size="md" />
-            <p className="font-mono text-label uppercase text-grey">
-              {site.location} · {site.region}
+            <p className="font-mono text-label uppercase text-grey" itemProp="address">
+              <span itemProp="streetAddress">{site.location}</span>
+              {" · "}
+              <span itemProp="addressRegion">{site.region}</span>
             </p>
+            <meta itemProp="name" content={site.legalName} />
+            <meta itemProp="url" content={site.url} />
           </div>
 
           <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">

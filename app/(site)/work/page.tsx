@@ -1,14 +1,16 @@
-import type { Metadata } from "next";
 import { FinalCta } from "@/components/FinalCta";
 import { Section } from "@/components/ui/Section";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { WorkGrid } from "@/components/work/WorkGrid";
 import { workPage } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Work",
-  description: workPage.sub,
-};
+  description:
+    "Nine concept digital storefronts and acquisition systems — clinics, schools, traders, gyms, and more — showing how Coreline builds for local businesses.",
+  path: "/work",
+});
 
 export default function WorkPage() {
   return (

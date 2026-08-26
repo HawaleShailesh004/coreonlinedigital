@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import {
   initialContactState,
   requestCallback,
-} from "@/app/contact/actions";
+} from "@/app/(site)/contact/actions";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { contactPage } from "@/lib/content";

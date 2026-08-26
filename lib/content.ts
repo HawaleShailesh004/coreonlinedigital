@@ -3,6 +3,20 @@
  * Mirrors coreline-site-copy-draft.md - edit copy here, never inline in components.
  */
 
+import { samples, type SampleIndustry } from "@/lib/samples";
+import {
+  caMedia,
+  clinicMedia,
+  gymMedia,
+  interiorMedia,
+  jewellerMedia,
+  realtyMedia,
+  schoolMedia,
+  traderMedia,
+  travelMedia,
+  type SampleImage,
+} from "@/lib/samples/media";
+
 export const site = {
   name: "coreline.",
   legalName: "Coreline Digital",
@@ -27,13 +41,21 @@ export const nav = [
 export const hero = {
   headline: [
     [{ text: "Digital infrastructure" }],
-    [{ text: "that " }, { text: "drives revenue", tone: "accent" as const }, { text: "," }],
+    [
+      { text: "that " },
+      { text: "drives revenue", tone: "accent" as const },
+      { text: "," },
+    ],
     [{ text: "not just traffic.", tone: "muted" as const }],
   ],
   subhead:
     "We build the booking, triage, and follow-up systems behind a clinic, firm, or storefront's front door - engineered for owners who've outgrown templates.",
   ctas: [
-    { label: "View Sample Systems", href: "/work", variant: "primary" as const },
+    {
+      label: "View Sample Systems",
+      href: "/work",
+      variant: "primary" as const,
+    },
     { label: "Our Services", href: "/services", variant: "secondary" as const },
   ],
 };
@@ -46,6 +68,9 @@ export const focusStrip = {
     "Jewellers",
     "Schools",
     "Real Estate",
+    "Travel",
+    "Gyms",
+    "Interior Design",
     "Traders",
   ],
 };
@@ -148,12 +173,7 @@ export const whyNotTemplate = {
   },
 };
 
-export type Industry =
-  | "Clinic"
-  | "Jeweller"
-  | "CA / Professional"
-  | "School"
-  | "Real Estate";
+export type Industry = SampleIndustry;
 
 export type WorkSample = {
   slug: string;
@@ -162,55 +182,37 @@ export type WorkSample = {
   summary: string;
   tags: string[];
   href: string;
+  image: SampleImage;
 };
 
-export const workSamples: WorkSample[] = [
-  {
-    slug: "family-clinic-booking",
-    industry: "Clinic",
-    name: "Sample: Family Clinic Booking Site",
-    summary: "Turns walk-in-only enquiries into a same-day booking calendar.",
-    tags: ["Storefront", "Acquisition System"],
-    href: "#",
-  },
-  {
-    slug: "jeweller-catalogue",
-    industry: "Jeweller",
-    name: "Sample: Jeweller Collection Catalogue",
-    summary: "Puts the display case online, with enquiries routed to WhatsApp.",
-    tags: ["Storefront"],
-    href: "#",
-  },
-  {
-    slug: "ca-practice-intake",
-    industry: "CA / Professional",
-    name: "Sample: CA Practice Intake System",
-    summary: "Screens and sorts client enquiries before they reach your desk.",
-    tags: ["Acquisition System"],
-    href: "#",
-  },
-  {
-    slug: "school-admissions",
-    industry: "School",
-    name: "Sample: School Admissions Funnel",
-    summary: "Handles admission enquiries and follow-up through the season.",
-    tags: ["Storefront", "Acquisition System"],
-    href: "#",
-  },
-  {
-    slug: "realty-listings",
-    industry: "Real Estate",
-    name: "Sample: Realty Listings Front Door",
-    summary: "Qualifies site-visit requests before an agent spends a Sunday.",
-    tags: ["Storefront", "Acquisition System"],
-    href: "#",
-  },
-];
+/** Card thumbs for /work - one distinctive frame per vertical. */
+const workThumbs: Record<(typeof samples)[number]["slug"], SampleImage> = {
+  clinic: clinicMedia.waiting,
+  jeweller: jewellerMedia.solitaire,
+  ca: caMedia.office,
+  realty: realtyMedia.listings[0],
+  school: schoolMedia.hero,
+  travel: travelMedia.hero,
+  gym: gymMedia.hero,
+  interior: interiorMedia.hero,
+  trader: traderMedia.hero,
+};
+
+/** Built from the sample registry so Work stays in sync with /samples. */
+export const workSamples: WorkSample[] = samples.map((sample) => ({
+  slug: sample.slug,
+  industry: sample.industry,
+  name: sample.name,
+  summary: sample.summary,
+  tags: sample.tags,
+  href: `/samples/${sample.slug}`,
+  image: workThumbs[sample.slug],
+}));
 
 export const workPage = {
   eyebrow: "Sample systems",
   heading: "Built to show what's possible.",
-  sub: "These are concept builds - made to show exactly what a Digital Storefront or Acquisition System looks like for a specific kind of business. Real client work will replace these as it ships.",
+  sub: "Nine concept builds - each a full Digital Storefront or Acquisition System for a different kind of business. Real client work will replace these as it ships.",
   bottomHeading: "Want to see what this looks like for your business?",
 };
 
@@ -252,6 +254,9 @@ export const contactPage = {
     "CA/Professional",
     "School",
     "Real Estate",
+    "Travel",
+    "Gym",
+    "Interior Design",
     "Trader",
     "Other",
   ],

@@ -1,8 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { site } from "@/lib/content";
+import {
+  defaultDescription,
+  organizationJsonLd,
+  seoKeywords,
+  siteUrl,
+  websiteJsonLd,
+} from "@/lib/seo";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -27,29 +33,76 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: `${site.legalName} - ${site.tagline}`,
-    template: `%s - ${site.legalName}`,
+    default: `${site.legalName} | Digital Storefronts that Drive Revenue`,
+    template: `%s | ${site.legalName}`,
   },
-  description:
-    "We build the booking, triage, and follow-up systems behind a clinic, firm, or storefront's front door - engineered for owners who've outgrown templates.",
+  description: defaultDescription,
+  keywords: [...seoKeywords],
+  authors: [{ name: site.legalName, url: siteUrl }],
+  creator: site.legalName,
+  publisher: site.legalName,
+  applicationName: site.legalName,
+  category: "Business",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     type: "website",
-    siteName: site.legalName,
     locale: "en_IN",
+    url: siteUrl,
+    siteName: site.legalName,
+    title: `${site.legalName} | Digital Storefronts that Drive Revenue`,
+    description: defaultDescription,
+    images: [
+      {
+        url: "/logo-lockup.png",
+        width: 1200,
+        height: 630,
+        alt: `${site.legalName} — digital infrastructure for local businesses`,
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.legalName} | Digital Storefronts that Drive Revenue`,
+    description: defaultDescription,
+    images: ["/logo-lockup.png"],
+  },
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f6f7f5",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
-      lang="en"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable}`}
+      lang="en-IN"
+      className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
       <head>
         {/* Reveal animations are JS-driven; without JS the content must still render. */}
@@ -57,18 +110,9 @@ export default function RootLayout({
           <style>{`.reveal,.hero-step{opacity:1!important;transform:none!important}`}</style>
         </noscript>
       </head>
-      <body className="flex min-h-screen flex-col">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:font-mono focus:text-label focus:uppercase focus:text-paper"
-        >
-          Skip to content
-        </a>
-        <Nav />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+      <body className="flex min-h-full flex-col bg-paper text-ink">
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
+        {children}
       </body>
     </html>
   );

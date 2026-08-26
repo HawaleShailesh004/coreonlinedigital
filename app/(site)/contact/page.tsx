@@ -1,14 +1,16 @@
-import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { LineNode } from "@/components/LineNode";
 import { Container } from "@/components/ui/Container";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { contactPage, site } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contact",
-  description: contactPage.sub,
-};
+  description:
+    "Book a strategy call with Coreline Digital in Thane. WhatsApp, phone, or request a callback — usually same day before 6pm.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

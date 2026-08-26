@@ -1,13 +1,33 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/lib/content";
+import { siteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
-  return ["", "/services", "/work", "/contact"].map((path) => ({
-    url: `${site.url}${path}`,
-    lastModified,
-    changeFrequency: "monthly",
-    priority: path === "" ? 1 : 0.8,
-  }));
+  return [
+    {
+      url: siteUrl,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
+      url: `${siteUrl}/services`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/work`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/contact`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+  ];
 }

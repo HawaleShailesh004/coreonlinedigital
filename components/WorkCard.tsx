@@ -1,26 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { WorkSample } from "@/lib/content";
-
-/**
- * No client screenshots exist yet, so the thumbnail is an abstract wireframe
- * built from the line-and-node motif rather than a stock mockup.
- */
-function Wireframe() {
-  return (
-    <div
-      className="pointer-events-none absolute inset-0 flex flex-col justify-center gap-2.5 px-8"
-      aria-hidden="true"
-    >
-      <span className="h-px w-10 bg-accent" />
-      <span className="h-2 w-3/5 bg-ink/10" />
-      <span className="h-2 w-2/5 bg-ink/10" />
-      <span className="mt-3 flex gap-2">
-        <span className="h-6 w-16 bg-ink/10" />
-        <span className="h-6 w-10 border border-hairline" />
-      </span>
-    </div>
-  );
-}
 
 export function WorkCard({ sample }: { sample: WorkSample }) {
   return (
@@ -29,9 +9,15 @@ export function WorkCard({ sample }: { sample: WorkSample }) {
       className="group flex h-full flex-col border border-hairline transition-transform duration-200 ease-out hover:-translate-y-[3px]"
     >
       <div className="relative aspect-[4/3] overflow-hidden border-b border-hairline bg-card">
-        <Wireframe />
+        <Image
+          src={sample.image.src}
+          alt={sample.image.alt}
+          fill
+          sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+        />
         <span className="absolute inset-x-0 bottom-0 translate-y-full bg-ink px-6 py-3 font-mono text-label uppercase text-paper transition-transform duration-200 ease-out group-hover:translate-y-0 group-focus-visible:translate-y-0">
-          View →
+          View sample →
         </span>
       </div>
 

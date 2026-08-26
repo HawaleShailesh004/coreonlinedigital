@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
 import { FinalCta } from "@/components/FinalCta";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { pillars, servicesPage } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Services",
-  description: servicesPage.sub,
-};
+  description:
+    "Digital storefronts, client acquisition systems, and growth retainers for clinics, CAs, schools, and local businesses in Thane and Mumbai.",
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

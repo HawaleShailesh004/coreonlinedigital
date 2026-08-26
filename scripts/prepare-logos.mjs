@@ -62,10 +62,18 @@ function decode(path) {
 
       let value;
       switch (filter) {
-        case 0: value = v; break;
-        case 1: value = v + a; break;
-        case 2: value = v + b; break;
-        case 3: value = v + ((a + b) >> 1); break;
+        case 0:
+          value = v;
+          break;
+        case 1:
+          value = v + a;
+          break;
+        case 2:
+          value = v + b;
+          break;
+        case 3:
+          value = v + ((a + b) >> 1);
+          break;
         case 4: {
           const p = a + b - c;
           const pa = Math.abs(p - a);
@@ -74,7 +82,8 @@ function decode(path) {
           value = v + (pa <= pb && pa <= pc ? a : pb <= pc ? b : c);
           break;
         }
-        default: throw new Error(`unsupported filter ${filter}`);
+        default:
+          throw new Error(`unsupported filter ${filter}`);
       }
       cur[x] = value & 0xff;
     }
@@ -132,7 +141,10 @@ function encode({ width, height, pixels }) {
 
 function alphaBounds(img) {
   const { width, height, pixels } = img;
-  let x0 = Infinity, y0 = Infinity, x1 = -1, y1 = -1;
+  let x0 = Infinity,
+    y0 = Infinity,
+    x1 = -1,
+    y1 = -1;
 
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
@@ -171,7 +183,11 @@ function resize(img, targetWidth, targetHeight) {
       const sx0 = Math.floor(x * scaleX);
       const sx1 = Math.max(sx0 + 1, Math.floor((x + 1) * scaleX));
 
-      let r = 0, g = 0, b = 0, a = 0, count = 0;
+      let r = 0,
+        g = 0,
+        b = 0,
+        a = 0,
+        count = 0;
       for (let sy = sy0; sy < sy1; sy += 1) {
         for (let sx = sx0; sx < sx1; sx += 1) {
           const i = (sy * img.width + sx) * 4;
@@ -197,7 +213,7 @@ function resize(img, targetWidth, targetHeight) {
   return { width: targetWidth, height: targetHeight, pixels };
 }
 
-/** Centres art on an opaque square canvas — iOS ignores icon transparency. */
+/** Centres art on an opaque square canvas - iOS ignores icon transparency. */
 function onSquare(img, size, margin, [br, bg, bb]) {
   const pixels = Buffer.alloc(size * size * 4);
   for (let i = 0; i < size * size; i += 1) {
@@ -209,7 +225,11 @@ function onSquare(img, size, margin, [br, bg, bb]) {
 
   const inner = size - margin * 2;
   const scale = Math.min(inner / img.width, inner / img.height);
-  const art = resize(img, Math.round(img.width * scale), Math.round(img.height * scale));
+  const art = resize(
+    img,
+    Math.round(img.width * scale),
+    Math.round(img.height * scale),
+  );
   const offsetX = Math.round((size - art.width) / 2);
   const offsetY = Math.round((size - art.height) / 2);
 
@@ -220,7 +240,9 @@ function onSquare(img, size, margin, [br, bg, bb]) {
       if (alpha === 0) continue;
       const d = ((offsetY + y) * size + offsetX + x) * 4;
       for (let c = 0; c < 3; c += 1) {
-        pixels[d + c] = Math.round(art.pixels[s + c] * alpha + pixels[d + c] * (1 - alpha));
+        pixels[d + c] = Math.round(
+          art.pixels[s + c] * alpha + pixels[d + c] * (1 - alpha),
+        );
       }
     }
   }
