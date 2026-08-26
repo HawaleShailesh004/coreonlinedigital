@@ -7,6 +7,7 @@ import { samples, type SampleIndustry } from "@/lib/samples";
 import {
   caMedia,
   clinicMedia,
+  coachingMedia,
   gymMedia,
   interiorMedia,
   jewellerMedia,
@@ -72,6 +73,7 @@ export const focusStrip = {
     "Gyms",
     "Interior Design",
     "Traders",
+    "Coaching Classes",
   ],
 };
 
@@ -196,6 +198,7 @@ const workThumbs: Record<(typeof samples)[number]["slug"], SampleImage> = {
   gym: gymMedia.hero,
   interior: interiorMedia.hero,
   trader: traderMedia.hero,
+  coaching: coachingMedia.hero,
 };
 
 /** Built from the sample registry so Work stays in sync with /samples. */
@@ -212,7 +215,7 @@ export const workSamples: WorkSample[] = samples.map((sample) => ({
 export const workPage = {
   eyebrow: "Sample systems",
   heading: "Built to show what's possible.",
-  sub: "Nine concept builds - each a full Digital Storefront or Acquisition System for a different kind of business. Real client work will replace these as it ships.",
+  sub: "Ten concept builds - each a full Digital Storefront or Acquisition System for a different kind of business. Real client work will replace these as it ships.",
   bottomHeading: "Want to see what this looks like for your business?",
 };
 

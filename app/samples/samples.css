@@ -7,7 +7,7 @@
 
    Every sample sets the same variable names to different values on its root
    element, so one set of shared primitives in components/samples/ serves all
-   nine palettes. Read a sample's brief in /samples/*.md before changing a
+   ten palettes. Read a sample's brief in /samples/*.md before changing a
    value here; the palettes are argued for, not arbitrary.
 
    Reduced-motion is inherited from globals.css, which neutralises every
@@ -223,6 +223,29 @@
   --s-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* --- 10. Coaching Classes - "Momentum Violet" ------------------------------
+   Violet + gold reads achievement without the school sample's warm blue, or
+   generic education orange. Sharp-ish corners: serious, not corporate. */
+[data-sample="coaching"] {
+  --s-bg: #faf8fc;
+  --s-surface: #f1ecf6;
+  --s-ink: #221b2e;
+  --s-primary: #5b3a8e;
+  --s-primary-2: #462c6e;
+  --s-accent: #e3b23c;
+  --s-grey: #786f87;
+  --s-hair: rgba(34, 27, 46, 0.12);
+  --s-on-accent: #221b2e;
+
+  --s-radius: 5px;
+  --s-radius-lg: 8px;
+  --s-radius-pill: 999px;
+  --s-shadow: 0 4px 18px rgba(34, 27, 46, 0.06);
+
+  --s-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.7;
+}
+
 /* ---------------------------------------------------------------------------
    Motion. Each block notes which sample brief asks for it.
    --------------------------------------------------------------------------- */
@@ -376,6 +399,13 @@
 .s-settle {
   animation: s-settle 0.9s var(--ease-line) both;
   animation-delay: var(--s-delay, 0ms);
+}
+
+/* When paired with InView, hold the start frame until the subject enters. */
+.s-settle[data-visible="false"] {
+  animation: none;
+  opacity: 0;
+  transform: scale(1.03);
 }
 
 .s-ken-burns {

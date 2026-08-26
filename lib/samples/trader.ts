@@ -9,18 +9,30 @@
  * answer stock, shipping and returns questions without contradicting the store.
  */
 
+export type ProductCategory =
+  | "Tableware"
+  | "Textiles"
+  | "Decor"
+  | "Bath & Body";
+
 export type Product = {
   id: string;
   name: string;
   price: number;
   /** Struck-through original, for genuinely reduced items only. */
   was?: number;
-  category: "Tableware" | "Textiles" | "Decor" | "Bath & Body";
+  category: ProductCategory;
+  /** One-line card copy. */
   blurb: string;
+  /** 2–3 sentences for the product detail page. */
+  description: string;
   /** Drives the stock answers the chat assistant gives. */
   stock: "in" | "low" | "out";
-  variants?: string;
+  /** Selectable options on the PDP (size, colour, scent, etc.). */
+  variants?: string[];
 };
+
+const BASE = "/samples/trader";
 
 export const products: Product[] = [
   {
@@ -29,8 +41,10 @@ export const products: Product[] = [
     price: 1450,
     category: "Tableware",
     blurb: "Cork-based, hand-glazed, dishwasher safe.",
+    description:
+      "Four hand-glazed cups with cork bases that keep the table quiet. Fired in Jaipur, then sealed so they take dishwasher cycles without the glaze dulling. Stack neat; the cork stays put.",
     stock: "in",
-    variants: "Sand, Slate",
+    variants: ["Sand", "Slate"],
   },
   {
     id: "cushion-covers",
@@ -39,8 +53,10 @@ export const products: Product[] = [
     was: 1290,
     category: "Textiles",
     blurb: "Handloom cotton in rust and stripe.",
+    description:
+      "A pair of handloom covers in rust and a soft stripe — the kind of cotton that softens instead of pilling. Envelope backs, no zippers to snag. Sized for standard inserts; pick your cover size below.",
     stock: "in",
-    variants: "16in, 18in, 20in",
+    variants: ["16in", "18in", "20in"],
   },
   {
     id: "concrete-vases",
@@ -48,6 +64,8 @@ export const products: Product[] = [
     price: 2150,
     category: "Decor",
     blurb: "Three heights, cast and sealed by hand.",
+    description:
+      "Three cast-concrete vessels in staggered heights for dried stems or a single branch. Sealed against water marks, so you can use them wet if you want. Made in our Thane workshop in small batches.",
     stock: "low",
   },
   {
@@ -56,8 +74,10 @@ export const products: Product[] = [
     price: 720,
     category: "Bath & Body",
     blurb: "Vetiver, cedar and a little smoke.",
+    description:
+      "A concentrated room oil for diffusers or a cotton pad tucked behind a shelf. Vetiver and cedar with a faint smoke note — warm without turning sweet. Once opened, this one can't be returned for hygiene reasons.",
     stock: "in",
-    variants: "Vetiver, Neroli",
+    variants: ["Vetiver", "Neroli"],
   },
   {
     id: "steel-bottle",
@@ -65,8 +85,10 @@ export const products: Product[] = [
     price: 1290,
     category: "Tableware",
     blurb: "Holds temperature twelve hours. Matte finish.",
+    description:
+      "Double-wall steel that keeps drinks cold or hot for about twelve hours. Matte powder coat that doesn't fingerprint as badly as gloss. Leak-proof lid; dishwasher-safe base, hand-wash the lid.",
     stock: "in",
-    variants: "Moss, Charcoal",
+    variants: ["Moss", "Charcoal"],
   },
   {
     id: "cotton-pillow",
@@ -74,6 +96,8 @@ export const products: Product[] = [
     price: 1650,
     category: "Textiles",
     blurb: "Softens with every wash, never thins.",
+    description:
+      "A washed-cotton cover over a medium-fill insert — soft from day one, softer after a few washes. Piping stays clean; the fill doesn't migrate into corners. One size, shipped vacuum-packed.",
     stock: "in",
   },
   {
@@ -83,6 +107,8 @@ export const products: Product[] = [
     was: 6900,
     category: "Textiles",
     blurb: "Handwoven in Panipat, gold border.",
+    description:
+      "A reversible flatweave from Panipat with a thin gold border that reads as trim, not flash. Low pile for under tables and entryways. Shake outdoors; spot-clean — no wet washing.",
     stock: "low",
   },
   {
@@ -91,9 +117,82 @@ export const products: Product[] = [
     price: 2400,
     category: "Decor",
     blurb: "Silent sweep movement, solid brass ring.",
+    description:
+      "A silent sweep movement inside a solid brass ring — no tick, no plastic face. The dial is matte off-white so it sits quietly on a pale wall. Currently between batches; restocking in about two weeks.",
     stock: "out",
   },
+  {
+    id: "linen-napkins",
+    name: "Linen Napkins, Set of 6",
+    price: 1180,
+    category: "Tableware",
+    blurb: "Stonewashed linen, unfinished hem.",
+    description:
+      "Six stonewashed linen napkins with a soft unfinished hem. They wrinkle on purpose and look better for it. Machine wash cold; line dry or tumble low. Colour softens slightly over the first few washes.",
+    stock: "in",
+    variants: ["Natural", "Clay", "Ink"],
+  },
+  {
+    id: "ceramic-bowl",
+    name: "Everyday Ceramic Bowl",
+    price: 680,
+    category: "Tableware",
+    blurb: "Wide rim, microwave and dishwasher safe.",
+    description:
+      "A wide-rim bowl for dal, noodles, or overnight oats — the shape that actually fits a spoon without chasing. Glazed inside, lightly speckled outside. Microwave and dishwasher safe.",
+    stock: "in",
+    variants: ["Ivory", "Graphite"],
+  },
+  {
+    id: "throw-blanket",
+    name: "Cotton Throw Blanket",
+    price: 2890,
+    category: "Textiles",
+    blurb: "Light summer weight, fringed ends.",
+    description:
+      "A light cotton throw for sofas and beds that don't need a heavy wool layer. Fringed ends, woven in Erode. Big enough to share; thin enough to fold into a shelf cube.",
+    stock: "in",
+    variants: ["Sand", "Sage", "Terracotta"],
+  },
+  {
+    id: "candle-set",
+    name: "Soy Candle Pair",
+    price: 980,
+    was: 1180,
+    category: "Bath & Body",
+    blurb: "Two 120g soy candles, cotton wick.",
+    description:
+      "Two soy candles in amber glass — one citrus-herb, one wood-smoke. Cotton wicks, roughly 25 hours each. Trim the wick before lighting; never leave burning unattended. Opened candles aren't returnable.",
+    stock: "in",
+    variants: ["Citrus + Wood", "Both Wood"],
+  },
+  {
+    id: "wall-shelf",
+    name: "Oak Floating Shelf",
+    price: 3200,
+    category: "Decor",
+    blurb: "Solid oak, hidden brackets included.",
+    description:
+      "A solid oak shelf with hidden steel brackets — no visible hardware once it's up. Sanded smooth, lightly oiled. Rated for books and ceramics; not for hanging plants that swing.",
+    stock: "in",
+    variants: ["60cm", "90cm"],
+  },
+  {
+    id: "soap-set",
+    name: "Hand Soap Trio",
+    price: 640,
+    category: "Bath & Body",
+    blurb: "Three 100ml bottles, refill-friendly pumps.",
+    description:
+      "Three gentle hand soaps in travel-friendly bottles with pumps you can refill from bulk. Scents stay light — citrus, sandalwood, unscented. Once a bottle is opened, it can't come back.",
+    stock: "low",
+    variants: ["Mixed", "All unscented"],
+  },
 ];
+
+export function getProduct(id: string): Product | undefined {
+  return products.find((product) => product.id === id);
+}
 
 export const shipping = {
   freeOver: 999,
@@ -116,12 +215,11 @@ export const trader = {
 
   nav: {
     links: [
-      { label: "Shop", href: "#shop" },
-      { label: "After You Order", href: "#flow" },
-      { label: "About", href: "#about" },
-      { label: "Help", href: "#help" },
+      { label: "Shop", href: `${BASE}/shop` },
+      { label: "About", href: `${BASE}/about` },
+      { label: "Contact", href: `${BASE}/contact` },
     ],
-    cta: { label: "Shop Now", href: "#shop" },
+    cta: { label: "Shop Now", href: `${BASE}/shop` },
   },
 
   hero: {
@@ -134,7 +232,9 @@ export const trader = {
 
   shop: {
     eyebrow: "Shop",
-    heading: "Everything in stock, photographed as it ships.",
+    heading: "Browse the full collection.",
+    homeHeading: "A few things we keep in stock.",
+    homeSub: "Real photos, clear prices — open any card for sizes and details.",
     categories: [
       "All",
       "Tableware",
@@ -203,12 +303,14 @@ export const trader = {
     paragraphs: [
       "Nilaya began in 2021 because we couldn't find plain, well-made tableware at a price that made sense - everything was either disposable or absurd.",
       "We work directly with four workshops: stoneware in Jaipur, handloom cotton in Erode, cast concrete here in Thane, and flatweave rugs in Panipat. No importers in between, which is the only reason the prices look like this.",
+      "The spare room is now a packing bench. Same kitchen table for photos. If something arrives wrong, you talk to the person who packed it.",
     ],
     stats: [
       { value: "2021", label: "Founded" },
       { value: "4", label: "Workshops" },
       { value: "11k+", label: "Orders shipped" },
     ],
+    teaserCta: "Read our story",
   },
 
   help: {
@@ -238,13 +340,21 @@ export const trader = {
         a: shipping.payments,
       },
     ],
+    form: {
+      submitLabel: "Send message",
+      successTitle: "Message received.",
+      successBody:
+        "We'll reply by email within a working day — or sooner on WhatsApp if you prefer.",
+      note: "Demo form — nothing is emailed; use WhatsApp for a real reply on a live call.",
+    },
   },
 
   cart: {
     title: "Your cart",
     empty: "Nothing in here yet.",
     emptyHint: "Add something from the shop and it'll show up here.",
-    checkout: "Checkout",
+    checkout: "Proceed to checkout",
+    continueShopping: "Continue shopping",
     subtotal: "Subtotal",
     shippingLabel: "Shipping",
     freeShipping: "Free",
@@ -283,7 +393,7 @@ export const traderChatFacts = [
             : product.stock === "low"
               ? "low stock, only a few left"
               : "currently out of stock, restocking in about two weeks"
-        }${product.variants ? `, options: ${product.variants}` : ""}`,
+        }${product.variants ? `, options: ${product.variants.join(", ")}` : ""}`,
     )
     .join("; ")}.`,
   `Shipping: free over Rs ${shipping.freeOver}, otherwise a flat Rs ${shipping.flatRate} anywhere in India. ${shipping.dispatch} ${shipping.delivery}`,

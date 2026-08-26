@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   createContext,
   useContext,
@@ -10,89 +11,118 @@ import {
   useState,
 } from "react";
 import { cn } from "@/lib/cn";
+import { InView } from "@/components/samples/InView";
 import { SampleButton } from "@/components/samples/SampleButton";
 import { SampleBadge } from "@/components/samples/SampleEyebrow";
-import { products, shipping, trader, type Product } from "@/lib/samples/trader";
+import { Reveal } from "@/components/ui/Reveal";
+import {
+  getProduct,
+  products,
+  shipping,
+  trader,
+  type Product,
+} from "@/lib/samples/trader";
 import { traderMedia } from "@/lib/samples/media";
 
 /**
- * Cart, shop grid and cart drawer for the trader sample.
+ * Cart, shop grid and cart page for the trader sample.
  *
  * This is the one sample where the interaction *is* the pitch: the brief asks
  * for it to feel closest to a real, functioning store, because a working cart is
- * the thing the prospect is being sold. So the filtering, the cart maths, the
- * free-shipping threshold and the checkout state are all real - only the payment
- * and the order record are faked.
+ * the thing the prospect is being sold. Filtering, cart maths, the free-shipping
+ * threshold and checkout state are real — only payment and the order record are faked.
  *
  * State lives in a context because the cart count belongs in the nav while the
- * add buttons live further down the page.
+ * add buttons live on shop, PDP and home.
  */
 
-type CartLine = { id: string; qty: number };
+type CartLine = { id: string; qty: number; variant?: string };
 
 type Store = {
   lines: CartLine[];
   count: number;
-  add: (id: string) => void;
-  setQty: (id: string, qty: number) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  add: (id: string, variant?: string) => void;
+  setQty: (id: string, qty: number, variant?: string) => void;
+  clear: () => void;
 };
 
 const StoreContext = createContext<Store | null>(null);
 
-function useStore() {
+export function useTraderStore() {
   const store = useContext(StoreContext);
   if (!store) throw new Error("Trader store components need <StoreProvider>.");
   return store;
 }
 
-const byId = new Map(products.map((product) => [product.id, product]));
+/** @deprecated Prefer useTraderStore */
+export const useStore = useTraderStore;
+
+const BASE = "/samples/trader";
 const rupees = (value: number) => `₹${value.toLocaleString("en-IN")}`;
+
+export function productPhoto(product: Product, offset = 0) {
+  const index = products.findIndex((item) => item.id === product.id);
+  const photos = traderMedia.products;
+  const i = (Math.max(index, 0) + offset) % photos.length;
+  return photos[i]!;
+}
+
+function lineKey(line: CartLine) {
+  return line.variant ? `${line.id}::${line.variant}` : line.id;
+}
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
-  const [open, setOpen] = useState(false);
 
   const count = lines.reduce((sum, line) => sum + line.qty, 0);
 
-  function add(id: string) {
+  function add(id: string, variant?: string) {
     setLines((current) => {
-      const existing = current.find((line) => line.id === id);
+      const existing = current.find(
+        (line) => line.id === id && line.variant === variant,
+      );
       if (existing) {
         return current.map((line) =>
-          line.id === id ? { ...line, qty: line.qty + 1 } : line,
+          line.id === id && line.variant === variant
+            ? { ...line, qty: line.qty + 1 }
+            : line,
         );
       }
-      return [...current, { id, qty: 1 }];
+      return [...current, { id, qty: 1, variant }];
     });
   }
 
-  function setQty(id: string, qty: number) {
+  function setQty(id: string, qty: number, variant?: string) {
     setLines((current) =>
       qty <= 0
-        ? current.filter((line) => line.id !== id)
-        : current.map((line) => (line.id === id ? { ...line, qty } : line)),
+        ? current.filter(
+            (line) => !(line.id === id && line.variant === variant),
+          )
+        : current.map((line) =>
+            line.id === id && line.variant === variant
+              ? { ...line, qty }
+              : line,
+          ),
     );
   }
 
+  function clear() {
+    setLines([]);
+  }
+
   return (
-    <StoreContext.Provider
-      value={{ lines, count, add, setQty, open, setOpen }}
-    >
+    <StoreContext.Provider value={{ lines, count, add, setQty, clear }}>
       {children}
-      <CartDrawer />
     </StoreContext.Provider>
   );
 }
 
-/** Cart control for the nav. Passed to SampleNav's `extra` slot. */
+/** Cart control for the nav — links to the full cart page. */
 export function CartButton() {
-  const { count, setOpen } = useStore();
+  const { count } = useTraderStore();
   const [bump, setBump] = useState(false);
   const previous = useRef(count);
 
-  // Short bump on increment - the feedback pattern every shopper already knows.
   useEffect(() => {
     const grew = count > previous.current;
     previous.current = count;
@@ -104,9 +134,8 @@ export function CartButton() {
   }, [count]);
 
   return (
-    <button
-      type="button"
-      onClick={() => setOpen(true)}
+    <Link
+      href={`${BASE}/cart`}
       className="relative flex size-9 items-center justify-center text-[var(--s-ink)] transition-opacity hover:opacity-70"
       aria-label={
         count === 0 ? "Cart, empty" : `Cart, ${count} item${count > 1 ? "s" : ""}`
@@ -136,12 +165,11 @@ export function CartButton() {
           {count}
         </span>
       )}
-    </button>
+    </Link>
   );
 }
 
 export function ShopGrid() {
-  const { add } = useStore();
   const [category, setCategory] = useState<string>("All");
   const [sort, setSort] = useState<string>("Newest");
 
@@ -151,7 +179,6 @@ export function ShopGrid() {
         ? products
         : products.filter((product) => product.category === category);
 
-    // "Newest" is the catalogue's own order, so it needs no comparator.
     if (sort === "Price: low to high") {
       return [...filtered].sort((a, b) => a.price - b.price);
     }
@@ -164,7 +191,11 @@ export function ShopGrid() {
   return (
     <>
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-y border-[var(--s-hair)] py-3.5">
-        <div className="flex flex-wrap gap-1" role="group" aria-label="Filter by category">
+        <div
+          className="flex flex-wrap gap-1"
+          role="group"
+          aria-label="Filter by category"
+        >
           {trader.shop.categories.map((option) => (
             <button
               key={option}
@@ -201,7 +232,7 @@ export function ShopGrid() {
 
       <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
         {visible.map((product) => (
-          <ProductCard key={product.id} product={product} onAdd={add} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
@@ -212,64 +243,84 @@ export function ShopGrid() {
   );
 }
 
-function ProductCard({
+/** First 4–6 products for the home teaser. */
+export function FeaturedGrid({ limit = 4 }: { limit?: number }) {
+  const featured = products.slice(0, limit);
+
+  return (
+    <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
+      {featured.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+
+export function ProductCard({
   product,
-  onAdd,
+  variant = "grid",
 }: {
   product: Product;
-  onAdd: (id: string) => void;
+  variant?: "grid" | "teaser";
 }) {
+  const { add } = useTraderStore();
   const [added, setAdded] = useState(false);
-  const index = products.indexOf(product);
-  const photo = traderMedia.products[index]!;
+  const photo = productPhoto(product);
   const soldOut = product.stock === "out";
+  const href = `${BASE}/shop/${product.id}`;
 
-  function add() {
-    onAdd(product.id);
+  function onAdd(event: React.MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    add(product.id);
     setAdded(true);
     setTimeout(() => setAdded(false), 1400);
   }
 
   return (
     <article className="s-zoom group flex h-full flex-col">
-      <div className="relative aspect-square overflow-hidden bg-[var(--s-surface)]">
-        <Image
-          src={photo.src}
-          alt={photo.alt}
-          fill
-          sizes="(min-width: 1024px) 23vw, 47vw"
-          className={cn("object-cover", soldOut && "opacity-55 saturate-50")}
-        />
-        {/* Reserved for genuinely reduced items, per the brief - a badge that
-            pulses on everything is decoration, not urgency. */}
-        {product.was && !soldOut && (
-          <SampleBadge className="s-badge-pulse absolute left-3 top-3">
-            Sale
-          </SampleBadge>
-        )}
-        {soldOut && (
-          <span className="absolute left-3 top-3 bg-[var(--s-ink)] px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-[var(--s-bg)]">
-            Sold out
-          </span>
-        )}
-      </div>
+      <Link href={href} className="block">
+        <div className="relative aspect-square overflow-hidden bg-[var(--s-surface)]">
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            fill
+            sizes={
+              variant === "teaser"
+                ? "(min-width: 1024px) 23vw, 47vw"
+                : "(min-width: 1024px) 23vw, 47vw"
+            }
+            className={cn("object-cover", soldOut && "opacity-55 saturate-50")}
+          />
+          {product.was && !soldOut && (
+            <SampleBadge className="s-badge-pulse absolute left-3 top-3">
+              Sale
+            </SampleBadge>
+          )}
+          {soldOut && (
+            <span className="absolute left-3 top-3 bg-[var(--s-ink)] px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-[var(--s-bg)]">
+              Sold out
+            </span>
+          )}
+        </div>
+      </Link>
 
       <div className="mt-4 flex flex-1 flex-col">
-        <h3 className="s-display text-[0.9375rem] font-semibold leading-snug">
-          {product.name}
-        </h3>
+        <Link href={href} className="block">
+          <h3 className="s-display text-[0.9375rem] font-semibold leading-snug transition-opacity group-hover:opacity-70">
+            {product.name}
+          </h3>
+        </Link>
         <p className="mt-1.5 text-[0.8125rem] leading-[1.6] text-[var(--s-grey)]">
           {product.blurb}
         </p>
         {product.variants && (
           <p className="mt-1.5 text-[0.75rem] text-[var(--s-grey)]">
-            {product.variants}
+            {product.variants.join(", ")}
           </p>
         )}
 
         <div className="mt-auto pt-4">
-          {/* Price block sits above the button on every card, so the column of
-              numbers stays scannable regardless of how long a name runs. */}
           <p className="flex items-baseline gap-2">
             <span className="s-display text-[1.0625rem] font-semibold tabular-nums">
               {rupees(product.price)}
@@ -302,7 +353,7 @@ function ProductCard({
         ) : (
           <SampleButton
             type="button"
-            onClick={add}
+            onClick={onAdd}
             variant={added ? "accent" : "primary"}
             size="sm"
             className="w-full"
@@ -315,227 +366,481 @@ function ProductCard({
   );
 }
 
-function CartDrawer() {
-  const { lines, open, setOpen, setQty } = useStore();
-  const [placed, setPlaced] = useState(false);
-  const closeRef = useRef<HTMLButtonElement>(null);
+export function ProductDetail({ product }: { product: Product }) {
+  const { add } = useTraderStore();
+  const [added, setAdded] = useState(false);
+  const [selected, setSelected] = useState(product.variants?.[0] ?? "");
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const soldOut = product.stock === "out";
 
-  useEffect(() => {
-    if (!open) return;
-    closeRef.current?.focus();
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, setOpen]);
+  const gallery = [
+    productPhoto(product, 0),
+    productPhoto(product, 1),
+    productPhoto(product, 2),
+  ];
 
-  const subtotal = lines.reduce(
-    (sum, line) => sum + (byId.get(line.id)?.price ?? 0) * line.qty,
-    0,
+  const related = products
+    .filter(
+      (item) =>
+        item.id !== product.id &&
+        (item.category === product.category || item.stock !== "out"),
+    )
+    .slice(0, 4);
+
+  function onAdd() {
+    if (soldOut) return;
+    add(product.id, selected || undefined);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1400);
+  }
+
+  return (
+    <div>
+      <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <div className="relative aspect-square overflow-hidden bg-[var(--s-surface)]">
+            <Image
+              src={gallery[galleryIndex]!.src}
+              alt={gallery[galleryIndex]!.alt}
+              fill
+              priority
+              sizes="(min-width: 1024px) 48vw, 100vw"
+              className={cn("object-cover", soldOut && "opacity-55 saturate-50")}
+            />
+            {product.was && !soldOut && (
+              <SampleBadge className="s-badge-pulse absolute left-4 top-4">
+                Sale
+              </SampleBadge>
+            )}
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {gallery.map((shot, index) => (
+              <button
+                key={`${shot.src}-${index}`}
+                type="button"
+                onClick={() => setGalleryIndex(index)}
+                aria-label={`View photo ${index + 1}`}
+                aria-pressed={galleryIndex === index}
+                className={cn(
+                  "relative aspect-square overflow-hidden bg-[var(--s-surface)]",
+                  galleryIndex === index
+                    ? "ring-2 ring-[var(--s-ink)] ring-offset-2"
+                    : "opacity-80 hover:opacity-100",
+                )}
+              >
+                <Image
+                  src={shot.src}
+                  alt=""
+                  fill
+                  sizes="120px"
+                  className="object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-[0.75rem] uppercase tracking-[0.14em] text-[var(--s-grey)]">
+            {product.category}
+          </p>
+          <h1 className="s-display mt-2 text-[1.75rem] font-semibold leading-[1.15] tracking-[-0.02em] sm:text-[2.125rem]">
+            {product.name}
+          </h1>
+
+          <p className="mt-4 flex items-baseline gap-2">
+            <span className="s-display text-[1.375rem] font-semibold tabular-nums">
+              {rupees(product.price)}
+            </span>
+            {product.was && (
+              <span className="text-[0.9375rem] text-[var(--s-grey)] line-through tabular-nums">
+                {rupees(product.was)}
+              </span>
+            )}
+          </p>
+
+          {product.stock === "low" && (
+            <p className="mt-2 text-[0.8125rem] font-medium text-[var(--s-accent)]">
+              Only a few left
+            </p>
+          )}
+          {soldOut && (
+            <p className="mt-2 text-[0.8125rem] font-medium text-[var(--s-grey)]">
+              Sold out — restocking in about two weeks
+            </p>
+          )}
+
+          <p className="mt-6 max-w-md leading-[1.75] text-[var(--s-grey)]">
+            {product.description}
+          </p>
+
+          {product.variants && product.variants.length > 0 && !soldOut && (
+            <div className="mt-8">
+              <label
+                htmlFor="product-variant"
+                className="text-[0.8125rem] font-medium"
+              >
+                Options
+              </label>
+              <select
+                id="product-variant"
+                value={selected}
+                onChange={(event) => setSelected(event.target.value)}
+                className="mt-2 w-full max-w-xs border border-[var(--s-hair)] bg-[var(--s-bg)] px-3 py-2.5 text-[0.875rem] outline-none focus:border-[var(--s-primary)]"
+              >
+                {product.variants.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            {soldOut ? (
+              <SampleButton data-open-chat variant="outline">
+                Notify me when back
+              </SampleButton>
+            ) : (
+              <SampleButton
+                type="button"
+                onClick={onAdd}
+                variant={added ? "accent" : "primary"}
+              >
+                {added ? "Added ✓" : "Add to cart"}
+              </SampleButton>
+            )}
+            <SampleButton data-open-chat variant="outline">
+              Ask about this product
+            </SampleButton>
+          </div>
+
+          <ul className="mt-8 space-y-2 text-[0.8125rem] text-[var(--s-grey)]">
+            <li>{shipping.dispatch}</li>
+            <li>
+              Free shipping over {rupees(shipping.freeOver)}; otherwise{" "}
+              {rupees(shipping.flatRate)}.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {related.length > 0 && (
+        <section className="mt-20 border-t border-[var(--s-hair)] pt-14">
+          <h2 className="s-display text-[1.25rem] font-semibold tracking-[-0.02em]">
+            You may also like
+          </h2>
+          <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
+            {related.map((item) => (
+              <ProductCard key={item.id} product={item} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
   );
+}
+
+export function CartPage() {
+  const { lines, setQty, clear } = useTraderStore();
+  const [placed, setPlaced] = useState(false);
+  const [receipt, setReceipt] = useState<{ subtotal: number; freight: number } | null>(
+    null,
+  );
+
+  const subtotal = lines.reduce((sum, line) => {
+    const product = getProduct(line.id);
+    return sum + (product?.price ?? 0) * line.qty;
+  }, 0);
   const freight =
     subtotal === 0 || subtotal >= shipping.freeOver ? 0 : shipping.flatRate;
   const shortfall = shipping.freeOver - subtotal;
 
-  return (
-    <>
-      <div
-        onClick={() => setOpen(false)}
-        aria-hidden="true"
-        className={cn(
-          "fixed inset-0 z-[70] bg-[#1a1a1a]/40 transition-opacity duration-300",
-          open ? "opacity-100" : "pointer-events-none opacity-0",
-        )}
-      />
+  function checkout() {
+    setReceipt({ subtotal, freight });
+    clear();
+    setPlaced(true);
+  }
 
-      <aside
-        role="dialog"
-        aria-label={trader.cart.title}
-        aria-hidden={!open}
-        className={cn(
-          "fixed right-0 top-0 z-[80] flex h-dvh w-full max-w-[24rem] flex-col border-l border-[var(--s-hair)] bg-[var(--s-bg)] transition-transform duration-300",
-          open ? "translate-x-0" : "translate-x-full",
-        )}
-      >
-        <header className="flex items-center justify-between border-b border-[var(--s-hair)] px-5 py-4">
-          <p className="s-display text-[0.9375rem] font-semibold">
-            {trader.cart.title}
-          </p>
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={() => setOpen(false)}
-            aria-label="Close cart"
-            tabIndex={open ? 0 : -1}
-            className="-mr-1 flex size-8 items-center justify-center text-[var(--s-grey)] transition-opacity hover:opacity-60"
+  if (placed && receipt) {
+    return (
+      <div className="mx-auto max-w-md py-10 text-center">
+        <div className="mx-auto flex size-14 items-center justify-center bg-[var(--s-primary)]/12">
+          <svg
+            viewBox="0 0 16 16"
+            className="size-6 text-[var(--s-primary)]"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
           >
-            <svg
-              viewBox="0 0 16 16"
-              className="size-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              aria-hidden="true"
-            >
-              <path d="M4 4l8 8M12 4l-8 8" />
-            </svg>
-          </button>
-        </header>
+            <path d="M3 8.5 6.2 11.7 13 5" />
+          </svg>
+        </div>
+        <h1 className="s-display mt-6 text-[1.75rem] font-semibold">
+          {trader.cart.successTitle}
+        </h1>
+        <p className="mt-3 leading-[1.7] text-[var(--s-grey)]">
+          {trader.cart.successBody}
+        </p>
+        <p className="mt-6 text-[0.8125rem] text-[var(--s-grey)]">
+          {trader.cart.note}
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <SampleButton href={`${BASE}/shop`}>
+            {trader.cart.continueShopping}
+          </SampleButton>
+          <SampleButton
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setPlaced(false);
+              setReceipt(null);
+            }}
+          >
+            Back to cart
+          </SampleButton>
+        </div>
+      </div>
+    );
+  }
 
-        {placed ? (
-          <div className="flex flex-1 flex-col justify-center px-6 text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[var(--s-primary)]/12">
-              <svg
-                viewBox="0 0 16 16"
-                className="size-5 text-[var(--s-primary)]"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 8.5 6.2 11.7 13 5" />
-              </svg>
-            </div>
-            <p className="s-display mt-5 text-lg font-semibold">
-              {trader.cart.successTitle}
-            </p>
-            <p className="mt-2.5 text-[0.875rem] leading-[1.7] text-[var(--s-grey)]">
-              {trader.cart.successBody}
-            </p>
-            <p className="mt-6 text-[0.75rem] text-[var(--s-grey)]">
-              {trader.cart.note}
-            </p>
-            <button
-              type="button"
-              onClick={() => setPlaced(false)}
-              className="mx-auto mt-6 text-sm text-[var(--s-primary)] underline underline-offset-4"
-            >
-              Back to the shop
-            </button>
-          </div>
-        ) : lines.length === 0 ? (
-          <div className="flex flex-1 flex-col justify-center px-6 text-center">
-            <p className="s-display text-[0.9375rem] font-semibold">
-              {trader.cart.empty}
-            </p>
-            <p className="mt-2 text-[0.875rem] text-[var(--s-grey)]">
-              {trader.cart.emptyHint}
-            </p>
-          </div>
-        ) : (
-          <>
-            <ul className="flex-1 divide-y divide-[var(--s-hair)] overflow-y-auto px-5">
-              {lines.map((line) => {
-                const product = byId.get(line.id);
-                if (!product) return null;
-                const photo = traderMedia.products[products.indexOf(product)]!;
+  if (lines.length === 0) {
+    return (
+      <div className="mx-auto max-w-md py-10 text-center">
+        <h1 className="s-display text-[1.75rem] font-semibold">
+          {trader.cart.title}
+        </h1>
+        <p className="mt-4 text-[0.9375rem] font-medium">{trader.cart.empty}</p>
+        <p className="mt-2 text-[0.875rem] text-[var(--s-grey)]">
+          {trader.cart.emptyHint}
+        </p>
+        <SampleButton href={`${BASE}/shop`} className="mt-8">
+          {trader.cart.continueShopping}
+        </SampleButton>
+      </div>
+    );
+  }
 
-                return (
-                  <li key={line.id} className="flex gap-3.5 py-4">
-                    <div className="relative size-16 shrink-0 overflow-hidden bg-[var(--s-surface)]">
-                      <Image
-                        src={photo.src}
-                        alt=""
-                        fill
-                        sizes="64px"
-                        className="object-cover"
-                      />
-                    </div>
+  return (
+    <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-16">
+      <div>
+        <h1 className="s-display text-[1.75rem] font-semibold tracking-[-0.02em]">
+          {trader.cart.title}
+        </h1>
+        <ul className="mt-8 divide-y divide-[var(--s-hair)] border-y border-[var(--s-hair)]">
+          {lines.map((line) => {
+            const product = getProduct(line.id);
+            if (!product) return null;
+            const photo = productPhoto(product);
 
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[0.8125rem] font-medium leading-snug">
-                        {product.name}
-                      </p>
-                      <p className="mt-1 text-[0.8125rem] tabular-nums text-[var(--s-grey)]">
-                        {rupees(product.price)}
-                      </p>
+            return (
+              <li key={lineKey(line)} className="flex gap-4 py-5 sm:gap-5">
+                <Link
+                  href={`${BASE}/shop/${product.id}`}
+                  className="relative size-20 shrink-0 overflow-hidden bg-[var(--s-surface)] sm:size-24"
+                >
+                  <Image
+                    src={photo.src}
+                    alt=""
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                  />
+                </Link>
 
-                      <div className="mt-2.5 flex items-center gap-3">
-                        <div className="flex items-center border border-[var(--s-hair)]">
-                          <button
-                            type="button"
-                            onClick={() => setQty(line.id, line.qty - 1)}
-                            aria-label={`Decrease ${product.name}`}
-                            className="px-2.5 py-1 text-sm text-[var(--s-grey)] hover:text-[var(--s-ink)]"
-                          >
-                            −
-                          </button>
-                          <span className="min-w-6 text-center text-[0.8125rem] tabular-nums">
-                            {line.qty}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setQty(line.id, line.qty + 1)}
-                            aria-label={`Increase ${product.name}`}
-                            className="px-2.5 py-1 text-sm text-[var(--s-grey)] hover:text-[var(--s-ink)]"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setQty(line.id, 0)}
-                          className="text-[0.75rem] text-[var(--s-grey)] underline underline-offset-4 hover:text-[var(--s-ink)]"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-
-                    <p className="s-display shrink-0 text-[0.875rem] font-semibold tabular-nums">
-                      {rupees(product.price * line.qty)}
+                <div className="min-w-0 flex-1">
+                  <Link
+                    href={`${BASE}/shop/${product.id}`}
+                    className="text-[0.9375rem] font-medium leading-snug hover:opacity-70"
+                  >
+                    {product.name}
+                  </Link>
+                  {line.variant && (
+                    <p className="mt-1 text-[0.8125rem] text-[var(--s-grey)]">
+                      {line.variant}
                     </p>
-                  </li>
-                );
-              })}
-            </ul>
+                  )}
+                  <p className="mt-1 text-[0.8125rem] tabular-nums text-[var(--s-grey)]">
+                    {rupees(product.price)}
+                  </p>
 
-            <div className="border-t border-[var(--s-hair)] px-5 py-4">
-              {freight > 0 && (
-                <p className="mb-3 bg-[var(--s-surface)] px-3 py-2 text-[0.75rem] text-[var(--s-grey)]">
-                  Add {rupees(shortfall)} more for free shipping.
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex items-center border border-[var(--s-hair)]">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setQty(line.id, line.qty - 1, line.variant)
+                        }
+                        aria-label={`Decrease ${product.name}`}
+                        className="px-2.5 py-1 text-sm text-[var(--s-grey)] hover:text-[var(--s-ink)]"
+                      >
+                        −
+                      </button>
+                      <span className="min-w-6 text-center text-[0.8125rem] tabular-nums">
+                        {line.qty}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setQty(line.id, line.qty + 1, line.variant)
+                        }
+                        aria-label={`Increase ${product.name}`}
+                        className="px-2.5 py-1 text-sm text-[var(--s-grey)] hover:text-[var(--s-ink)]"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setQty(line.id, 0, line.variant)}
+                      className="text-[0.75rem] text-[var(--s-grey)] underline underline-offset-4 hover:text-[var(--s-ink)]"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+
+                <p className="s-display shrink-0 text-[0.9375rem] font-semibold tabular-nums">
+                  {rupees(product.price * line.qty)}
                 </p>
-              )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
 
-              <dl className="space-y-1.5 text-[0.8125rem]">
-                <div className="flex justify-between">
-                  <dt className="text-[var(--s-grey)]">
-                    {trader.cart.subtotal}
-                  </dt>
-                  <dd className="tabular-nums">{rupees(subtotal)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-[var(--s-grey)]">
-                    {trader.cart.shippingLabel}
-                  </dt>
-                  <dd className="tabular-nums">
-                    {freight === 0 ? trader.cart.freeShipping : rupees(freight)}
-                  </dd>
-                </div>
-                <div className="flex justify-between border-t border-[var(--s-hair)] pt-2.5 text-[0.9375rem] font-semibold">
-                  <dt>{trader.cart.total}</dt>
-                  <dd className="tabular-nums">{rupees(subtotal + freight)}</dd>
-                </div>
-              </dl>
+      <aside className="h-fit border border-[var(--s-hair)] bg-[var(--s-surface)] p-6 lg:sticky lg:top-24">
+        <h2 className="s-display text-[1rem] font-semibold">Order summary</h2>
 
-              <SampleButton
-                type="button"
-                onClick={() => setPlaced(true)}
-                className="mt-4 w-full"
-              >
-                {trader.cart.checkout} · {rupees(subtotal + freight)}
-              </SampleButton>
-              <p className="mt-2.5 text-center text-[0.6875rem] text-[var(--s-grey)]">
-                {trader.cart.note}
-              </p>
-            </div>
-          </>
+        {freight > 0 && (
+          <p className="mt-4 bg-[var(--s-bg)] px-3 py-2 text-[0.75rem] text-[var(--s-grey)]">
+            Add {rupees(shortfall)} more for free shipping.
+          </p>
         )}
+
+        <dl className="mt-5 space-y-2 text-[0.875rem]">
+          <div className="flex justify-between">
+            <dt className="text-[var(--s-grey)]">{trader.cart.subtotal}</dt>
+            <dd className="tabular-nums">{rupees(subtotal)}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-[var(--s-grey)]">{trader.cart.shippingLabel}</dt>
+            <dd className="tabular-nums">
+              {freight === 0 ? trader.cart.freeShipping : rupees(freight)}
+            </dd>
+          </div>
+          <div className="flex justify-between border-t border-[var(--s-hair)] pt-3 text-[1rem] font-semibold">
+            <dt>{trader.cart.total}</dt>
+            <dd className="tabular-nums">{rupees(subtotal + freight)}</dd>
+          </div>
+        </dl>
+
+        <SampleButton
+          type="button"
+          onClick={checkout}
+          className="mt-6 w-full"
+        >
+          {trader.cart.checkout} · {rupees(subtotal + freight)}
+        </SampleButton>
+        <p className="mt-3 text-center text-[0.6875rem] text-[var(--s-grey)]">
+          {trader.cart.note}
+        </p>
+        <SampleButton
+          href={`${BASE}/shop`}
+          variant="quiet"
+          size="sm"
+          className="mt-4 w-full"
+        >
+          {trader.cart.continueShopping}
+        </SampleButton>
       </aside>
-    </>
+    </div>
+  );
+}
+
+/** Horizontal post-order automation steps — lights up on scroll. */
+export function AutomationFlowDiagram() {
+  return (
+    <ol className="mt-12 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-5">
+      {trader.flow.steps.map((step, index) => (
+        <li key={step.title} className="relative">
+          <div className="flex items-center gap-2">
+            <InView
+              as="span"
+              delay={index * 140}
+              className="s-pop flex size-7 shrink-0 items-center justify-center bg-[var(--s-primary)] text-[0.6875rem] font-semibold text-[var(--s-on-primary)]"
+            >
+              {index + 1}
+            </InView>
+            {index < trader.flow.steps.length - 1 && (
+              <InView
+                as="span"
+                delay={index * 140 + 120}
+                className="s-connector hidden h-px flex-1 bg-[var(--s-hair)] lg:block"
+              />
+            )}
+          </div>
+
+          <Reveal delay={index * 140 + 60}>
+            <p className="s-mono mt-4 text-[0.6875rem] uppercase tracking-[0.12em] text-[var(--s-accent)]">
+              {step.timing}
+            </p>
+            <h3 className="s-display mt-1.5 text-[0.9375rem] font-semibold">
+              {step.title}
+            </h3>
+            <p className="mt-2 text-[0.875rem] leading-[1.65] text-[var(--s-grey)]">
+              {step.body}
+            </p>
+          </Reveal>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+export function FaqAccordion({
+  faqs,
+}: {
+  faqs: { q: string; a: string }[];
+}) {
+  const [open, setOpen] = useState<number | null>(0);
+
+  return (
+    <dl className="divide-y divide-[var(--s-hair)] border-y border-[var(--s-hair)]">
+      {faqs.map((faq, index) => {
+        const isOpen = open === index;
+        return (
+          <div key={faq.q}>
+            <dt>
+              <button
+                type="button"
+                onClick={() => setOpen(isOpen ? null : index)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between gap-4 py-5 text-left"
+              >
+                <span className="s-display text-[0.9375rem] font-semibold">
+                  {faq.q}
+                </span>
+                <span
+                  className="text-[1.25rem] leading-none text-[var(--s-grey)]"
+                  aria-hidden="true"
+                >
+                  {isOpen ? "−" : "+"}
+                </span>
+              </button>
+            </dt>
+            {isOpen && (
+              <dd className="pb-5 max-w-xl text-[0.9375rem] leading-[1.7] text-[var(--s-grey)]">
+                {faq.a}
+              </dd>
+            )}
+          </div>
+        );
+      })}
+    </dl>
   );
 }

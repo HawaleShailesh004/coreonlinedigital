@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
-type Tag = "div" | "span" | "li" | "p" | "section" | "article";
+type Tag = "div" | "span" | "li" | "p" | "section" | "article" | "tr";
 
 /**
  * Flips `data-visible` once its subject scrolls into view, and exposes the

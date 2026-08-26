@@ -30,6 +30,16 @@ export type LeadField =
       rows?: number;
       required?: boolean;
       full?: boolean;
+    }
+  | {
+      /** Demo-only attachment - filename is echoed in success, nothing uploads. */
+      kind: "file";
+      name: string;
+      label: string;
+      accept?: string;
+      required?: boolean;
+      full?: boolean;
+      hint?: string;
     };
 
 const controlClasses =
@@ -50,6 +60,7 @@ export function SampleLeadForm({
   note,
   columns = 2,
   variant = "primary",
+  defaultValues,
 }: {
   fields: LeadField[];
   submitLabel: string;
@@ -58,6 +69,8 @@ export function SampleLeadForm({
   note?: string;
   columns?: 1 | 2;
   variant?: "primary" | "accent";
+  /** Prefill from deep links (e.g. /book?service=…). */
+  defaultValues?: Record<string, string>;
 }) {
   const formId = useId();
   const [submitted, setSubmitted] = useState<Record<string, string> | null>(
@@ -73,6 +86,9 @@ export function SampleLeadForm({
       const value = data.get(field.name);
       if (typeof value === "string" && value.trim()) {
         entries[field.label] = value.trim();
+      } else if (value instanceof File && value.name) {
+        // Demo only: echo the filename so the success state feels real.
+        entries[field.label] = value.name;
       }
     }
 
@@ -149,7 +165,7 @@ export function SampleLeadForm({
                 id={id}
                 name={field.name}
                 required={field.required}
-                defaultValue=""
+                defaultValue={defaultValues?.[field.name] ?? ""}
                 className={controlClasses}
               >
                 <option value="" disabled>
@@ -168,8 +184,28 @@ export function SampleLeadForm({
                 rows={field.rows ?? 4}
                 required={field.required}
                 placeholder={field.placeholder}
+                defaultValue={defaultValues?.[field.name]}
                 className={cn(controlClasses, "resize-y")}
               />
+            ) : field.kind === "file" ? (
+              <div className="flex flex-col gap-1.5">
+                <input
+                  id={id}
+                  type="file"
+                  name={field.name}
+                  required={field.required}
+                  accept={field.accept ?? "image/*,.pdf"}
+                  className={cn(
+                    controlClasses,
+                    "cursor-pointer file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-[var(--s-primary)]",
+                  )}
+                />
+                {field.hint && (
+                  <p className="text-xs leading-relaxed text-[var(--s-grey)]">
+                    {field.hint}
+                  </p>
+                )}
+              </div>
             ) : (
               <input
                 id={id}
@@ -177,6 +213,7 @@ export function SampleLeadForm({
                 name={field.name}
                 required={field.required}
                 placeholder={field.placeholder}
+                defaultValue={defaultValues?.[field.name]}
                 className={controlClasses}
               />
             )}

@@ -14,22 +14,23 @@ export function CountUp({
   value,
   duration = 900,
   prefix = "",
+  suffix = "",
   className,
 }: {
   value: number;
   duration?: number;
   prefix?: string;
+  /** Appended after the number (e.g. "%", "+"). */
+  suffix?: string;
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const reducedMotion = useReducedMotion();
   const [shown, setShown] = useState(value);
+  const display = reducedMotion ? value : shown;
 
   useEffect(() => {
-    if (reducedMotion) {
-      setShown(value);
-      return;
-    }
+    if (reducedMotion) return;
 
     const node = ref.current;
     if (!node) return;
@@ -67,7 +68,8 @@ export function CountUp({
       {/* Tabular figures keep the column from jittering while it counts. */}
       <span className="tabular-nums">
         {prefix}
-        {shown.toLocaleString("en-IN")}
+        {display.toLocaleString("en-IN")}
+        {suffix}
       </span>
     </span>
   );

@@ -305,3 +305,69 @@ export const traderMedia = {
     img("photo-1533090161767-e6ffed986c88", "Wall clock and table lamp on a pale wall", "square"),
   ],
 };
+
+/* --- 10. Coaching Classes ------------------------------------------------ */
+export const coachingMedia = {
+  hero: img(
+    "photo-1427504494785-3a9ca7044f45",
+    "Students facing a lecture board in a packed classroom",
+    "wide",
+  ),
+  classroom: img(
+    "photo-1524178232363-1fb2b075b655",
+    "Lecture hall with students taking notes",
+    "card",
+  ),
+  study: img(
+    "photo-1434030216411-0b793f4b4173",
+    "Student writing equations in a notebook",
+    "card",
+  ),
+  group: img(
+    "photo-1522202176988-66273c2fd55f",
+    "Students collaborating over laptops and notes",
+    "card",
+  ),
+  books: img(
+    "photo-1497633762265-9d179a990aa6",
+    "Stack of open textbooks on a desk",
+    "card",
+  ),
+  lecture: img(
+    "photo-1606761568499-6d2451b23c66",
+    "Instructor teaching at the front of a classroom",
+    "wide",
+  ),
+  faculty: [
+    img(
+      "photo-1560250097-0b93528c311a",
+      "Physics faculty member in a dark jacket",
+      "square",
+    ),
+    img(
+      "photo-1573496359142-b8d87734a5a2",
+      "Chemistry faculty member against a neutral backdrop",
+      "square",
+    ),
+    img(
+      "photo-1507003211169-0a1dd7228f2d",
+      "Mathematics faculty member, portrait",
+      "square",
+    ),
+    img(
+      "photo-1573497019940-1c28c88b4f3e",
+      "Biology faculty member in a light blouse",
+      "square",
+    ),
+    img(
+      "photo-1472099645785-5658abf4ff4e",
+      "Board physics coach, portrait",
+      "square",
+    ),
+    img(
+      "photo-1438761681033-6461ffad8d80",
+      "Mentorship lead, portrait",
+      "square",
+    ),
+  ],
+};

@@ -7,26 +7,57 @@ import { SampleButton } from "@/components/samples/SampleButton";
 
 export type SampleNavLink = { label: string; href: string };
 
+function NavAnchor({
+  href,
+  className,
+  children,
+  onClick,
+}: {
+  href: string;
+  className?: string;
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
+  if (href.startsWith("/")) {
+    return (
+      <Link href={href} className={className} onClick={onClick}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} className={className} onClick={onClick}>
+      {children}
+    </a>
+  );
+}
+
 /**
  * Shared header for the sample sites. Colour, radius and type all come from the
  * active palette, so one component covers nine very different-looking navs.
  *
  * `overlay` starts the bar transparent over a full-bleed hero photo and swaps it
  * to a solid bar once the page scrolls.
+ * `soft` uses a soft shadow on scroll instead of a hard border (clinic calm).
  */
 export function SampleNav({
   brand,
   brandNote,
   links,
   cta,
+  homeHref = "#top",
   overlay = false,
+  soft = false,
   extra,
 }: {
   brand: string;
   brandNote?: string;
   links: SampleNavLink[];
   cta?: { label: string; href: string };
+  /** Brand mark destination — use a route for multi-page samples. */
+  homeHref?: string;
   overlay?: boolean;
+  soft?: boolean;
   extra?: React.ReactNode;
 }) {
   const [scrolled, setScrolled] = useState(false);
@@ -39,7 +70,6 @@ export function SampleNav({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // A left-open menu shouldn't survive a resize back to the desktop layout.
   useEffect(() => {
     if (!open) return;
     const onResize = () => window.innerWidth >= 768 && setOpen(false);
@@ -52,14 +82,19 @@ export function SampleNav({
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-colors duration-300",
+        "sticky top-0 z-50 transition-[background-color,box-shadow,border-color] duration-300",
         floating
           ? "bg-transparent text-white"
-          : "border-b border-[var(--s-hair)] bg-[var(--s-bg)]/95 text-[var(--s-ink)] backdrop-blur",
+          : soft
+            ? cn(
+                "bg-[var(--s-bg)]/95 text-[var(--s-ink)] backdrop-blur",
+                scrolled && "shadow-[0_4px_20px_rgba(0,0,0,0.05)]",
+              )
+            : "border-b border-[var(--s-hair)] bg-[var(--s-bg)]/95 text-[var(--s-ink)] backdrop-blur",
       )}
     >
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-5 py-4 sm:px-8">
-        <Link href="#top" className="group flex flex-col leading-none">
+        <NavAnchor href={homeHref} className="group flex flex-col leading-none">
           <span className="s-display text-lg font-semibold tracking-tight">
             {brand}
           </span>
@@ -73,11 +108,11 @@ export function SampleNav({
               {brandNote}
             </span>
           )}
-        </Link>
+        </NavAnchor>
 
         <nav className="hidden items-center gap-8 md:flex">
           {links.map((link) => (
-            <a
+            <NavAnchor
               key={link.href}
               href={link.href}
               className={cn(
@@ -86,7 +121,7 @@ export function SampleNav({
               )}
             >
               {link.label}
-            </a>
+            </NavAnchor>
           ))}
         </nav>
 
@@ -95,6 +130,7 @@ export function SampleNav({
           {cta && (
             <SampleButton
               href={cta.href}
+              external={/^https?:|^tel:|^mailto:/i.test(cta.href)}
               size="sm"
               variant={floating ? "accent" : "primary"}
               className="hidden sm:inline-flex"
@@ -135,18 +171,22 @@ export function SampleNav({
         >
           <nav className="flex flex-col">
             {links.map((link) => (
-              <a
+              <NavAnchor
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
                 className="border-b border-[var(--s-hair)] py-3.5 text-sm"
               >
                 {link.label}
-              </a>
+              </NavAnchor>
             ))}
           </nav>
           {cta && (
-            <SampleButton href={cta.href} className="mt-5 w-full">
+            <SampleButton
+              href={cta.href}
+              external={/^https?:|^tel:|^mailto:/i.test(cta.href)}
+              className="mt-5 w-full"
+            >
               {cta.label}
             </SampleButton>
           )}

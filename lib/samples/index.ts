@@ -18,7 +18,8 @@ export type SampleSlug =
   | "travel"
   | "gym"
   | "interior"
-  | "trader";
+  | "trader"
+  | "coaching";
 
 /** Shown on the Coreline Work page filter tabs. */
 export type SampleIndustry =
@@ -30,7 +31,8 @@ export type SampleIndustry =
   | "Travel"
   | "Gym"
   | "Interior Design"
-  | "Trader / D2C";
+  | "Trader / D2C"
+  | "Coaching";
 
 export type Sample = {
   slug: SampleSlug;
@@ -67,7 +69,11 @@ export const samples: Sample[] = [
     summary:
       "Turns walk-in-only enquiries into a same-day booking calendar, with WhatsApp confirmations and automatic follow-up reminders.",
     tags: ["Storefront", "Acquisition System"],
-    demos: ["Appointment booking form", "Clinic hours table"],
+    demos: [
+      "Multi-page clinic site",
+      "Appointment booking form",
+      "Clinic hours table",
+    ],
     palette: {
       name: "Clinical Calm",
       swatches: ["#fafbfa", "#3d8b7d", "#e8a13f"],
@@ -84,7 +90,12 @@ export const samples: Sample[] = [
     summary:
       "Puts the display case online without listing a single price, then routes every enquiry to WhatsApp so the sale still closes in the showroom.",
     tags: ["Storefront"],
-    demos: ["Collection grid", "Custom order enquiry"],
+    demos: [
+      "Multi-page jeweller site",
+      "Editorial collections",
+      "Custom order enquiry",
+      "Private viewing booking",
+    ],
     palette: {
       name: "Warm Gold on Ink",
       swatches: ["#0f0d0a", "#c9a55c", "#f7f1e5"],
@@ -169,7 +180,12 @@ export const samples: Sample[] = [
     summary:
       "Answers the timing and pricing questions that flood a gym's WhatsApp inbox all day, and books the free trial inside the chat.",
     tags: ["Storefront", "Acquisition System", "AI Chat Agent"],
-    demos: ["Live AI chat assistant", "Membership plans", "Free trial booking"],
+    demos: [
+      "Multi-page gym site",
+      "Live AI chat assistant",
+      "Membership plans",
+      "Free trial booking",
+    ],
     palette: {
       name: "Kinetic",
       swatches: ["#101010", "#e13b3b", "#d4ff3f"],
@@ -204,6 +220,7 @@ export const samples: Sample[] = [
       "A working cart and checkout, an AI assistant handling stock and returns questions, and the post-order WhatsApp flow drawn out in full.",
     tags: ["Storefront", "Acquisition System", "AI Chat Agent", "Automation"],
     demos: [
+      "Multi-page shop",
       "Working cart & checkout",
       "Live AI chat assistant",
       "Post-order automation flow",
@@ -211,6 +228,28 @@ export const samples: Sample[] = [
     palette: {
       name: "Clean Commerce",
       swatches: ["#ffffff", "#2f6f5e", "#e8622e"],
+      dark: false,
+    },
+  },
+  {
+    slug: "coaching",
+    order: 10,
+    industry: "Coaching",
+    business: "Summit Prep",
+    city: "Thane",
+    name: "Coaching Classes Results Site",
+    summary:
+      "Sells exam outcomes to cautious parents — clear batch fees, faculty credibility, and a results page built around pass rates and named ranks.",
+    tags: ["Storefront", "Acquisition System"],
+    demos: [
+      "Multi-page coaching site",
+      "Results scoreboard with count-up",
+      "Transparent batch fees",
+      "Demo class enrolment form",
+    ],
+    palette: {
+      name: "Momentum Violet",
+      swatches: ["#FAF8FC", "#5B3A8E", "#E3B23C"],
       dark: false,
     },
   },
@@ -224,7 +263,7 @@ export function getSample(slug: SampleSlug): Sample {
 
 export const samplesIndex = {
   eyebrow: "Sample builds",
-  heading: "Nine verticals, nine different jobs to do.",
+  heading: "Ten verticals, ten different jobs to do.",
   sub: "Each of these is a complete concept build for a specific kind of business - its own palette, its own typography, its own conversion path. None of them look like each other, and none of them look like us. That is the point.",
   note: "Concept builds using fictional businesses and stand-in photography. Two carry a live AI chat assistant you can talk to.",
 };
