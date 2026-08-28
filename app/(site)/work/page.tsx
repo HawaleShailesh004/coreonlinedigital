@@ -6,9 +6,9 @@ import { workPage } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Work",
+  title: "Sample Systems by Vertical",
   description:
-    "Ten concept digital storefronts and acquisition systems - clinics, schools, traders, gyms, coaching, and more - showing how Coreline builds for local businesses.",
+    "Ten industry sample builds - clinic, school, gym, jeweller, trader - showing bespoke infrastructure, not template work.",
   path: "/work",
 });
 

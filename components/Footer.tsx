@@ -12,13 +12,14 @@ export function Footer() {
         <div className="flex flex-col gap-10 py-16 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-3">
             <Logo size="md" />
-            <p className="font-mono text-label uppercase text-grey" itemProp="address">
+            <p className="font-mono text-label uppercase text-grey" itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
               <span itemProp="streetAddress">{site.location}</span>
               {" · "}
               <span itemProp="addressRegion">{site.region}</span>
             </p>
             <meta itemProp="name" content={site.legalName} />
             <meta itemProp="url" content={site.url} />
+            <meta itemProp="telephone" content={site.phone} />
           </div>
 
           <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">

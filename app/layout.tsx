@@ -7,6 +7,7 @@ import {
   organizationJsonLd,
   seoKeywords,
   siteUrl,
+  titleSuffix,
   websiteJsonLd,
 } from "@/lib/seo";
 import "./globals.css";
@@ -32,11 +33,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+const defaultTitle = `Digital Infrastructure | ${titleSuffix}`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${site.legalName} | Digital Storefronts that Drive Revenue`,
-    template: `%s | ${site.legalName}`,
+    default: defaultTitle,
+    template: `%s | ${titleSuffix}`,
   },
   description: defaultDescription,
   keywords: [...seoKeywords],
@@ -64,20 +67,20 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: siteUrl,
     siteName: site.legalName,
-    title: `${site.legalName} | Digital Storefronts that Drive Revenue`,
+    title: defaultTitle,
     description: defaultDescription,
     images: [
       {
         url: "/logo-lockup.png",
         width: 1200,
         height: 630,
-        alt: `${site.legalName} - digital infrastructure for local businesses`,
+        alt: `${site.legalName} - bespoke digital infrastructure for Thane and Mumbai businesses`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.legalName} | Digital Storefronts that Drive Revenue`,
+    title: defaultTitle,
     description: defaultDescription,
     images: ["/logo-lockup.png"],
   },

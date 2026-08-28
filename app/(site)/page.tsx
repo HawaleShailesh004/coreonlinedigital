@@ -11,12 +11,12 @@ import { defaultDescription, pageMetadata } from "@/lib/seo";
 
 export const metadata = {
   ...pageMetadata({
-    title: `${site.legalName} | Digital Storefronts that Drive Revenue`,
+    title: "Digital Infrastructure",
     description: defaultDescription,
     path: "/",
   }),
   title: {
-    absolute: `${site.legalName} | Digital Storefronts that Drive Revenue`,
+    absolute: `Digital Infrastructure | ${site.name}`,
   },
 };
 

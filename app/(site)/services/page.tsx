@@ -7,9 +7,9 @@ import { pillars, servicesPage } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Services",
+  title: "Digital Storefronts & Systems",
   description:
-    "Digital storefronts, client acquisition systems, and growth retainers for clinics, CAs, schools, and local businesses in Thane and Mumbai.",
+    "Bespoke storefronts, booking systems, and AI acquisition for clinics, CAs, schools, and storefronts across Thane and Mumbai.",
   path: "/services",
 });
 

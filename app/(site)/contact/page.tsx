@@ -6,9 +6,9 @@ import { contactPage, site } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Contact",
+  title: "Book a Strategy Call",
   description:
-    "Book a strategy call with Coreline Digital in Thane. WhatsApp, phone, or request a callback - usually same day before 6pm.",
+    "Strategy call in Wagle Estate, Thane. WhatsApp, phone, or callback - same-day reply before 6pm.",
   path: "/contact",
 });
 

@@ -30,7 +30,7 @@ export const site = {
   email: "coreonlinedigital@gmail.com",
   emailHref: "mailto:coreonlinedigital@gmail.com",
   primaryCta: "Book Strategy Call",
-  url: "https://corelinedigital.com",
+  url: "https://corelinedigital.in",
 } as const;
 
 export const nav = [
