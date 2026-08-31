@@ -20,6 +20,7 @@ export function Footer() {
             <meta itemProp="name" content={site.legalName} />
             <meta itemProp="url" content={site.url} />
             <meta itemProp="telephone" content={site.phone} />
+            <meta itemProp="email" content={site.email} />
           </div>
 
           <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">

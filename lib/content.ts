@@ -27,10 +27,10 @@ export const site = {
   phone: "+91 90823 08732",
   phoneHref: "tel:+919082308732",
   whatsapp: "https://wa.me/919082308732",
-  email: "coreonlinedigital@gmail.com",
-  emailHref: "mailto:coreonlinedigital@gmail.com",
+  email: "contact@corelinedigital.in",
+  emailHref: "mailto:contact@corelinedigital.in",
   primaryCta: "Book Strategy Call",
-  url: "https://corelinedigital.in",
+  url: "https://www.corelinedigital.in",
 } as const;
 
 export const nav = [

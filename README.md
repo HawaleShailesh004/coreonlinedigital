@@ -104,7 +104,7 @@ visible without JavaScript.
 - `lib/content.ts` - `url` is still a placeholder domain, which affects page
   metadata and the sitemap; phone, WhatsApp, email and address are live
 - `app/contact/actions.ts` - wire `requestCallback` to deliver to
-  `coreonlinedigital@gmail.com`; it currently validates and logs only
+  `contact@corelinedigital.in`; it currently validates and logs only
 - `lib/content.ts` - `workSamples[].href` all point at `#` until the sample
   builds ship
 - Add a social preview image (`app/opengraph-image`); the favicon and iOS icon

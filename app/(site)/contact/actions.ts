@@ -46,7 +46,7 @@ export async function requestCallback(
   const resolvedType =
     businessType === "Other" ? otherBusinessType : businessType;
 
-  // Delivery target (email, CRM or WhatsApp API) is not wired up yet.
+  // Delivery target: contact@corelinedigital.in (wire Resend/Formspree when ready).
   console.info("[contact] callback requested", {
     name,
     businessType: resolvedType,
