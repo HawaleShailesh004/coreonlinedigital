@@ -3,8 +3,15 @@ import { site } from "@/lib/content";
 
 export const siteUrl = site.url;
 
-/** Brand suffix for every title — matches `Page Name | coreline.` */
-export const titleSuffix = site.name;
+/**
+ * Brand suffix for every title - `Page Name | Coreline Digital`.
+ *
+ * The registered name, not the `coreline.` wordmark. The lowercase mark is the
+ * visual brand and stays everywhere it is drawn, but a title is a matching
+ * string: someone searching "Coreline Digital Thane" was being matched against
+ * a suffix that never contained those words. Nothing on the page changes.
+ */
+export const titleSuffix = site.legalName;
 
 /**
  * Primary meta description (≤155 chars).

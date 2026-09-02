@@ -17,7 +17,7 @@ export const metadata = {
     path: "/",
   }),
   title: {
-    absolute: `Websites for Thane Businesses | ${site.name}`,
+    absolute: `Websites for Thane Businesses | ${site.legalName}`,
   },
 };
 
