@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { WhatsAppAnchor } from "@/components/WhatsAppLink";
 import { Container } from "@/components/ui/Container";
-import { nav, site } from "@/lib/content";
+import { legalNav, nav, site } from "@/lib/content";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -25,15 +26,10 @@ export function Footer() {
 
           <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">
             <div className="flex flex-col gap-3">
-              <p className="font-mono text-label uppercase text-grey">Reach us</p>
-              <a
-                href={site.whatsapp}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="font-display text-sm font-medium transition-colors duration-150 ease-linear hover:text-accent"
-              >
+              <p className="font-mono text-label uppercase text-grey">Reach me</p>
+              <WhatsAppAnchor className="font-display text-sm font-medium transition-colors duration-150 ease-linear hover:text-accent">
                 WhatsApp
-              </a>
+              </WhatsAppAnchor>
               <a
                 href={site.phoneHref}
                 className="font-display text-sm font-medium transition-colors duration-150 ease-linear hover:text-accent"
@@ -59,6 +55,15 @@ export function Footer() {
                   {item.label}
                 </Link>
               ))}
+              {legalNav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="font-display text-sm font-medium transition-colors duration-150 ease-linear hover:text-accent"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
         </div>
@@ -68,7 +73,7 @@ export function Footer() {
             © {year} {site.legalName}
           </p>
           <p className="font-mono text-label uppercase text-grey">
-            Digital infrastructure, built to run
+            Websites that bring you customers
           </p>
         </div>
       </Container>

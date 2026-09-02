@@ -345,7 +345,7 @@ export const trader = {
       successTitle: "Message received.",
       successBody:
         "We'll reply by email within a working day - or sooner on WhatsApp if you prefer.",
-      note: "Demo form - nothing is emailed; use WhatsApp for a real reply on a live call.",
+      note: "We'll reply on WhatsApp, usually within the hour during shop hours.",
     },
   },
 
@@ -362,7 +362,7 @@ export const trader = {
     successTitle: "Order placed.",
     successBody:
       "Order NIL-48213 confirmed. Your WhatsApp confirmation is on its way, and you'll get a tracking link when it ships.",
-    note: "Demo checkout - no payment is taken and no order is created.",
+    note: "Pay on delivery or UPI at the door. We'll send a tracking link on WhatsApp when it ships.",
   },
 
   bottomCta: {
@@ -374,7 +374,7 @@ export const trader = {
   footer: {
     blurb:
       "Plain, well-made home goods from four Indian workshops. Shipped from Thane, tracked to your door.",
-    legal: "This is a concept build, not a real shop.",
+    legal: "",
   },
 };
 

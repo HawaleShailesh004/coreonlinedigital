@@ -191,8 +191,8 @@ export const jeweller = {
       submit: "Send custom enquiry",
       successTitle: "Enquiry received.",
       successBody:
-        "Someone from the family will message you on WhatsApp with next steps. This is a demo form - nothing was uploaded or sent.",
-      note: "Demo only. On a real site this reaches the workshop phone.",
+        "Someone from the family will message you on WhatsApp with next steps.",
+      note: "We'll reply on WhatsApp within a day.",
       fields: {
         name: { label: "Your name", placeholder: "Full name" },
         phone: { label: "Phone", placeholder: "10-digit mobile" },
@@ -203,7 +203,7 @@ export const jeweller = {
         },
         attachment: {
           label: "Photo or sketch (optional)",
-          hint: "Demo only - we show the filename, nothing is uploaded.",
+          hint: "JPG or PDF, under 5 MB.",
         },
       },
     },
@@ -245,8 +245,8 @@ export const jeweller = {
     submit: "Request a viewing",
     successTitle: "Viewing requested.",
     successBody:
-      "We will confirm the slot on WhatsApp. This is a demo form - nothing was sent.",
-    note: "Demo only. On a real site this reaches the showroom phone.",
+      "We will confirm the slot on WhatsApp.",
+    note: "We confirm on WhatsApp.",
     fields: {
       name: { label: "Your name", placeholder: "Full name" },
       phone: { label: "Phone", placeholder: "10-digit mobile" },
@@ -265,6 +265,6 @@ export const jeweller = {
   footer: {
     blurb:
       "Goldsmiths on Ram Maruti Road, Naupada, since 1968. Bridal, traditional gold, certified diamond and custom work, made in our own workshop.",
-    legal: "This is a concept build, not a real showroom.",
+    legal: "",
   },
 };

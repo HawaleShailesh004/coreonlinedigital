@@ -2,7 +2,7 @@ import { cn } from "@/lib/cn";
 
 export function Eyebrow({
   children,
-  tone = "accent",
+  tone = "grey",
   className,
 }: {
   children: React.ReactNode;

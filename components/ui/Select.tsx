@@ -125,7 +125,7 @@ export function Select({
   };
 
   return (
-    <div ref={rootRef} className="relative" onKeyDown={onKeyDown}>
+    <div ref={rootRef} className="group relative" onKeyDown={onKeyDown}>
       <input type="hidden" name={name} value={value} />
 
       <button
@@ -183,7 +183,7 @@ export function Select({
                 onClick={() => select(index)}
                 onMouseEnter={() => setActiveIndex(index)}
                 className={cn(
-                  "flex cursor-pointer items-center gap-3 px-4 py-2.5 text-[0.9375rem] transition-colors duration-100 ease-linear",
+                  "flex cursor-pointer items-center gap-3 px-4 py-2.5 text-small transition-colors duration-100 ease-linear",
                   index === activeIndex ? "bg-card" : "bg-transparent",
                   selected ? "text-accent" : "text-ink",
                 )}

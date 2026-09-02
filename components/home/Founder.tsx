@@ -21,7 +21,11 @@ export function Founder() {
         <h2 className="mt-5 font-display text-h2 font-semibold">
           {founder.heading}
         </h2>
-        <p className="mt-8 text-lead text-body">{founder.body}</p>
+        {founder.paragraphs.map((paragraph) => (
+          <p key={paragraph.slice(0, 40)} className="mt-8 text-lead text-body">
+            {paragraph}
+          </p>
+        ))}
       </Reveal>
     </Section>
   );

@@ -7,13 +7,55 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
     rel="stylesheet">
+
+  <!--
+    PRINT SPEC
+      Trim size    90 x 54 mm (Indian standard)
+      Bleed        3 mm all round, so the artboard here is 96 x 60 mm
+      Safe area    5 mm inside trim - nothing important crosses it
+      Stock        350gsm minimum
+      Finish       MATTE lamination, not gloss. Gloss reads cheap and shows
+                   every fingerprint on an ink-heavy back like this one.
+
+    BEFORE A BULK RUN
+      1. Print 100 as a test.
+      2. Scan the QR off the PRINTED card, at arm's length, in normal indoor
+         light - not off the screen. An unscannable QR makes the whole back
+         useless, and it is the one thing that cannot be checked digitally.
+      3. Confirm qr.jpeg encodes https://corelinedigital.in/work - the label
+         next to it promises sample websites, so it has to land there and not
+         on the home page.
+
+    WHAT CHANGED, AND WHY
+      Front: "Founder, Coreline Digital" is gone. A one-person business calling
+      itself Founder invites "founder of what, how many people?", and the old
+      card never said what it sells anywhere on the front. It now does.
+
+      Back: the three mono columns are gone. They were abstract category names
+      set in all-caps mono at 5.8pt on a dark ground - hard to read and saying
+      nothing. A card back has one job: give one reason to act and one way to
+      act. The price and terms are on it because the owner puts the card in a
+      drawer, finds it three weeks later, and it still answers his only two
+      questions: how much, how long. No competitor's card does that.
+  -->
+
   <style>
     :root {
       --ink: #0C1210;
       --paper: #F6F7F5;
       --accent: #1F5C4B;
+      /* Sage, not the dark emerald: #1F5C4B fails contrast on the ink ground. */
+      --sage: #8FBFA8;
       --grey: #6E7A75;
-      --hair: rgba(12, 18, 16, 0.16);
+
+      --trim-w: 90mm;
+      --trim-h: 54mm;
+      --bleed: 3mm;
+      /* Artboard = trim + bleed on all four sides. */
+      --card-w: 96mm;
+      --card-h: 60mm;
+      /* Bleed + 5mm safe area. */
+      --pad: 8mm;
     }
 
     * {
@@ -32,40 +74,49 @@
     }
 
     .card {
-      width: 3.5in;
-      height: 2in;
+      width: var(--card-w);
+      height: var(--card-h);
       position: relative;
       overflow: hidden;
+      padding: var(--pad);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+    }
+
+    /* On-screen trim guide, so the bleed is visible while proofing. */
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: var(--bleed);
+      border: 0.3mm dashed rgba(127, 127, 127, 0.55);
+      pointer-events: none;
     }
 
     /* ---------- FRONT ---------- */
     .front {
       background: var(--paper);
       color: var(--ink);
-      padding: 0.28in;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
 
     .logo-row {
       display: flex;
       align-items: center;
-      gap: 0.09in;
+      gap: 2mm;
     }
 
     .icon {
-      width: 0.32in;
-      height: 0.32in;
-      position: relative;
+      width: 8mm;
+      height: 8mm;
     }
 
     .icon svg {
       width: 100%;
       height: 100%;
+      display: block;
     }
 
     .wordmark {
@@ -79,21 +130,20 @@
       color: var(--accent);
     }
 
-    .name-block {}
-
     .name {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 600;
       font-size: 12pt;
     }
 
-    .title {
+    /* Says what he sells. That is what a card is for. */
+    .role {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 7pt;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-top: 2pt;
+      margin-top: 1mm;
     }
 
     .contact-block {
@@ -105,56 +155,44 @@
 
     .contact-block strong {
       color: var(--ink);
+      font-weight: 500;
     }
 
     /* ---------- BACK ---------- */
     .back {
       background: var(--ink);
       color: var(--paper);
-      padding: 0.28in;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
 
-    .tagline {
+    .offer {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 600;
-      font-size: 11pt;
-      line-height: 1.3;
-      max-width: 2.2in;
+      font-size: 13pt;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      max-width: 60mm;
     }
 
-    /* Adjusted for 2-line stacking */
-    .pillars {
-      display: flex;
-      gap: 0.18in;
-      margin-top: 0.1in;
-    }
-
-    .pillar {
+    .terms {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 5.8pt;
-      line-height: 1.45;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: #8FBFA8;
+      font-size: 7.2pt;
+      line-height: 1.75;
+      color: var(--sage);
+      letter-spacing: 0.01em;
+      margin-top: 3mm;
     }
 
-    .back-bottom {
+    .scan-row {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
+      gap: 3.5mm;
     }
 
     .qr-box {
-      width: 0.62in;
-      height: 0.62in;
+      width: 16mm;
+      height: 16mm;
       background: var(--paper);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+      padding: 0.8mm;
       flex-shrink: 0;
     }
 
@@ -165,15 +203,21 @@
       display: block;
     }
 
-    .site-url {
+    /* An unlabelled QR is never scanned. This one gives a reason. */
+    .scan-label {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 7pt;
-      color: #9DA8A3;
+      line-height: 1.55;
+      color: var(--paper);
+    }
+
+    .scan-label .url {
+      color: var(--sage);
     }
 
     /* ---------- PRINT ---------- */
     @page {
-      size: 3.5in 2in;
+      size: 96mm 60mm;
       margin: 0;
     }
 
@@ -185,7 +229,7 @@
         padding: 0;
         margin: 0;
         gap: 0;
-        width: 3.5in;
+        width: var(--card-w);
       }
 
       body {
@@ -198,6 +242,11 @@
         break-after: page;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+      }
+
+      /* Guides are a proofing aid, never part of the artwork. */
+      .card::after {
+        display: none;
       }
 
       .card:last-child {
@@ -222,9 +271,9 @@
       <div class="wordmark">coreline<span class="dot">.</span></div>
     </div>
 
-    <div class="name-block">
+    <div>
       <div class="name">Shailesh Hawale</div>
-      <div class="title">Founder, Coreline Digital</div>
+      <div class="role">Website Design &amp; Development</div>
     </div>
 
     <div class="contact-block">
@@ -235,18 +284,22 @@
   </div>
 
   <div class="card back">
-    <div class="tagline">Digital infrastructure that drives revenue, not just traffic.</div>
-
-    <div class="pillars">
-      <div class="pillar">Websites that<br>convert</div>
-      <div class="pillar">Leads, caught<br>instantly</div>
-      <div class="pillar">Systems, kept<br>running</div>
+    <div>
+      <div class="offer">A website that brings you customers.</div>
+      <div class="terms">
+        From ₹15,000 &nbsp;·&nbsp; Ready in 10 working days<br>
+        Half paid only when it&rsquo;s live
+      </div>
     </div>
 
-    <div class="back-bottom">
-      <div class="site-url">corelinedigital.in/work</div>
+    <div class="scan-row">
       <div class="qr-box">
-        <img src="qr.jpeg" alt="QR code - corelinedigital.in" width="150" height="150">
+        <img src="qr.jpeg" alt="QR code - corelinedigital.in/work" width="150" height="150">
+      </div>
+      <div class="scan-label">
+        Scan to see<br>
+        sample websites<br>
+        <span class="url">corelinedigital.in/work</span>
       </div>
     </div>
   </div>

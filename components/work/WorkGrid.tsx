@@ -7,6 +7,10 @@ import { workSamples, type Industry } from "@/lib/content";
 
 type Filter = "All" | Industry;
 
+function tabId(filter: Filter) {
+  return `work-tab-${filter.replace(/[^a-z0-9]+/gi, "-").replace(/-+$/g, "")}`;
+}
+
 export function WorkGrid() {
   const filters = useMemo<Filter[]>(() => {
     const industries = Array.from(new Set(workSamples.map((s) => s.industry)));
@@ -41,6 +45,7 @@ export function WorkGrid() {
 
   return (
     <div>
+      <h2 className="sr-only">All sample sites</h2>
       <div className="relative border-b border-hairline">
         <div
           ref={tabsRef}
@@ -55,9 +60,25 @@ export function WorkGrid() {
                 key={filter}
                 type="button"
                 role="tab"
+                id={tabId(filter)}
+                aria-controls="work-sample-panel"
                 aria-selected={isActive}
+                tabIndex={isActive ? 0 : -1}
                 data-active={isActive}
                 onClick={() => setActive(filter)}
+                onKeyDown={(event) => {
+                  if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+                  event.preventDefault();
+                  const index = filters.indexOf(filter);
+                  const next =
+                    event.key === "ArrowRight"
+                      ? (index + 1) % filters.length
+                      : (index - 1 + filters.length) % filters.length;
+                  setActive(filters[next]!);
+                  tabsRef.current
+                    ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+                    [next]?.focus();
+                }}
                 className={cn(
                   "shrink-0 font-mono text-label uppercase transition-colors duration-150 ease-linear",
                   isActive ? "text-accent" : "text-grey hover:text-ink",
@@ -68,15 +89,30 @@ export function WorkGrid() {
             );
           })}
         </div>
-        {/* Sliding underline - same interaction language as the nav. */}
+        {/*
+          Sliding underline - same interaction language as the nav.
+
+          Driven by transform, not left/width. Those are layout properties, so
+          transitioning them ran layout and paint on every frame of the slide;
+          translate and scale are composited and cost nothing. The bar is 1px
+          wide and scaled up to the tab width, which is why scaleX takes the
+          raw pixel value.
+        */}
         <span
-          className="absolute -bottom-px h-0.5 bg-accent transition-[left,width] duration-200 ease-out"
-          style={{ left: indicator.left, width: indicator.width }}
+          className="absolute -bottom-px left-0 h-0.5 w-px origin-left bg-accent transition-transform duration-200 ease-out"
+          style={{
+            transform: `translateX(${indicator.left}px) scaleX(${indicator.width})`,
+          }}
           aria-hidden="true"
         />
       </div>
 
-      <ul className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <ul
+        id="work-sample-panel"
+        role="tabpanel"
+        aria-labelledby={tabId(active)}
+        className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+      >
         {visible.map((sample) => (
           <li key={sample.slug}>
             <WorkCard sample={sample} />

@@ -5,7 +5,9 @@ import { site } from "@/lib/content";
 import {
   defaultDescription,
   organizationJsonLd,
+  personJsonLd,
   seoKeywords,
+  shareImage,
   siteUrl,
   titleSuffix,
   websiteJsonLd,
@@ -33,7 +35,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const defaultTitle = `Digital Infrastructure | ${titleSuffix}`;
+const defaultTitle = `Websites for Thane Businesses | ${titleSuffix}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -48,9 +50,11 @@ export const metadata: Metadata = {
   publisher: site.legalName,
   applicationName: site.legalName,
   category: "Business",
-  alternates: {
-    canonical: "/",
-  },
+  // No site-wide canonical. Metadata inherits down the tree, so `canonical: "/"`
+  // here was not a default - it was a claim that every page which forgets to
+  // override it is a duplicate of the homepage. The six public pages each set
+  // their own through pageMetadata(); the sample pages deliberately set none,
+  // and were the ones inheriting this and pointing at the homepage.
   robots: {
     index: true,
     follow: true,
@@ -69,20 +73,13 @@ export const metadata: Metadata = {
     siteName: site.legalName,
     title: defaultTitle,
     description: defaultDescription,
-    images: [
-      {
-        url: "/logo-lockup.png",
-        width: 1200,
-        height: 630,
-        alt: `${site.legalName} - bespoke digital infrastructure for Thane and Mumbai businesses`,
-      },
-    ],
+    images: [shareImage],
   },
   twitter: {
     card: "summary_large_image",
     title: defaultTitle,
     description: defaultDescription,
-    images: ["/logo-lockup.png"],
+    images: [shareImage.url],
   },
   formatDetection: {
     telephone: true,
@@ -114,7 +111,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
-        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd(), personJsonLd()]} />
         {children}
       </body>
     </html>

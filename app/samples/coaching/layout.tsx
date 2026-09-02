@@ -14,7 +14,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Sample: Coaching Classes",
+  title: "Summit Prep",
   description:
     "Concept build for a competitive exam coaching institute - transparent batch fees, faculty bios, and a results page built around measurable outcomes.",
 };

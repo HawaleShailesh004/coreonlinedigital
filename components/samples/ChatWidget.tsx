@@ -282,7 +282,7 @@ export function ChatWidget({ persona }: { persona: Persona }) {
         </form>
 
         <p className="border-t border-[var(--s-hair)] px-4 py-2 text-center text-[0.6875rem] text-[var(--s-grey)]">
-          AI assistant · answers are limited to {persona.title}
+          AI replies · {persona.title}
         </p>
       </div>
     </>

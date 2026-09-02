@@ -2,19 +2,35 @@ import { FinalCta } from "@/components/FinalCta";
 import { Section } from "@/components/ui/Section";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { WorkGrid } from "@/components/work/WorkGrid";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { workPage } from "@/lib/content";
-import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
 
-export const metadata = pageMetadata({
-  title: "Sample Systems by Vertical",
-  description:
-    "Ten industry sample builds - clinic, school, gym, jeweller, trader - showing bespoke infrastructure, not template work.",
-  path: "/work",
-});
+const title = "Sample Websites";
+const description =
+  "Ten sample websites for Thane businesses - clinic, school, gym, jeweller, trader, coaching class. Not live client sites. Click into any of them and use it.";
+
+export const metadata = pageMetadata({ title, description, path: "/work" });
+
+const crumbs = breadcrumbJsonLd([{ name: "Sample Websites", path: "/work" }]);
 
 export default function WorkPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          // CollectionPage rather than WebPage: this page exists to index the
+          // ten sample builds, not to be read on its own.
+          webPageJsonLd({
+            title,
+            description,
+            path: "/work",
+            type: "CollectionPage",
+            breadcrumbId: crumbs["@id"],
+          }),
+          crumbs,
+        ]}
+      />
       <PageHeader
         eyebrow={workPage.eyebrow}
         heading={workPage.heading}
@@ -25,7 +41,7 @@ export default function WorkPage() {
         <WorkGrid />
       </Section>
 
-      <FinalCta heading={workPage.bottomHeading} body="" />
+      <FinalCta heading={workPage.bottomHeading} />
     </>
   );
 }

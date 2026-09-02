@@ -16,6 +16,7 @@
    --------------------------------------------------------------------------- */
 
 .sample-root {
+  --sample-chrome-h: 2.25rem;
   /* Fallbacks so a sample is never unstyled if a palette block is missing. */
   --s-bg: #ffffff;
   --s-surface: #f5f5f5;

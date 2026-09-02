@@ -110,7 +110,7 @@ export function SampleFooter({
           <p>
             Built by{" "}
             <Link
-              href="/"
+              href="/work"
               className="underline underline-offset-4 transition-opacity hover:opacity-70"
             >
               Coreline Digital

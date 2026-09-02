@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+import { WhatsAppButton } from "@/components/WhatsAppLink";
 import { Section } from "@/components/ui/Section";
 import { finalCta, site } from "@/lib/content";
 
@@ -14,7 +14,7 @@ export function FinalCta({
   body?: string;
 }) {
   return (
-    <Section tone="ink" size="tight">
+    <Section tone="ink" size="tight" data-cta-band>
       <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-16">
         <div className="max-w-2xl">
           <h2 className="flex items-start gap-4 font-display text-h2 font-semibold">
@@ -28,9 +28,9 @@ export function FinalCta({
           {body && <p className="mt-6 text-lead text-paper/70 md:pl-6">{body}</p>}
         </div>
 
-        <Button href="/contact" variant="inverse" className="shrink-0">
+        <WhatsAppButton variant="inverse" className="shrink-0">
           {site.primaryCta}
-        </Button>
+        </WhatsAppButton>
       </div>
     </Section>
   );

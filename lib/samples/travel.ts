@@ -155,7 +155,7 @@ export const travel = {
     successTitle: "Enquiry received.",
     successBody:
       "A trip planner will message you on WhatsApp shortly with two or three options for those dates. Nothing is held or charged until you approve a plan.",
-    note: "Demo form - this sample isn't connected to a live booking system.",
+    note: "A planner will message you on WhatsApp, usually within a couple of hours.",
     destinations: [
       "Coorg & Wayanad Coffee Trail",
       "Spiti Valley Monastery Circuit",
@@ -191,6 +191,6 @@ export const travel = {
   footer: {
     blurb:
       "A Pune-based tour operator running small group departures and custom private trips across India since 2012.",
-    legal: "This is a concept build, not a real tour operator.",
+    legal: "",
   },
 };

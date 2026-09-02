@@ -82,7 +82,7 @@ export function SampleNav({
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-[background-color,box-shadow,border-color] duration-300",
+        "sticky top-[var(--sample-chrome-h)] z-50 transition-[background-color,box-shadow,border-color] duration-300",
         floating
           ? "bg-transparent text-white"
           : soft

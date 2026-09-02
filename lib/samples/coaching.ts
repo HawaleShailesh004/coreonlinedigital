@@ -398,7 +398,7 @@ export const coaching = {
       successTitle: "Demo request received.",
       successBody:
         "We'll confirm the slot on WhatsApp within one working day and tell you which classroom to find.",
-      note: "Demo form - this sample isn't wired to a live admissions desk.",
+      note: "We'll confirm the slot on WhatsApp within one working day.",
     },
   },
 
@@ -454,7 +454,7 @@ export const coaching = {
   footer: {
     blurb:
       "JEE, NEET and board coaching in Naupada, Thane - batches capped, fees published, results tracked.",
-    legal: "This is a concept build, not a real coaching institute.",
+    legal: "",
   },
 };
 

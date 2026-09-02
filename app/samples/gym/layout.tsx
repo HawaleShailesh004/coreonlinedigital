@@ -16,7 +16,7 @@ const anton = Anton({
 });
 
 export const metadata: Metadata = {
-  title: "Sample: Gym & Strength Studio",
+  title: "Forge Strength Co.",
   description:
     "Concept build for a gym - transparent membership pricing, free-trial booking and a live AI assistant that answers class timings and books trials.",
 };

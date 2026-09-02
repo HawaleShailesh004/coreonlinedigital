@@ -16,17 +16,17 @@ export function WorkCard({ sample }: { sample: WorkSample }) {
           sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
           className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
         />
-        <span className="absolute inset-x-0 bottom-0 translate-y-full bg-ink px-6 py-3 font-mono text-label uppercase text-paper transition-transform duration-200 ease-out group-hover:translate-y-0 group-focus-visible:translate-y-0">
-          View sample →
+        <span className="absolute inset-x-0 bottom-0 bg-ink px-6 py-3 font-mono text-label uppercase text-paper">
+          Open sample
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-8">
-        <p className="font-mono text-label uppercase text-accent">
+        <p className="font-mono text-label uppercase text-grey">
           {sample.industry}
         </p>
         <h3 className="mt-4 font-display text-h3 font-semibold">{sample.name}</h3>
-        <p className="mt-3 flex-1 text-[0.9375rem] leading-[1.65] text-grey">
+        <p className="mt-3 flex-1 text-small text-grey">
           {sample.summary}
         </p>
         <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-label uppercase text-grey">

@@ -22,7 +22,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Sample: School",
+  title: "Brightfield Academy",
   description:
     "Concept build for a Thane CBSE school - academics by stage, a campus walk-through and a four-step admissions process with visit booking.",
 };
@@ -458,7 +458,7 @@ export default function SchoolSample() {
                 </h2>
                 <ul className="mt-6 grid gap-3 text-[0.9375rem] leading-[1.7] text-[var(--s-grey)]">
                   <li>Working-day classroom walk-through, not an empty campus tour.</li>
-                  <li>Seat availability for your child's grade, stated clearly.</li>
+                  <li>Seat availability for your child&rsquo;s grade, stated clearly.</li>
                   <li>Full annual fee sheet shared in writing on the visit.</li>
                 </ul>
               </div>

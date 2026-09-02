@@ -23,7 +23,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "Sample: Real Estate",
+  title: "Keystone Properties",
   description:
     "Concept build for a Thane brokerage - verified listings with real prices, area-by-area rates and a budget-qualified enquiry form.",
 };

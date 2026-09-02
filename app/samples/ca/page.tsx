@@ -23,7 +23,7 @@ import { caMedia } from "@/lib/samples/media";
  */
 
 export const metadata: Metadata = {
-  title: "Sample: CA / Professional Services",
+  title: "Deshmukh & Associates",
   description:
     "Concept build for a Mumbai chartered accountancy practice - service-routed intake, compliance calendar and automatic deadline reminders.",
 };

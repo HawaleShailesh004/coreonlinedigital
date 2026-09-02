@@ -8,6 +8,9 @@ next-env.d.ts
 .env*.local
 .tmp-img/
 
+# Conversation transcripts - real names and phone numbers, never committed.
+/data/
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -25,7 +25,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "Sample: Travel Agency",
+  title: "Sahyadri Trails",
   description:
     "Concept build for a Pune tour operator - package pricing, a four-step booking path and custom trip enquiries routed to WhatsApp.",
 };

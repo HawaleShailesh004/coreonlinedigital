@@ -183,7 +183,7 @@ export const school = {
       successTitle: "Visit request received.",
       successBody:
         "The admissions office will call you the same working day to confirm a slot. If you would rather message, the office WhatsApp number is on this page.",
-      note: "Demo form - this sample is not connected to a live admissions desk.",
+      note: "The office will confirm a slot on WhatsApp the same working day.",
     },
   },
 
@@ -196,6 +196,6 @@ export const school = {
   footer: {
     blurb:
       "A CBSE school in Panchpakhadi, Thane - Nursery to Grade 10, with classes capped at 24 and a written progress note home every Friday.",
-    legal: "This is a concept build, not a real school.",
+    legal: "",
   },
 };

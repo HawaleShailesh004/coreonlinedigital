@@ -207,7 +207,7 @@ export const ca = {
     successTitle: "Request received.",
     successBody:
       "We will confirm a slot within one working day. If your deadline is inside a week, call the office directly and we will make room.",
-    note: "Demo form - this sample is not connected to a live practice management system.",
+    note: "We'll confirm a slot within one working day.",
     serviceOptions: [
       "Income tax filing",
       "GST registration & filing",
@@ -251,6 +251,6 @@ export const ca = {
   footer: {
     blurb:
       "A chartered accountancy practice in Dadar East, Mumbai - income tax, GST, statutory and tax audit, and advisory for individuals and owner-managed businesses.",
-    legal: "This is a concept build, not a real practice.",
+    legal: "",
   },
 };

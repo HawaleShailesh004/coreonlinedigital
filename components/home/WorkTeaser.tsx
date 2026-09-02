@@ -20,7 +20,9 @@ export function WorkTeaser() {
           className="group inline-flex items-center gap-2 font-display text-sm font-medium text-accent"
         >
           {workTeaser.cta}
-          <span className="inline-block h-px w-6 bg-accent transition-all duration-200 ease-out group-hover:w-9" />
+          {/* scaleX, not width: transition-all on a layout property reflows
+                the line on every frame of the hover. */}
+              <span className="inline-block h-px w-6 origin-left bg-accent transition-transform duration-200 ease-out group-hover:scale-x-150" />
         </Link>
       </div>
 

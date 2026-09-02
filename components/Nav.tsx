@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
-import { Button } from "@/components/ui/Button";
+import { WhatsAppButton } from "@/components/WhatsAppLink";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
 import { nav, site } from "@/lib/content";
@@ -12,17 +12,13 @@ import { nav, site } from "@/lib/content";
 /** Survives client-side navigation, resets on a real page load. */
 let logoHasDrawn = false;
 
-const HIDE_AFTER = 80;
-
 export function Nav() {
   const pathname = usePathname();
-  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   // Tracking the route the menu was opened on closes it on navigation
   // without an extra effect.
   const [menu, setMenu] = useState({ open: false, path: pathname });
   const menuOpen = menu.open && menu.path === pathname;
-  const lastY = useRef(0);
   const [drawLogo] = useState(() => !logoHasDrawn);
 
   useEffect(() => {
@@ -30,17 +26,12 @@ export function Nav() {
   }, []);
 
   useEffect(() => {
-    lastY.current = window.scrollY;
     let frame = 0;
 
     const onScroll = () => {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
-        const y = window.scrollY;
-        setScrolled(y > 8);
-        // Keep the bar pinned while the mobile menu is open.
-        setHidden(!menuOpen && y > HIDE_AFTER && y > lastY.current);
-        lastY.current = y;
+        setScrolled(window.scrollY > 8);
         frame = 0;
       });
     };
@@ -50,14 +41,13 @@ export function Nav() {
       window.removeEventListener("scroll", onScroll);
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, [menuOpen]);
+  }, []);
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 bg-paper/90 backdrop-blur-sm transition-transform duration-[250ms] ease-out",
+        "sticky top-0 z-50 bg-paper/90 backdrop-blur-sm",
         scrolled && "border-b border-hairline",
-        hidden ? "-translate-y-full" : "translate-y-0",
       )}
     >
       <Container>
@@ -86,9 +76,24 @@ export function Nav() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Button href="/contact" variant="ink" size="sm" className="hidden sm:inline-flex">
-              {site.primaryCta}
-            </Button>
+            {/*
+              The wrapper carries the visibility, not the Button.
+
+              Button's base class already sets `inline-flex`, and Tailwind
+              utilities all have the same specificity - which one wins is
+              decided by their order in the generated stylesheet, not by the
+              order of the class attribute. So `hidden` passed through
+              className silently lost, and this CTA rendered on every phone,
+              wrapping onto two lines and pushing the bar to 66px tall.
+
+              On small phones the persistent close is the bottom bar
+              (WhatsApp | Ask), so this stays off until sm.
+            */}
+            <span className="hidden sm:block">
+              <WhatsAppButton variant="ink" size="sm">
+                {site.primaryCta}
+              </WhatsAppButton>
+            </span>
 
             <button
               type="button"
@@ -130,9 +135,9 @@ export function Nav() {
                 {item.label}
               </Link>
             ))}
-            <Button href="/contact" variant="ink" size="md" className="mt-6 w-full">
+            <WhatsAppButton variant="ink" size="md" className="mt-6 w-full">
               {site.primaryCta}
-            </Button>
+            </WhatsAppButton>
           </Container>
         </div>
       )}

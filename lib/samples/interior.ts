@@ -151,7 +151,7 @@ export const interior = {
     successTitle: "Thank you - this is with the studio.",
     successBody:
       "Aarti reviews new enquiries herself and will reply within two working days to arrange a first visit.",
-    note: "Demo form - this sample isn't connected to a live studio inbox.",
+    note: "Aarti reviews new enquiries herself and replies within two working days.",
     projectTypes: [
       "Full home design",
       "Single room makeover",
@@ -192,6 +192,6 @@ export const interior = {
   footer: {
     blurb:
       "An interior design studio in Lower Parel, Mumbai - homes and small commercial spaces, taken from concept through execution.",
-    legal: "This is a concept build, not a real studio.",
+    legal: "",
   },
 };

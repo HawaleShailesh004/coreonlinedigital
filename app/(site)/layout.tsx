@@ -1,4 +1,5 @@
 import { Nav } from "@/components/Nav";
+import { SiteAssistant } from "@/components/chat/SiteAssistant";
 import { Footer } from "@/components/Footer";
 
 /**
@@ -19,10 +20,11 @@ export default function SiteLayout({
         Skip to content
       </a>
       <Nav />
-      <main id="main" className="flex-1">
+      <main id="main" className="flex-1 pb-[calc(3rem+env(safe-area-inset-bottom))] sm:pb-0">
         {children}
       </main>
       <Footer />
+      <SiteAssistant />
     </>
   );
 }

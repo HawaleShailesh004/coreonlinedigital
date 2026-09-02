@@ -203,7 +203,7 @@ export const realty = {
       successTitle: "Requirement received.",
       successBody:
         "Rohan will call you back within the working day with a shortlist. If you would rather send photos or a floor plan, WhatsApp works too.",
-      note: "Demo form - this sample is not connected to a live CRM.",
+      note: "Rohan will call you back within the working day with a shortlist.",
     },
   },
 
@@ -216,6 +216,6 @@ export const realty = {
   footer: {
     blurb:
       "A Thane West brokerage covering six micro-markets - resale, new launches and rentals, with the paperwork handled end to end.",
-    legal: "This is a concept build, not a real brokerage.",
+    legal: "",
   },
 };

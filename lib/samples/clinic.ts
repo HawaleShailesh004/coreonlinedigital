@@ -176,7 +176,7 @@ export const clinic = {
     successTitle: "Appointment requested.",
     successBody:
       "We'll confirm your slot on WhatsApp within a few hours. If it's urgent, call the clinic directly and we'll fit you in today.",
-    note: "Demo form - this sample isn't connected to a live clinic calendar.",
+    note: "We'll confirm your slot on WhatsApp within a few hours.",
   },
 
   bookPage: {
@@ -194,6 +194,6 @@ export const clinic = {
   footer: {
     blurb:
       "A family practice in Naupada, Thane - general medicine, diagnostics and preventive care for adults and children.",
-    legal: "This is a concept build, not a real clinic.",
+    legal: "",
   },
 };

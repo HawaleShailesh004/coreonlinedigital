@@ -1,37 +1,53 @@
 import { ContactForm } from "@/components/contact/ContactForm";
 import { LineNode } from "@/components/LineNode";
+import { WhatsAppAnchor } from "@/components/WhatsAppLink";
 import { Container } from "@/components/ui/Container";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { contactPage, site } from "@/lib/content";
-import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
 
-export const metadata = pageMetadata({
-  title: "Book a Strategy Call",
-  description:
-    "Strategy call in Wagle Estate, Thane. WhatsApp, phone, or callback - same-day reply before 6pm.",
-  path: "/contact",
-});
+const title = "Talk to Me in Thane";
+const description =
+  "WhatsApp, phone, or leave your number and I'll call back - same day if you reach out before 6pm. Coreline Digital, Wagle Estate, Thane.";
+
+export const metadata = pageMetadata({ title, description, path: "/contact" });
+
+const crumbs = breadcrumbJsonLd([{ name: "Contact", path: "/contact" }]);
 
 export default function ContactPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          webPageJsonLd({
+            title,
+            description,
+            path: "/contact",
+            type: "ContactPage",
+            breadcrumbId: crumbs["@id"],
+          }),
+          crumbs,
+        ]}
+      />
       <PageHeader heading={contactPage.heading} sub={contactPage.sub} />
 
       <Container className="pb-16 md:pb-32">
         <div className="grid gap-12 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-5">
-            <a
-              href={site.whatsapp}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="group flex items-center justify-between gap-4 border border-hairline p-6 transition-colors duration-150 ease-linear hover:border-accent"
-            >
+            {/* The page had an h1 and nothing else - no landmark between the
+                headline and a bare definition list. These two headings are what
+                a screen reader tabs between, and what Google pulls when someone
+                asks for the phone number or the address directly. */}
+            <h2 className="sr-only">Reach me directly</h2>
+
+            <WhatsAppAnchor className="group flex items-center justify-between gap-4 border border-hairline p-6 transition-colors duration-150 ease-linear hover:border-accent">
               <span className="font-display text-base font-medium">
-                Message us on WhatsApp
+                Message me on WhatsApp
               </span>
               {/* Soft pulsing ring: suggests a live, responsive channel. */}
               <span className="ring-pulse relative flex size-2.5 shrink-0 items-center justify-center rounded-full bg-accent" />
-            </a>
+            </WhatsAppAnchor>
 
             <dl className="mt-10 border-t border-hairline">
               <div className="border-b border-hairline py-6">
@@ -77,6 +93,7 @@ export default function ContactPage() {
           </div>
 
           <div className="md:col-span-6 md:col-start-7">
+            <h2 className="sr-only">Request a call back</h2>
             <ContactForm />
           </div>
         </div>

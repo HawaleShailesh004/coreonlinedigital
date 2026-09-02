@@ -12,7 +12,7 @@ import { trader } from "@/lib/samples/trader";
 import { traderMedia } from "@/lib/samples/media";
 
 export const metadata: Metadata = {
-  title: "Sample: Online Home Goods Store",
+  title: "Nilaya Home",
   description:
     "Concept build for a small D2C brand - working cart and checkout, WhatsApp order automation, and a live AI assistant answering stock, shipping and returns.",
 };

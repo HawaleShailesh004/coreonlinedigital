@@ -291,7 +291,7 @@ export const gym = {
     successTitle: "You're booked in.",
     successBody:
       "We'll confirm on WhatsApp and tell you exactly what to bring. Wear shoes you can lift in.",
-    note: "Demo form - this sample isn't wired to a live gym schedule.",
+    note: "We'll confirm on WhatsApp and tell you exactly what to bring.",
   },
 
   bottomCta: {
@@ -303,7 +303,7 @@ export const gym = {
   footer: {
     blurb:
       "A strength and conditioning gym in Wagle Estate, Thane. Open seven days, coached every hour.",
-    legal: "This is a concept build, not a real gym.",
+    legal: "",
   },
 };
 

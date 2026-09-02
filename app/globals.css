@@ -9,7 +9,10 @@
   --color-paper: #f6f7f5;
   --color-accent: #1f5c4b;
   --color-accent-soft: #2c7a63;
-  --color-grey: #6e7a75;
+  /* Darkened from #6e7a75, which measured 4.15:1 on paper and failed AA
+     for normal text - and this token carries real paragraph copy in the
+     pillar teasers, process steps and work cards. #636f6a is 4.87:1. */
+  --color-grey: #636f6a;
   --color-body: #3e4541;
   --color-hairline: rgba(12, 18, 16, 0.12);
   --color-hairline-inverse: rgba(246, 247, 245, 0.16);
@@ -19,7 +22,17 @@
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
-  /* Type scale from the build document. */
+  /*
+   * Type scale from the build document.
+   *
+   * FOUR STEPS FOR TEXT, and they are not interchangeable:
+   *   text-lead  17px  intro and lead paragraphs
+   *   text-small 15px  secondary body - card copy, list items, helper text
+   *   text-sm    14px  interface text - buttons, nav, inline links
+   *   text-label 11px  mono uppercase eyebrows and meta
+   * Headings use h1/h2/h3. Reach for an arbitrary text-[…] only for the
+   * responsive display sizes in the hero and page headers.
+   */
   --text-h1: 3.5rem;
   --text-h1--line-height: 1.08;
   --text-h1--letter-spacing: -0.02em;
@@ -31,6 +44,10 @@
   --text-h3--letter-spacing: -0.01em;
   --text-lead: 1.0625rem;
   --text-lead--line-height: 1.65;
+  /* The step between lead and label. Was written as text-[0.9375rem] with a
+     hand-repeated leading-[1.65] in nine places. */
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.65;
   --text-label: 0.6875rem;
   --text-label--line-height: 1.4;
   --text-label--letter-spacing: 0.12em;
@@ -77,8 +94,14 @@
     color: var(--color-paper);
   }
 
+  /*
+   * accent-soft, not accent: the ring has to clear 3:1 against BOTH grounds
+   * (WCAG 2.2 SC 1.4.11). accent is 7.26:1 on paper but 2.42:1 on ink, so on
+   * the closing CTA band and inside the assistant it was effectively invisible.
+   * accent-soft measures 4.80:1 on paper and 3.67:1 on ink.
+   */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-accent-soft);
     outline-offset: 3px;
   }
 }
@@ -136,15 +159,6 @@
   }
 }
 
-@keyframes cl-trace {
-  from {
-    stroke-dashoffset: 240;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
 @keyframes cl-ring {
   0% {
     box-shadow: 0 0 0 0 rgba(31, 92, 75, 0.35);
@@ -189,21 +203,19 @@
   animation: cl-wipe-x 0.7s var(--ease-line) both;
 }
 
-/* Intentional infinite loop #1 - the industry ticker. */
+/* The one intentional infinite loop on the site - the industry ticker. */
+/*
+ * No will-change here on purpose: an infinite transform animation already gets
+ * its own compositor layer, and a permanent will-change keeps that layer (and
+ * its memory) alive for the whole session for no gain.
+ */
 .marquee-track {
   animation: cl-marquee 40s linear infinite;
-  will-change: transform;
 }
 
 .marquee-shell:hover .marquee-track,
 .marquee-shell:focus-within .marquee-track {
   animation-play-state: paused;
-}
-
-/* Intentional infinite loop #2 - the "system is alive" waveform. */
-.pulse-path {
-  stroke-dasharray: 120 120;
-  animation: cl-trace 4s linear infinite;
 }
 
 /* System status light on the final CTA band. */
@@ -234,6 +246,138 @@
 .line-hover:hover::after,
 .line-hover:focus-within::after {
   transform: scaleX(1);
+}
+
+/* ---------------------------------------------------------------------------
+   Site assistant.
+
+   Motion here is functional, not decorative: it shows that a message arrived,
+   that the assistant is thinking, and how far through the questions you are.
+   The homepage stays still on purpose (see AGENTS.md); this is the one surface
+   where movement is the product being demonstrated.
+   --------------------------------------------------------------------------- */
+
+@keyframes cl-chat-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cl-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cl-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes cl-teaser-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes cl-ring-once {
+  from {
+    box-shadow: 0 0 0 0 rgba(44, 122, 99, 0.4);
+  }
+  to {
+    box-shadow: 0 0 0 12px rgba(44, 122, 99, 0);
+  }
+}
+
+/* Each message announces itself, once. */
+.chat-in {
+  animation: cl-chat-in 0.32s var(--ease-line) both;
+  animation-delay: var(--chat-delay, 0ms);
+}
+
+/* Desktop: grows out of the launcher corner. */
+.chat-panel-in {
+  animation: cl-panel-in 0.26s var(--ease-line) both;
+  transform-origin: bottom right;
+}
+
+/* Mobile: a sheet, because a floating card on a phone is a toy. */
+.chat-sheet-in {
+  animation: cl-sheet-in 0.28s var(--ease-line) both;
+}
+
+/*
+ * `backwards`, not `both`, and that matters.
+ *
+ * A filled-forwards animation keeps applying its final keyframe, and an
+ * animation beats a normal declaration in the cascade - so `both` here pinned
+ * the launcher to opacity 1 and translateY(0) forever, silently killing both
+ * the hover lift and the fade-out that gets it off the closing CTA.
+ * `backwards` holds the from-state through the delay and then hands control
+ * back to the element's own styles, which is all this needs.
+ */
+.chat-launcher-in {
+  animation: cl-chat-in 0.5s var(--ease-line) backwards;
+  animation-delay: 900ms;
+}
+
+.chat-teaser-in {
+  animation: cl-teaser-in 0.4s var(--ease-line) both;
+}
+
+/* Fires once when the WhatsApp handoff appears - the only thing left to do. */
+.chat-ring-once {
+  animation: cl-ring-once 1.2s ease-out 2;
+}
+
+/* The line-node motif doing real work: nodes fill as questions get answered. */
+.chat-node {
+  transition:
+    background-color 0.35s ease-out,
+    transform 0.35s var(--ease-line);
+}
+
+.chat-node[data-filled="true"] {
+  transform: scale(1.5);
+}
+
+/* A visible scrollbar in a small panel reads as clutter; a thin one reads as
+   depth. Firefox and WebKit disagree about how to say this, so both are set. */
+.chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline) transparent;
+  overscroll-behavior: contain;
+}
+
+.chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-hairline);
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -270,12 +414,25 @@
     transform: none !important;
   }
 
-  .pulse-path {
-    stroke-dasharray: none !important;
-    stroke-dashoffset: 0 !important;
-  }
-
   .ring-pulse::before {
     display: none;
+  }
+
+  .chat-in,
+  .chat-panel-in,
+  .chat-sheet-in,
+  .chat-teaser-in,
+  .chat-launcher-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .chat-ring-once {
+    animation: none !important;
+  }
+
+  .chat-node[data-filled="true"] {
+    transform: none !important;
   }
 }

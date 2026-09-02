@@ -26,7 +26,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Sample: Interior Designer",
+  title: "Studio Kadam",
   description:
     "Concept build for a Mumbai interior design studio - a photography-led project portfolio, a four-stage process and a qualified enquiry form.",
 };

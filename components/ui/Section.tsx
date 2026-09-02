@@ -10,6 +10,12 @@ type SectionProps = {
   bordered?: boolean;
   className?: string;
   containerClassName?: string;
+  /**
+   * Lets a caller tag a band for something outside the section to find - the
+   * site assistant watches [data-cta-band] so its launcher can move out of the
+   * way of the closing CTA.
+   */
+  "data-cta-band"?: boolean;
 };
 
 const sizes: Record<NonNullable<SectionProps["size"]>, string> = {
@@ -26,10 +32,12 @@ export function Section({
   bordered = false,
   className,
   containerClassName,
+  "data-cta-band": ctaBand,
 }: SectionProps) {
   return (
     <section
       id={id}
+      data-cta-band={ctaBand ? "" : undefined}
       className={cn(
         sizes[size],
         tone === "ink" && "bg-ink text-paper",
