@@ -550,7 +550,7 @@ export const verticalPages: VerticalPage[] = [
     stripLabel: "Clinics",
     title: "Clinic Website in Thane",
     description:
-      "A clinic website in Thane that lets patients book a slot instead of calling and waiting. WhatsApp confirmation, timings, doctors. From ₹15,000.",
+      "A clinic website in Thane that lets patients book a slot instead of calling and waiting. WhatsApp confirmation, timings, doctors.",
     heading: "Clinic website in Thane.",
     sub: "The patient who couldn't get through at lunch booked the clinic that answered. I build the site that takes the appointment while you're with someone else.",
     images: {
@@ -611,7 +611,7 @@ export const verticalPages: VerticalPage[] = [
     stripLabel: "Jewellers",
     title: "Jewellery Shop Website in Thane",
     description:
-      "A jewellery website in Thane that shows the collection without listing prices, then sends every enquiry to WhatsApp so the sale still closes in the showroom. From ₹15,000.",
+      "A jewellery website in Thane that shows the collection without listing prices, then sends every enquiry to WhatsApp so the sale closes in the showroom.",
     heading: "Jewellery shop website in Thane.",
     sub: "People already decide from photos. If those photos only live on WhatsApp, you are sending the same ten pictures by hand, every day, and still arguing price when they walk in.",
     images: {
@@ -672,7 +672,7 @@ export const verticalPages: VerticalPage[] = [
     stripLabel: "Gyms",
     title: "Gym Website in Thane",
     description:
-      "A gym website in Thane that answers fees, timings and ladies-batch questions, and books the free trial without another WhatsApp. From ₹15,000.",
+      "A gym website in Thane that answers fees, timings and ladies-batch questions, and books the free trial without another WhatsApp.",
     heading: "Gym website in Thane.",
     sub: "The same eight questions hit WhatsApp all day: fees, PT, ladies batch, trial, parking. The gym that replies first gets the walk-in. The others get a seen tick.",
     images: {
@@ -733,7 +733,7 @@ export const verticalPages: VerticalPage[] = [
     stripLabel: "Coaching classes",
     title: "Coaching Class Website in Thane",
     description:
-      "A coaching class website in Thane that publishes batch fees and last year's results before the parent has to ask. Demo class enquiry included. From ₹15,000.",
+      "A coaching class website in Thane that publishes batch fees and last year's results before the parent has to ask. Demo class enquiry included.",
     heading: "Coaching class website in Thane.",
     sub: "A parent comparing two classes will pick the one that looks organised. Hidden fees and 'results on request' read as something to hide.",
     images: {
@@ -794,7 +794,7 @@ export const verticalPages: VerticalPage[] = [
     stripLabel: "Real Estate",
     title: "Real Estate Website in Thane",
     description:
-      "A real estate website in Thane that shows verified listings with the asking price on the card, then qualifies budget and timeline before a site visit. From ₹15,000.",
+      "A real estate website in Thane that shows verified listings with the asking price on the card, then qualifies budget and timeline before a site visit.",
     heading: "Real estate website in Thane.",
     sub: "The Sunday visit should be for a flat they can actually buy. Most broker sites dump every listing in the city. I build the one that asks budget first.",
     images: {

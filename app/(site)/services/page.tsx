@@ -20,7 +20,7 @@ import {
 
 const title = "Website Design Company in Thane";
 const description =
-  "What I build for Thane businesses: a website that brings customers, an assistant that answers when you can't, and optional monthly upkeep. From ₹15,000.";
+  "What I build for Thane businesses: a website that brings customers, an assistant that answers when you can't, and optional monthly upkeep.";
 
 export const metadata = pageMetadata({
   title,

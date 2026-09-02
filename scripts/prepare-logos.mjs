@@ -261,6 +261,10 @@ const markTrimmed = crop(mark, alphaBounds(mark));
 const outputs = [
   ["public/logo-lockup.png", lockupTrimmed],
   ["public/logo-mark.png", markTrimmed],
+  // Opaque squares: Google Search drops transparent / non-square marks
+  // and shows the generic globe instead. 192 is the size they actually fetch.
+  ["app/icon.png", onSquare(markTrimmed, 192, 28, PAPER)],
+  ["public/icon-192.png", onSquare(markTrimmed, 192, 28, PAPER)],
   ["app/apple-icon.png", onSquare(markTrimmed, 180, 24, PAPER)],
 ];
 

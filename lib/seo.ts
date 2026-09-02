@@ -16,11 +16,11 @@ export const titleSuffix = site.legalName;
 /**
  * Primary meta description (≤155 chars).
  *
- * Written in the words the buyer searches in, not the words an agency uses
- * about itself: price, place, and what it does. "Bespoke web architecture" was
- * invisible to someone typing "website for my clinic in thane".
+ * Written in the words the buyer searches: place, and what it does. Price
+ * stays on the page, not in the SERP snippet.
  */
-export const defaultDescription = `Websites for Thane and Mumbai businesses that bring you customers. From ${site.priceFrom}, live in ${site.deliveryShort}, half paid only when it goes live.`;
+export const defaultDescription =
+  "Websites for Thane and Mumbai businesses that bring you customers. Live in 10 working days, half paid only when it goes live.";
 
 export const seoKeywords = [
   "Coreline Digital",

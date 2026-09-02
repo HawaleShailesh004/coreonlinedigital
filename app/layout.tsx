@@ -35,7 +35,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const defaultTitle = `Website Design in Thane, From ${site.priceFrom} | ${titleSuffix}`;
+const defaultTitle = `Website Design in Thane | ${titleSuffix}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -50,6 +50,13 @@ export const metadata: Metadata = {
   publisher: site.legalName,
   applicationName: site.legalName,
   category: "Business",
+  icons: {
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   // No site-wide canonical. Metadata inherits down the tree, so `canonical: "/"`
   // here was not a default - it was a claim that every page which forgets to
   // override it is a duplicate of the homepage. The six public pages each set

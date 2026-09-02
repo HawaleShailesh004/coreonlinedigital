@@ -12,12 +12,12 @@ import { defaultDescription, pageMetadata, webPageJsonLd } from "@/lib/seo";
 
 export const metadata = {
   ...pageMetadata({
-    title: `Website Design in Thane, From ${site.priceFrom}`,
+    title: "Website Design in Thane",
     description: defaultDescription,
     path: "/",
   }),
   title: {
-    absolute: `Website Design in Thane, From ${site.priceFrom} | ${site.legalName}`,
+    absolute: `Website Design in Thane | ${site.legalName}`,
   },
 };
 
@@ -28,7 +28,7 @@ export default function HomePage() {
           single-item crumb would say nothing. */}
       <JsonLd
         data={webPageJsonLd({
-          title: `Website Design in Thane, From ${site.priceFrom}`,
+          title: "Website Design in Thane",
           description: defaultDescription,
           path: "/",
         })}
