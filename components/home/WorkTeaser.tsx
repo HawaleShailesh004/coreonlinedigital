@@ -14,6 +14,9 @@ export function WorkTeaser() {
           <h2 className="mt-5 font-display text-h2 font-semibold">
             {workTeaser.heading}
           </h2>
+          <p className="mt-5 max-w-2xl text-small text-body">
+            {workTeaser.sub}
+          </p>
         </div>
         <Link
           href="/work"

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { WorkSample } from "@/lib/content";
+import { workPage, type WorkSample } from "@/lib/content";
 
 export function WorkCard({ sample }: { sample: WorkSample }) {
   return (
@@ -17,7 +17,7 @@ export function WorkCard({ sample }: { sample: WorkSample }) {
           className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
         />
         <span className="absolute inset-x-0 bottom-0 bg-ink px-6 py-3 font-mono text-label uppercase text-paper">
-          Open sample
+          {workPage.cardLink}
         </span>
       </div>
 

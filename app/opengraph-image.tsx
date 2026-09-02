@@ -78,7 +78,7 @@ export default function OpengraphImage() {
             <span>you never even see.</span>
           </div>
           <div style={{ marginTop: 28, fontSize: 27, color: GREY, maxWidth: 760 }}>
-            Websites for Thane businesses, built by one person.
+            Websites for Thane businesses that bring you customers.
           </div>
         </div>
 

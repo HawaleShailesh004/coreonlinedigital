@@ -32,7 +32,7 @@ export async function requestCallback(
   if (!contactPage.businessTypes.includes(businessType)) {
     errors.businessType = "Please pick a business type.";
   } else if (businessType === "Other" && otherBusinessType.length < 2) {
-    errors.otherBusinessType = "Please tell me what kind of business.";
+    errors.otherBusinessType = "Please tell us what kind of business.";
   }
 
   const digits = phone.replace(/\D/g, "");

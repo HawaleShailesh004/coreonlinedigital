@@ -13,6 +13,9 @@ export function ServicePillars() {
           <h2 className="mt-5 font-display text-h2 font-semibold">
             {servicesPage.heading}
           </h2>
+          <p className="mt-5 max-w-2xl text-small text-body">
+            {servicesPage.homeSub}
+          </p>
         </div>
         <Link
           href="/services"

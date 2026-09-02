@@ -1,4 +1,4 @@
-import { pillars, site } from "@/lib/content";
+import { pillars, site, verticalPages } from "@/lib/content";
 import { siteUrl } from "@/lib/seo";
 
 /**
@@ -14,14 +14,17 @@ export async function GET() {
     "",
     `> ${site.tagline}`,
     "",
-    `${site.legalName} is a single-operator web design business run by Shailesh from ${site.location}, ${site.region}, India. It builds websites, booking and enquiry-handling systems, and optional monthly upkeep for local businesses in Thane and Mumbai.`,
+    `${site.legalName} designs and builds websites for local businesses in Thane and Mumbai, with booking and enquiry handling and optional monthly upkeep. Based in ${site.location}, ${site.region}, India.`,
     "",
     "## Pages",
     "",
     `- [Home](${siteUrl}/): overview of the three service lines`,
     `- [Services](${siteUrl}/services): what's included in each, pricing from ${site.priceFrom}, FAQs`,
+    ...verticalPages.map(
+      (page) => `- [${page.title}](${siteUrl}${page.path}): ${page.description}`,
+    ),
     `- [Work](${siteUrl}/work): sample sites by vertical - not live client work`,
-    `- [About](${siteUrl}/about): who builds it`,
+    `- [About](${siteUrl}/about): the business, the terms, and why the offer stays narrow`,
     `- [Contact](${siteUrl}/contact): phone, WhatsApp, email, address`,
     "",
     "## Services",

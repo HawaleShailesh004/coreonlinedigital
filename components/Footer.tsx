@@ -1,8 +1,18 @@
 import Link from "next/link";
+import { EmailAnchor } from "@/components/EmailLink";
+import {
+  MailIcon,
+  PhoneIcon,
+  WhatsAppIcon,
+  profileIcons,
+} from "@/components/FooterIcons";
 import { Logo } from "@/components/Logo";
 import { WhatsAppAnchor } from "@/components/WhatsAppLink";
 import { Container } from "@/components/ui/Container";
 import { legalNav, nav, site } from "@/lib/content";
+
+const linkClass =
+  "inline-flex items-center gap-2.5 font-display text-sm font-medium transition-colors duration-150 ease-linear hover:text-accent";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -27,21 +37,18 @@ export function Footer() {
           <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">
             <div className="flex flex-col gap-3">
               <p className="font-mono text-label uppercase text-grey">Reach me</p>
-              <WhatsAppAnchor className="font-display text-sm font-medium transition-colors duration-150 ease-linear hover:text-accent">
+              <WhatsAppAnchor className={linkClass}>
+                <WhatsAppIcon />
                 WhatsApp
               </WhatsAppAnchor>
-              <a
-                href={site.phoneHref}
-                className="font-display text-sm font-medium transition-colors duration-150 ease-linear hover:text-accent"
-              >
+              <a href={site.phoneHref} className={linkClass}>
+                <PhoneIcon />
                 {site.phone}
               </a>
-              <a
-                href={site.emailHref}
-                className="font-display text-sm font-medium break-all transition-colors duration-150 ease-linear hover:text-accent"
-              >
-                {site.email}
-              </a>
+              <EmailAnchor className={linkClass}>
+                <MailIcon />
+                <span className="break-all">{site.email}</span>
+              </EmailAnchor>
             </div>
 
             <nav aria-label="Footer" className="flex flex-col gap-3">
@@ -65,6 +72,27 @@ export function Footer() {
                 </Link>
               ))}
             </nav>
+
+            {site.profiles.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <p className="font-mono text-label uppercase text-grey">Elsewhere</p>
+                {site.profiles.map((profile) => {
+                  const Icon = profileIcons[profile.label];
+                  return (
+                    <a
+                      key={profile.href}
+                      href={profile.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className={linkClass}
+                    >
+                      {Icon ? <Icon /> : null}
+                      {profile.label}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
@@ -73,7 +101,7 @@ export function Footer() {
             © {year} {site.legalName}
           </p>
           <p className="font-mono text-label uppercase text-grey">
-            Websites that bring you customers
+            {site.footerStrap}
           </p>
         </div>
       </Container>

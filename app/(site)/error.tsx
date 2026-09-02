@@ -29,7 +29,7 @@ export default function SiteError({
           That page didn&apos;t load.
         </h1>
         <p className="mt-6 max-w-xl text-lead text-body">
-          Try again, or message me on WhatsApp and I&apos;ll sort it.
+          Try again, or message us on WhatsApp and we&apos;ll sort it.
         </p>
         <div className="mt-12 flex flex-col gap-4 sm:flex-row">
           <Button type="button" onClick={reset}>

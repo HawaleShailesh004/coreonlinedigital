@@ -35,7 +35,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const defaultTitle = `Websites for Thane Businesses | ${titleSuffix}`;
+const defaultTitle = `Website Design in Thane, From ${site.priceFrom} | ${titleSuffix}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   },
   description: defaultDescription,
   keywords: [...seoKeywords],
-  authors: [{ name: site.legalName, url: siteUrl }],
-  creator: site.legalName,
+  authors: [{ name: site.founderName, url: siteUrl }],
+  creator: site.founderName,
   publisher: site.legalName,
   applicationName: site.legalName,
   category: "Business",

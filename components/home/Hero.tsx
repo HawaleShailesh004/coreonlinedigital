@@ -8,10 +8,10 @@ import { hero, pageWhatsappHref } from "@/lib/content";
  * replays on scroll-back, and the whole thing lands under 1.5s.
  */
 const STEP = {
-  headline: 400,
-  subhead: 670,
-  trust: 820,
-  ctas: 960,
+  headline: 520,
+  subhead: 780,
+  trust: 940,
+  ctas: 1100,
 };
 
 function step(delay: number) {
@@ -22,7 +22,7 @@ export function Hero() {
   return (
     <section className="pt-16 pb-20 md:pt-28 md:pb-28">
       <Container className="flex flex-col items-center text-center">
-        <div className="mb-10 w-24">
+        <div className="mb-10 w-32">
           <LineNode animate tone="accent" />
         </div>
 

@@ -1,13 +1,39 @@
 "use client";
 
+import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { focusStrip } from "@/lib/content";
+import { focusStrip, type FocusStripItem } from "@/lib/content";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
 /**
  * The one intentional infinite loop on the site - reads as a live ticker.
  * The track holds two identical halves so the -50% translate loops seamlessly.
+ * Four of the labels are real pages; the rest stay text until they earn a URL.
  */
+function StripLabel({
+  item,
+  inert = false,
+}: {
+  item: FocusStripItem;
+  inert?: boolean;
+}) {
+  const className = "font-display text-sm font-medium";
+
+  if (item.href) {
+    return (
+      <Link
+        href={item.href}
+        tabIndex={inert ? -1 : undefined}
+        className={`${className} transition-colors duration-150 ease-linear hover:text-accent`}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  return <span className={className}>{item.label}</span>;
+}
+
 export function FocusStrip() {
   const reducedMotion = useReducedMotion();
   const lane = reducedMotion
@@ -25,10 +51,10 @@ export function FocusStrip() {
           <ul className="flex min-w-0 flex-1 flex-wrap items-center gap-x-8 gap-y-2">
             {focusStrip.items.map((item) => (
               <li
-                key={item}
-                className="flex items-center gap-8 font-display text-sm font-medium"
+                key={item.label}
+                className="flex items-center gap-8"
               >
-                {item}
+                <StripLabel item={item} />
                 <span
                   className="size-1 rounded-full bg-accent"
                   aria-hidden="true"
@@ -41,11 +67,14 @@ export function FocusStrip() {
             <div className="marquee-track flex w-max items-center">
               {lane.map((item, index) => (
                 <span
-                  key={`${item}-${index}`}
-                  className="flex shrink-0 items-center gap-8 pr-8 font-display text-sm font-medium whitespace-nowrap"
+                  key={`${item.label}-${index}`}
+                  className="flex shrink-0 items-center gap-8 pr-8 whitespace-nowrap"
                   aria-hidden={index >= focusStrip.items.length}
                 >
-                  {item}
+                  <StripLabel
+                    item={item}
+                    inert={index >= focusStrip.items.length}
+                  />
                   <span
                     className="size-1 rounded-full bg-accent"
                     aria-hidden="true"

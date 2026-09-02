@@ -2,7 +2,7 @@ import { LogoMark } from "@/components/LogoMark";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
-import { founder } from "@/lib/content";
+import { whyCoreline } from "@/lib/content";
 
 /** Deliberately still - no motion beyond the block-level fade-up. */
 export function Founder() {
@@ -17,11 +17,11 @@ export function Founder() {
       </div>
 
       <Reveal className="relative max-w-2xl">
-        <Eyebrow>{founder.eyebrow}</Eyebrow>
+        <Eyebrow>{whyCoreline.eyebrow}</Eyebrow>
         <h2 className="mt-5 font-display text-h2 font-semibold">
-          {founder.heading}
+          {whyCoreline.heading}
         </h2>
-        {founder.paragraphs.map((paragraph) => (
+        {whyCoreline.paragraphs.map((paragraph) => (
           <p key={paragraph.slice(0, 40)} className="mt-8 text-lead text-body">
             {paragraph}
           </p>

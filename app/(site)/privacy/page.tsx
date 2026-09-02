@@ -7,7 +7,7 @@ import { breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
 
 const title = "Privacy";
 const description =
-  "How Coreline Digital handles the name and phone number you send from the site. Your number stays with me. I don't sell it.";
+  "How I handle the name and phone number you send from the site. Your number stays with me. I don't sell it.";
 
 export const metadata = pageMetadata({ title, description, path: "/privacy" });
 
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
           ))}
         </div>
       </Container>
-      <FinalCta heading="Questions about your data?" body="Message me on WhatsApp and I'll remove whatever you want gone." />
+      <FinalCta heading={privacyPage.ctaHeading} body={privacyPage.ctaBody} />
     </>
   );
 }

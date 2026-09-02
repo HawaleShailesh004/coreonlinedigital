@@ -54,7 +54,7 @@ export function ContactForm() {
       <div className="border border-hairline p-8 md:p-10">
         <p className="font-mono text-label uppercase text-accent">Request received</p>
         <p className="mt-5 font-display text-h3 font-semibold">
-          I&apos;ll call you back.
+          {contactPage.formSuccessHeading}
         </p>
         <p className="mt-4 text-small text-grey">
           {state.message}

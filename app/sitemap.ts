@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { verticalPages } from "@/lib/content";
 import { siteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -17,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    ...verticalPages.map((page) => ({
+      url: `${siteUrl}${page.path}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     {
       url: `${siteUrl}/work`,
       lastModified,

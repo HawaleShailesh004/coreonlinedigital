@@ -48,7 +48,7 @@ export const contact = {
  */
 export const corelineChatFacts = `
 WHO
-- Coreline Digital is one person: Shailesh. He designs and builds every site himself. No team, no account manager, no work passed on.
+- Coreline Digital is one person: Shailesh Hawale. He designs and builds every site himself. No team, no account manager, no work passed on.
 - Based in ${contact.area}. Works with businesses in Thane and Mumbai, and remotely elsewhere in India.
 - Contact: WhatsApp ${contact.phone}, email ${contact.email}.
 

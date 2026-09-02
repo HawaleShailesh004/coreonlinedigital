@@ -20,8 +20,7 @@ export const titleSuffix = site.legalName;
  * about itself: price, place, and what it does. "Bespoke web architecture" was
  * invisible to someone typing "website for my clinic in thane".
  */
-export const defaultDescription =
-  `Websites for Thane and Mumbai businesses that bring you customers. From ${site.priceFrom}, live in ${site.deliveryShort}, half paid only when it goes live.`;
+export const defaultDescription = `Websites for Thane and Mumbai businesses that bring you customers. From ${site.priceFrom}, live in ${site.deliveryShort}, half paid only when it goes live.`;
 
 export const seoKeywords = [
   "Coreline Digital",
@@ -58,10 +57,10 @@ export const shareImage = {
   url: "/opengraph-image",
   width: 1200,
   height: 630,
-  alt: `${site.legalName} — websites for Thane businesses`,
+  alt: `${site.legalName} - websites for Thane businesses`,
 } as const;
 
-/** Page-level metadata — titles render as `Page | coreline.` via root template. */
+/** Page-level metadata - titles render as `Page | coreline.` via root template. */
 export function pageMetadata({
   title,
   description,
@@ -93,7 +92,7 @@ export function pageMetadata({
   };
 }
 
-/** Local web design business — mirrors the GBP service categories. */
+/** Local web design business - mirrors the GBP service categories. */
 export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
@@ -113,13 +112,12 @@ export function organizationJsonLd() {
       url: `${siteUrl}/opengraph-image`,
       width: 1200,
       height: 630,
-      caption: "Coreline Digital — websites for Thane businesses",
+      caption: "Coreline Digital - websites for Thane businesses",
     },
     founder: { "@id": `${siteUrl}/#person` },
     description: defaultDescription,
     email: site.email,
     telephone: site.phone,
-    priceRange: "$$",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Wagle Estate",
@@ -135,7 +133,9 @@ export function organizationJsonLd() {
     },
     // Omitted entirely while site.profiles is empty - an empty sameAs array is
     // a weaker signal than no sameAs at all. Fill site.profiles to switch on.
-    ...(site.profiles.length > 0 ? { sameAs: [...site.profiles] } : {}),
+    ...(site.profiles.length > 0
+      ? { sameAs: site.profiles.map((profile) => profile.href) }
+      : {}),
     /**
      * Hours, so Maps and the local pack can show "Open now" rather than
      * nothing. These back the contact page's "same day if you reach out before
@@ -232,9 +232,10 @@ export function personJsonLd() {
     "@context": "https://schema.org",
     "@type": "Person",
     "@id": `${siteUrl}/#person`,
-    name: "Shailesh",
-    givenName: "Shailesh",
-    jobTitle: "Founder",
+    name: site.founderName,
+    givenName: site.founderGiven,
+    familyName: site.founderFamily,
+    jobTitle: site.jobTitle,
     worksFor: { "@id": `${siteUrl}/#organization` },
     url: siteUrl,
     email: site.email,
@@ -246,6 +247,41 @@ export function personJsonLd() {
       addressRegion: "Maharashtra",
       postalCode: "400604",
       addressCountry: "IN",
+    },
+  };
+}
+
+/** One Service node per vertical landing page. */
+export function serviceJsonLd({
+  name,
+  description,
+  path,
+}: {
+  name: string;
+  description: string;
+  path: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${siteUrl}${path}#service`,
+    name,
+    description,
+    url: `${siteUrl}${path}`,
+    provider: { "@id": `${siteUrl}/#organization` },
+    areaServed: [
+      { "@type": "City", name: "Thane" },
+      { "@type": "City", name: "Mumbai" },
+    ],
+    offers: {
+      "@type": "Offer",
+      url: `${siteUrl}${path}`,
+      priceSpecification: {
+        "@type": "PriceSpecification",
+        priceCurrency: "INR",
+        minPrice: 15000,
+        maxPrice: 35000,
+      },
     },
   };
 }
@@ -290,7 +326,7 @@ export function websiteJsonLd() {
  * `primaryImageOfPage` gives the share card an owner.
  *
  * `type` narrows the page for the templates Google treats specially:
- * ContactPage for reach-us pages, AboutPage for the founder story,
+ * ContactPage for reach-us pages, AboutPage for the business story,
  * CollectionPage for an index of other things.
  */
 export function webPageJsonLd({

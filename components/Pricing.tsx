@@ -57,7 +57,7 @@ export function Pricing({ bordered = true }: { bordered?: boolean }) {
           {site.primaryCta}
         </WhatsAppButton>
         <p className="text-small text-grey">
-          Tell me what your business does and I&apos;ll give you the number.
+          Tell us what your business does and we&apos;ll give you the number.
         </p>
       </div>
     </Section>
