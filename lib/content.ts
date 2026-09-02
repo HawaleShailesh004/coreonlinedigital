@@ -78,17 +78,14 @@ export const site = {
    * the about page's "not the other companies with a similar name" line is
    * fighting, and it cannot win that with prose alone.
    *
-   * PASTE THE REAL URLS HERE. They are deliberately left empty rather than
-   * guessed: a sameAs pointing at the wrong profile actively merges you with
-   * someone else's entity. `organizationJsonLd()` omits the property entirely
-   * while this is empty, so a half-filled list is safe.
-   *
-   * Wanted, in rough order of value:
-   *   Google Business Profile  https://www.google.com/maps/place/...  (or a g.page/ short link)
-   *   LinkedIn                 https://www.linkedin.com/company/...   (or /in/... personal)
-   *   Instagram                https://www.instagram.com/...
+   * Order doesn't matter to Google; GBP is listed first as the highest-value
+   * entry for a local service business.
    */
-  profiles: [] as readonly string[],
+  profiles: [
+    "https://g.page/r/CSP-PeoCxAXgEBM",
+    "https://www.linkedin.com/company/coreline-digital/",
+    "https://www.instagram.com/corelinedigitall/",
+  ] as readonly string[],
 } as const;
 
 const PAGE_WHATSAPP_LABEL: Record<string, string> = {
