@@ -1,0 +1,591 @@
+/* ---------------------------------------------------------------------------
+   Concept C — Switchboard.
+
+   The premise: Coreline sells a machine, not a page. So the hero is the machine,
+   drawn as a working schematic you can operate. One switch flips the whole
+   diagram between how the business runs now (three sources dumping straight into
+   one phone, late) and how it runs wired up.
+
+   Restraint rule for this concept: the diagram is the only loud thing. Every
+   other surface is hairlines, mono data and flat panels — no glass, no glow, no
+   rounded cards.
+   --------------------------------------------------------------------------- */
+
+.sw {
+  --sw-black: #08090a;
+  --sw-panel: #0e1011;
+  --sw-raise: #15181a;
+  --sw-line: rgba(233, 235, 232, 0.11);
+  --sw-line-soft: rgba(233, 235, 232, 0.055);
+  --sw-bone: #e9ebe8;
+  --sw-mute: #8a908c;
+  --sw-dim: #5b625e;
+  --sw-signal: #34d39b;
+  --sw-leak: #ff6b4a;
+
+  --sw-sans: var(--sw-font-sans), ui-sans-serif, system-ui, sans-serif;
+  --sw-mono: var(--sw-font-mono), ui-monospace, monospace;
+
+  min-height: 100dvh;
+  background: var(--sw-black);
+  color: var(--sw-bone);
+  font-family: var(--sw-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sw *,
+.sw *::before,
+.sw *::after {
+  box-sizing: border-box;
+  border-color: var(--sw-line);
+}
+
+.sw a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sw :focus-visible {
+  outline: 2px solid var(--sw-signal);
+  outline-offset: 3px;
+}
+
+.sw ::selection {
+  background: var(--sw-signal);
+  color: #04140e;
+}
+
+.sw-shell {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .sw-shell {
+    padding-inline: 2rem;
+  }
+}
+
+.sw-mono {
+  font-family: var(--sw-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- bar ------------------------------------------------------------------ */
+
+.sw-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1rem;
+  background: color-mix(in srgb, var(--sw-black) 88%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--sw-line-soft);
+}
+
+.sw-wordmark {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.sw-wordmark i {
+  color: var(--sw-signal);
+  font-style: normal;
+}
+
+.sw-bar-meta {
+  font-family: var(--sw-mono);
+  font-size: 0.75rem;
+  color: var(--sw-dim);
+}
+
+.sw-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: var(--sw-signal);
+  color: #04140e;
+  border: 1px solid var(--sw-signal);
+  transition: background-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+.sw-btn:hover {
+  background: transparent;
+  color: var(--sw-signal);
+}
+
+.sw-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--sw-line);
+  color: var(--sw-bone);
+  transition: border-color 0.2s ease-out;
+}
+
+.sw-btn-ghost:hover {
+  border-color: var(--sw-signal);
+}
+
+/* --- hero ----------------------------------------------------------------- */
+
+.sw-hero {
+  padding-block: clamp(3.5rem, 9vh, 6rem) 2.5rem;
+}
+
+.sw-hero h1 {
+  margin: 0;
+  max-width: 24ch;
+  font-size: clamp(2.125rem, 5.4vw, 4rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.038em;
+}
+
+.sw-hero h1 span {
+  color: var(--sw-mute);
+}
+
+.sw-lede {
+  margin: 1.75rem 0 0;
+  max-width: 54ch;
+  color: var(--sw-mute);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+/* --- the switch ----------------------------------------------------------
+   Two states, both labelled, current one filled. A toggle that hides one of
+   its labels makes the reader guess what the other side even is. */
+
+.sw-switch {
+  display: inline-flex;
+  margin-top: 2.5rem;
+  border: 1px solid var(--sw-line);
+  background: var(--sw-panel);
+}
+
+.sw-switch button {
+  padding: 0.75rem 1.375rem;
+  font-family: var(--sw-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--sw-dim);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.sw-switch button:hover {
+  color: var(--sw-bone);
+}
+
+.sw-switch button[aria-pressed="true"] {
+  background: var(--sw-raise);
+  color: var(--sw-bone);
+}
+
+.sw-switch button[aria-pressed="true"][data-tone="leak"] {
+  color: var(--sw-leak);
+  box-shadow: inset 0 -2px 0 var(--sw-leak);
+}
+
+.sw-switch button[aria-pressed="true"][data-tone="signal"] {
+  color: var(--sw-signal);
+  box-shadow: inset 0 -2px 0 var(--sw-signal);
+}
+
+/* --- the board ------------------------------------------------------------ */
+
+.sw-board {
+  margin-top: 2rem;
+  border: 1px solid var(--sw-line);
+  background:
+    linear-gradient(var(--sw-line-soft) 1px, transparent 1px) 0 0 / 100% 2.5rem,
+    linear-gradient(90deg, var(--sw-line-soft) 1px, transparent 1px) 0 0 / 2.5rem 100%,
+    var(--sw-panel);
+}
+
+.sw-board-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--sw-line);
+  font-family: var(--sw-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--sw-dim);
+  background: var(--sw-black);
+}
+
+.sw-board-head b {
+  font-weight: 400;
+  color: var(--sw-bone);
+}
+
+/* The schematic keeps its proportions and scrolls sideways on a phone, the way
+   a real drawing does. Squashing it to fit would make the wires meaningless. */
+.sw-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: 1.25rem;
+}
+
+.sw-svg {
+  display: block;
+  width: 100%;
+  min-width: 46rem;
+  height: auto;
+}
+
+/* --- schematic parts ------------------------------------------------------ */
+
+.sw-node rect {
+  fill: var(--sw-raise);
+  stroke: var(--sw-line);
+  stroke-width: 1;
+  transition: fill 0.25s ease-out, stroke 0.25s ease-out;
+}
+
+.sw-node text {
+  font-family: var(--sw-sans);
+  fill: var(--sw-bone);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.sw-node .sw-node-sub {
+  font-family: var(--sw-mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  fill: var(--sw-dim);
+}
+
+.sw-node {
+  cursor: pointer;
+}
+
+.sw-node:hover rect {
+  stroke: var(--sw-mute);
+}
+
+.sw-node[data-active="true"] rect {
+  fill: #1b2320;
+  stroke: var(--sw-signal);
+  stroke-width: 1.5;
+}
+
+/* A node that does not exist yet: outline only, no fill, no label weight. */
+.sw-node[data-ghost="true"] rect {
+  fill: none;
+  stroke: rgba(233, 235, 232, 0.16);
+  stroke-dasharray: 4 5;
+}
+
+.sw-node[data-ghost="true"] text {
+  fill: var(--sw-dim);
+}
+
+.sw-wire {
+  fill: none;
+  stroke: var(--sw-line);
+  stroke-width: 1.5;
+}
+
+/* Live wire: dashes flow from source to destination, so the diagram reads as
+   something with current in it rather than a picture of boxes. */
+.sw-wire[data-state="live"] {
+  stroke: var(--sw-signal);
+  stroke-dasharray: 5 9;
+  animation: sw-flow 0.9s linear infinite;
+}
+
+.sw-wire[data-state="live"][data-active="true"] {
+  stroke-width: 2.5;
+}
+
+.sw-wire[data-state="broken"] {
+  stroke: var(--sw-leak);
+  stroke-dasharray: 3 7;
+  opacity: 0.75;
+}
+
+@keyframes sw-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+.sw-badge text {
+  font-family: var(--sw-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.sw-badge[data-tone="leak"] text {
+  fill: var(--sw-leak);
+}
+
+.sw-badge[data-tone="signal"] text {
+  fill: var(--sw-signal);
+}
+
+.sw-wire-label {
+  font-family: var(--sw-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  fill: var(--sw-dim);
+}
+
+/* --- readout -------------------------------------------------------------- */
+
+.sw-readout {
+  display: grid;
+  gap: 1px;
+  border-top: 1px solid var(--sw-line);
+  background: var(--sw-line-soft);
+}
+
+@media (min-width: 800px) {
+  .sw-readout {
+    grid-template-columns: 1fr 1.4fr;
+  }
+}
+
+.sw-readout > div {
+  padding: 1.5rem 1.25rem;
+  background: var(--sw-panel);
+}
+
+.sw-readout h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sw-readout .sw-kicker {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--sw-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--sw-dim);
+}
+
+.sw-readout p {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--sw-mute);
+}
+
+.sw-readout p + p {
+  margin-top: 0.875rem;
+}
+
+.sw-readout b {
+  color: var(--sw-bone);
+  font-weight: 500;
+}
+
+/* --- sections ------------------------------------------------------------- */
+
+.sw-section {
+  padding-block: clamp(4rem, 10vh, 7rem);
+  border-top: 1px solid var(--sw-line-soft);
+}
+
+.sw-h2 {
+  margin: 0;
+  max-width: 20ch;
+  font-size: clamp(1.75rem, 3.6vw, 2.625rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.032em;
+}
+
+.sw-sub {
+  margin: 1.125rem 0 0;
+  max-width: 56ch;
+  color: var(--sw-mute);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* --- build list ----------------------------------------------------------- */
+
+.sw-list {
+  margin-top: 3rem;
+  border-top: 1px solid var(--sw-line);
+}
+
+.sw-item {
+  display: grid;
+  gap: 0.5rem 2rem;
+  padding-block: 1.375rem;
+  border-bottom: 1px solid var(--sw-line-soft);
+  align-items: baseline;
+}
+
+@media (min-width: 760px) {
+  .sw-item {
+    grid-template-columns: 3rem 20ch 1fr 10ch;
+  }
+}
+
+.sw-item-no {
+  font-family: var(--sw-mono);
+  font-size: 0.75rem;
+  color: var(--sw-dim);
+}
+
+.sw-item-name {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.sw-item-note {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--sw-mute);
+}
+
+.sw-item-price {
+  font-family: var(--sw-mono);
+  font-size: 0.8125rem;
+  color: var(--sw-signal);
+  white-space: nowrap;
+}
+
+@media (min-width: 760px) {
+  .sw-item-price {
+    text-align: right;
+  }
+}
+
+/* --- proof ---------------------------------------------------------------- */
+
+.sw-proof {
+  display: grid;
+  gap: 1px;
+  margin-top: 2.5rem;
+  background: var(--sw-line-soft);
+  border: 1px solid var(--sw-line-soft);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.sw-proof a {
+  padding: 1.25rem;
+  background: var(--sw-panel);
+  transition: background-color 0.2s ease-out;
+}
+
+.sw-proof a:hover {
+  background: var(--sw-raise);
+}
+
+.sw-proof b {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.sw-proof span {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--sw-mute);
+}
+
+/* --- terms + close -------------------------------------------------------- */
+
+.sw-terms {
+  display: grid;
+  gap: 1px;
+  margin-top: 2.5rem;
+  background: var(--sw-line-soft);
+  border: 1px solid var(--sw-line-soft);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+}
+
+.sw-terms > div {
+  padding: 1.5rem 1.25rem;
+  background: var(--sw-panel);
+}
+
+.sw-terms dt {
+  font-family: var(--sw-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--sw-dim);
+}
+
+.sw-terms dd {
+  margin: 0.75rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.sw-terms p {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--sw-mute);
+}
+
+.sw-close {
+  padding-block: clamp(4.5rem, 12vh, 8rem);
+  border-top: 1px solid var(--sw-line-soft);
+}
+
+.sw-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2.25rem;
+}
+
+.sw-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  justify-content: space-between;
+  padding-block: 1.75rem;
+  border-top: 1px solid var(--sw-line-soft);
+  font-family: var(--sw-mono);
+  font-size: 0.6875rem;
+  color: var(--sw-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sw-wire[data-state="live"] {
+    animation: none;
+  }
+
+  .sw *,
+  .sw *::before,
+  .sw *::after {
+    transition-duration: 0.001ms !important;
+  }
+}

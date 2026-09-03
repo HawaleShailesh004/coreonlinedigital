@@ -1,0 +1,365 @@
+/* ---------------------------------------------------------------------------
+   Concept index.
+
+   Not three cards in a grid. Each concept gets a full band rendered in its own
+   palette and its own typefaces, so the difference between them is visible
+   before you click anything — which is the only useful thing this page can do.
+   --------------------------------------------------------------------------- */
+
+.pick {
+  min-height: 100dvh;
+  background: #050506;
+  color: #edeeec;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pick *,
+.pick *::before,
+.pick *::after {
+  box-sizing: border-box;
+}
+
+.pick a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pick :focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -4px;
+}
+
+.pick-shell {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .pick-shell {
+    padding-inline: 2.5rem;
+  }
+}
+
+.pick-intro {
+  padding-block: clamp(3.5rem, 10vh, 6rem) 2.5rem;
+}
+
+.pick-intro h1 {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--pick-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+}
+
+.pick-intro p {
+  margin: 1.25rem 0 0;
+  max-width: 60ch;
+  font-family: var(--pick-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #8d938f;
+}
+
+.pick-intro a {
+  color: #edeeec;
+  border-bottom: 1px solid #4a4f4c;
+}
+
+.pick-intro a:hover {
+  border-color: currentColor;
+}
+
+/* --- bands ---------------------------------------------------------------- */
+
+.pick-band {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.pick-band-inner {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+  padding-block: clamp(3rem, 8vh, 5rem);
+}
+
+@media (min-width: 900px) {
+  .pick-band-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
+.pick-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.pick-letter {
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+}
+
+.pick-name {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1;
+}
+
+.pick-premise {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.pick-for {
+  margin: 1.5rem 0 0;
+  max-width: 44ch;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  opacity: 0.7;
+}
+
+.pick-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 2rem;
+  padding: 0.75rem 1.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: transform 0.25s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.pick-band:hover .pick-open {
+  transform: translateX(4px);
+}
+
+/* --- band A: after hours -------------------------------------------------- */
+
+.pick-a {
+  background: #070c18;
+  color: #e9eef8;
+  font-family: var(--pick-serif), Georgia, serif;
+}
+
+.pick-a::before {
+  content: "";
+  position: absolute;
+  inset: -40% 40% auto -10%;
+  height: 30rem;
+  pointer-events: none;
+  background: radial-gradient(ellipse 50% 50% at 40% 30%, rgba(242, 169, 59, 0.16), transparent 70%);
+}
+
+.pick-a .pick-letter,
+.pick-a .pick-for {
+  font-family: var(--pick-mono-a), ui-monospace, monospace;
+  color: #f2a93b;
+  opacity: 1;
+}
+
+.pick-a .pick-for {
+  color: #8fa0c0;
+}
+
+.pick-a .pick-premise {
+  color: #8fa0c0;
+  font-family: var(--pick-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+}
+
+.pick-a .pick-open {
+  background: #f2a93b;
+  color: #17120a;
+  font-family: var(--pick-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Preview: the live-clock headline, set the way the concept sets it. */
+.pick-a-demo {
+  position: relative;
+  font-size: clamp(1.5rem, 3.4vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.pick-a-demo span {
+  color: #8fa0c0;
+}
+
+.pick-a-rail {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: end;
+  height: 3rem;
+  margin-top: 2rem;
+  border-bottom: 1px solid rgba(214, 226, 255, 0.11);
+}
+
+.pick-a-rail i {
+  width: 1px;
+  height: 0.75rem;
+  justify-self: center;
+  background: rgba(214, 226, 255, 0.18);
+}
+
+.pick-a-rail i:nth-child(11) {
+  height: 2.25rem;
+  background: linear-gradient(to top, #f2a93b, rgba(242, 169, 59, 0.1));
+  box-shadow: 0 0 14px rgba(242, 169, 59, 0.55);
+}
+
+/* --- band B: thread ------------------------------------------------------- */
+
+.pick-b {
+  background: #0a0a0b;
+  color: #f2f1ed;
+  font-family: var(--pick-grotesk), ui-sans-serif, system-ui, sans-serif;
+}
+
+.pick-b .pick-letter {
+  font-family: var(--pick-mono-b), ui-monospace, monospace;
+  color: #3fc994;
+  opacity: 1;
+}
+
+.pick-b .pick-name {
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.pick-b .pick-premise,
+.pick-b .pick-for {
+  color: #8d8d87;
+}
+
+.pick-b .pick-open {
+  background: #3fc994;
+  color: #06110d;
+}
+
+.pick-b-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pick-b-demo span {
+  position: relative;
+  max-width: 24ch;
+  padding: 0.75rem 0.9375rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.pick-b-demo span[data-from="you"] {
+  align-self: flex-end;
+  background: #123a2e;
+  border-radius: 14px 2px 14px 14px;
+  color: #e6f5ef;
+}
+
+.pick-b-demo span[data-from="them"] {
+  align-self: flex-start;
+  background: #1c1d21;
+  border-radius: 2px 14px 14px 14px;
+}
+
+/* --- band C: switchboard -------------------------------------------------- */
+
+.pick-c {
+  background: #08090a;
+  color: #e9ebe8;
+  font-family: var(--pick-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+.pick-c .pick-letter {
+  font-family: var(--pick-mono-c), ui-monospace, monospace;
+  color: #34d39b;
+  opacity: 1;
+}
+
+.pick-c .pick-name {
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.pick-c .pick-premise,
+.pick-c .pick-for {
+  color: #8a908c;
+}
+
+.pick-c .pick-open {
+  background: #34d39b;
+  color: #04140e;
+}
+
+.pick-c-demo {
+  border: 1px solid rgba(233, 235, 232, 0.11);
+  background:
+    linear-gradient(rgba(233, 235, 232, 0.055) 1px, transparent 1px) 0 0 / 100% 2rem,
+    linear-gradient(90deg, rgba(233, 235, 232, 0.055) 1px, transparent 1px) 0 0 / 2rem 100%,
+    #0e1011;
+  padding: 1.25rem;
+}
+
+.pick-c-demo svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pick-c-demo .w {
+  fill: none;
+  stroke: #34d39b;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 9;
+  animation: pick-flow 0.9s linear infinite;
+}
+
+.pick-c-demo rect {
+  fill: #15181a;
+  stroke: rgba(233, 235, 232, 0.18);
+}
+
+.pick-c-demo text {
+  font-family: var(--pick-mono-c), ui-monospace, monospace;
+  font-size: 9px;
+  fill: #8a908c;
+}
+
+@keyframes pick-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+.pick-foot {
+  padding-block: 2.5rem 3.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: var(--pick-mono-c), ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: #5b625e;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pick-c-demo .w {
+    animation: none;
+  }
+
+  .pick-band:hover .pick-open {
+    transform: none;
+  }
+}
