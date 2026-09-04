@@ -866,14 +866,23 @@
   mask-position: 0% 0%;
   animation:
     v3-drift 16s linear infinite,
-    v3-going-missing 40s ease-in-out infinite;
+    v3-going-missing 40s linear 2.5s infinite;
   will-change: background-position, mask-position;
 }
 
 /* 0% → 50% (20s): dissolves to fully invisible, right edge first. 50% →
    100% (the next 20s): the same dissolve in reverse, word fully back by
    40s. Very slow on purpose - this one is meant to feel noticed, not
-   missed. */
+   missed.
+
+   `linear`, not `ease-in-out`: easing put the slow part at the very
+   start and end of each half-cycle, so the word sat still for several
+   seconds before any movement was visible, then rushed through the
+   actual dissolve in the eased-in middle - the opposite of "slow and
+   noticed." Linear keeps the pace constant throughout, so the fade
+   itself reads as unhurried the whole way, not just the two ends. The
+   2.5s delay is separate: it holds the word fully still on first paint
+   so it doesn't start dissolving before the visitor has even read it. */
 @keyframes v3-going-missing {
   0%,
   100% {
