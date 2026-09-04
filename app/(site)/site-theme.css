@@ -276,6 +276,36 @@
   transition: color 0.15s ease-out;
 }
 
+/* Footer -----------------------------------------------------------------
+   A giant, near-invisible wordmark sitting above the footer links - a quiet
+   brand signature at the point people are leaving the page, not something
+   meant to be read. Sized via vw so it's reliably wider than the viewport
+   at any width (8 letters at ~0.62em average advance * 21vw ≈ 104vw), and
+   `overflow: hidden` on the wrapper crops it at both edges rather than
+   shrinking to fit - the crop is the point, not a side effect. */
+
+.v3-footer-mark-wrap {
+  overflow: hidden;
+  line-height: 0;
+}
+
+.v3-footer-mark {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 100, "wght" 800;
+  letter-spacing: -0.04em;
+  font-size: clamp(5.5rem, 21vw, 15rem);
+  line-height: 0.78;
+  color: rgba(239, 237, 230, 0.045);
+  margin: clamp(1rem, 5vw, 3.5rem) 0 0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Reading highlight ---------------------------------------------------------
    Word-by-word scroll-driven highlight. JS toggles data-lit on each .v3-rhw
    span as the paragraph crosses the read band; CSS just handles the
