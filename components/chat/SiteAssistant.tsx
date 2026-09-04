@@ -2,44 +2,64 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { cn } from "@/lib/cn";
 import { chatIcons } from "@/components/chat/ChatIcons";
 import { trustFacts } from "@/lib/chat/facts";
 import {
+  amplifyConfirmChips,
+  amplifyReflection,
   buildSummary,
   budgetSpent,
+  classifyAmplifyConfirm,
+  classifyFit,
   classifyFrequency,
-  classifyIntent,
+  classifyGoal,
+  classifyObstacle,
   classifyWebsite,
   closingAsk,
   diagnosis,
   emptyProfile,
   extractPhone,
+  fitChips,
+  fitQuestion,
   formatPhone,
   frequencyChips,
   frequencyLabel,
-  intentAcknowledgement,
-  intentChips,
-  intentLabel,
+  goalChips,
+  goalLabel,
+  gracefulExit,
   looksLikeQuestion,
   looksLikeSocial,
   matchVertical,
-  pendingQuestion,
+  obstacleChips,
+  obstacleLabel,
   postFlowReplies,
   problemAcknowledgement,
   reopenAsk,
+  solutionBridge,
   stageNote,
-  stepOrder,
+  stepOrderForPath,
   verticalChips,
   verticals,
   websiteChips,
   websiteLabel,
   websiteReply,
   whatsappHref,
+  type AmplifyConfirm,
+  type Fit,
   type Frequency,
+  type Goal,
   type IconKey,
-  type Intent,
+  type Obstacle,
+  type Path,
   type Profile,
   type Step,
   type VerticalId,
@@ -49,29 +69,47 @@ import { corelinePersona } from "@/lib/chat/persona";
 import { pageWhatsappHref, site } from "@/lib/content";
 
 /**
- * The assistant on Coreline's own site.
+ * The assistant on Coreline's own site - v2.
  *
  * This is deliberately not the sample widget with a different endpoint. The
- * sample bots answer questions about a fictional gym; this one runs a fixed
- * qualifying sequence for a real business, in the Coreline design language
- * (square corners, ink and paper, emerald only where something is clickable),
- * and it is the live proof of the second thing Shailesh sells - "something that
- * answers when you can't". A visitor who watches it work has used the product
- * instead of reading about it, so it has to be the good version.
+ * sample bots answer questions about a fictional gym; this one runs an actual
+ * consultative sales conversation for a real business, in the Coreline design
+ * language, and it is the live proof of the second thing Shailesh sells -
+ * "something that answers when you can't". A visitor who watches it work has
+ * used the product instead of reading about it, so it has to be the good
+ * version.
  *
- * HOW IT BEHAVES
- * - The four questions are scripted and render locally, so they are instant and
- *   cannot misquote the price. See lib/chat/flow.ts for the sequence itself.
- * - Anything typed off-script goes to the model, which answers and hands back.
- * - Chips are offered at every step, so typing is never required.
- * - The phone number is asked last, after the diagnosis and the numbers have
- *   been given. Asking first is what spam bots do.
- * - Skipping the number is always allowed and always visible.
+ * TWO PATHS - see lib/chat/flow.ts for the full reasoning on why. Right after
+ * the greeting, the visitor picks:
+ *   "consult" - business -> problem -> amplify (frequency, then the SPIN
+ *     Implication reflection) -> goal (Need-payoff) -> obstacle (the real
+ *     objection, surfaced early) -> website -> fit (diagnosis, solution
+ *     bridge, agreement check - NO PRICE YET) -> only on "yes": facts card,
+ *     name, phone.
+ *   "quick" - business -> one skippable problem question -> facts card ->
+ *     name -> phone. No probing, for someone who just wants the number.
+ * Both paths converge on the same "name" / "contact" steps and the same
+ * handoff, so there is one composer, one set of skip rules, one admin log -
+ * not two widgets pretending to be one.
+ *
+ * - Anything typed off-script goes to the model, which answers and hands back
+ *   to whichever question - or agreement check - was pending.
+ * - Every step offers icon-labelled chips, so typing is never required.
+ * - Price never appears before the visitor has agreed the direction sounds
+ *   worth it (consult) or reached the facts card on their own request (quick).
+ *   The phone number is always the very last thing asked, and always
+ *   skippable.
+ * - A model reply that names a page on this site gets a real link and, where
+ *   it matters, a one-tap button under the bubble (BotBubble, below).
+ *
+ * VISIBILITY
+ * - Every conversation - not just the ones that end in a phone number - is
+ *   synced to /api/chat-log at each step, keyed by a per-tab session id, so
+ *   Shailesh can read what happened at /admin even if the visitor never
+ *   converts. A pagehide beacon catches a conversation that ends mid-typing.
  *
  * LIMITS
- * - Six model answers per session; after that it says so and hands off. This is
- *   a product decision as much as a cost one - past six questions, the honest
- *   answer is "talk to him".
+ * - Six model answers per session; after that it says so and hands off.
  * - The server enforces its own caps independently (app/api/chat/route.ts).
  */
 
@@ -102,10 +140,14 @@ type Chip = {
   /** Sent instead of the label, when the label is a UI phrase. */
   send?: string;
   icon?: IconKey;
+  path?: Path;
   vertical?: VerticalId;
-  website?: WebsiteState;
   frequency?: Frequency;
-  intent?: Intent;
+  amplifyConfirm?: AmplifyConfirm;
+  goal?: Goal;
+  obstacle?: Obstacle;
+  website?: WebsiteState;
+  fit?: Fit;
   skip?: boolean;
 };
 
@@ -121,11 +163,14 @@ type Saved = {
 };
 
 /**
- * Bumped from v2: adds a session id used to upsert one conversation record
- * for /admin (see syncConversation, below). A v2 blob without one just gets a
- * fresh id generated for it - harmless, not worth a hard migration for.
+ * Bumped from v3: the profile and step machine both changed shape for the
+ * v2 consultative redesign (path, goal, obstacle, fit; amplify replaces
+ * impact; intent is gone). A v3 blob resuming under this code could land on
+ * a step this version never produces itself - emptyProfile backfills missing
+ * fields, but a clean cut is simpler to reason about than a mixed-version
+ * session.
  */
-const STORAGE_KEY = "coreline-chat-v3";
+const STORAGE_KEY = "coreline-chat-v4";
 const TEASER_KEY = "coreline-chat-teaser-v1";
 
 /** Matches the server's per-message cap so the UI stops you first. */
@@ -139,7 +184,7 @@ const TEASER_DELAY_MS = 12_000;
 const GREETING: Outgoing[] = [
   {
     kind: "text",
-    text: "Hi - I'm the assistant on Shailesh's site. What kind of business do you run?",
+    text: "Hi - I'm the assistant on Shailesh's site. Want me to ask a few questions and give you an honest read on your situation - or skip straight to the numbers and WhatsApp?",
   },
 ];
 
@@ -154,7 +199,7 @@ export function SiteAssistant() {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [queue, setQueue] = useState<Outgoing[]>([]);
-  const [step, setStep] = useState<Step>("business");
+  const [step, setStep] = useState<Step>("route");
   const [profile, setProfile] = useState<Profile>(emptyProfile);
   const [aiUsed, setAiUsed] = useState(0);
   const [aiPending, setAiPending] = useState(false);
@@ -221,7 +266,7 @@ export function SiteAssistant() {
         if (Array.isArray(saved.messages) && saved.messages.length > 0) {
           // eslint-disable-next-line react-hooks/set-state-in-effect -- see above
           setMessages(saved.messages);
-          setStep(saved.step ?? "business");
+          setStep(saved.step ?? "route");
           setProfile({ ...emptyProfile, ...saved.profile });
           setAiUsed(saved.aiUsed ?? 0);
           aiUsedRef.current = saved.aiUsed ?? 0;
@@ -251,7 +296,13 @@ export function SiteAssistant() {
   useEffect(() => {
     if (!hydrated.current || messages.length === 0) return;
     try {
-      const saved: Saved = { id: sessionId.current, messages, step, profile, aiUsed };
+      const saved: Saved = {
+        id: sessionId.current,
+        messages,
+        step,
+        profile,
+        aiUsed,
+      };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
     } catch {
       // Full or blocked storage: the session still works, it just won't persist.
@@ -263,39 +314,43 @@ export function SiteAssistant() {
   /* ---------------------------------------------------------------------- */
 
   /**
-   * "I should get to know the chats - what and who talked": every
-   * conversation, not just the ones that end in a phone number, gets synced
-   * to /api/chat-log at each meaningful step (see submit(), below) and shows
-   * up at /admin. Fires maybe six or seven times per real conversation, which
-   * the endpoint's rate limit is sized around - not on every keystroke.
+   * Fires once per meaningful step transition (see submit(), below) rather
+   * than on every keystroke - a real conversation calls this maybe six to
+   * nine times, which the endpoint's rate limit is sized around.
    */
-  const syncConversation = useCallback((next: Profile, log: Message[], completed: boolean) => {
-    if (!sessionId.current) return;
-    const vertical = next.vertical ? verticals[next.vertical].label : "";
-    const transcript = log
-      .filter(isText)
-      .map((m) => `${m.role === "user" ? "Them" : "Bot"}: ${m.text}`)
-      .join("\n");
+  const syncConversation = useCallback(
+    (next: Profile, log: Message[], completed: boolean) => {
+      if (!sessionId.current) return;
+      const vertical = next.vertical ? verticals[next.vertical].label : "";
+      const transcript = log
+        .filter(isText)
+        .map((m) => `${m.role === "user" ? "Them" : "Bot"}: ${m.text}`)
+        .join("\n");
 
-    void fetch("/api/chat-log", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: sessionId.current,
-        completed,
-        name: next.name,
-        business: next.businessText,
-        vertical,
-        problem: next.problemText,
-        frequency: next.frequency ? frequencyLabel[next.frequency] : "",
-        website: next.website ? websiteLabel[next.website] : "",
-        intent: next.intent ? intentLabel[next.intent] : "",
-        transcript,
-      }),
-    }).catch(() => {
-      // Best-effort visibility, never something the widget's own flow waits on.
-    });
-  }, []);
+      void fetch("/api/chat-log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: sessionId.current,
+          completed,
+          path: next.path ?? "",
+          name: next.name,
+          business: next.businessText,
+          vertical,
+          problem: next.problemText,
+          frequency: next.frequency ? frequencyLabel[next.frequency] : "",
+          goal: next.goal ? goalLabel[next.goal] : "",
+          obstacle: next.obstacle ? obstacleLabel[next.obstacle] : "",
+          website: next.website ? websiteLabel[next.website] : "",
+          fit: next.fit ?? "",
+          transcript,
+        }),
+      }).catch(() => {
+        // Best-effort visibility, never something the widget's own flow waits on.
+      });
+    },
+    [],
+  );
 
   /**
    * Catches the conversation that ends mid-typing: someone answers two or
@@ -304,26 +359,49 @@ export function SiteAssistant() {
    */
   useEffect(() => {
     function onHide() {
-      const { messages: currentMessages, profile: currentProfile, step: currentStep } = latest.current;
-      if (!sessionId.current || currentMessages.length < 3 || currentStep === "done") return;
+      const {
+        messages: currentMessages,
+        profile: currentProfile,
+        step: currentStep,
+      } = latest.current;
+      if (
+        !sessionId.current ||
+        currentMessages.length < 3 ||
+        currentStep === "done"
+      )
+        return;
       const transcript = currentMessages
         .filter(isText)
         .map((m) => `${m.role === "user" ? "Them" : "Bot"}: ${m.text}`)
         .join("\n");
-      const vertical = currentProfile.vertical ? verticals[currentProfile.vertical].label : "";
+      const vertical = currentProfile.vertical
+        ? verticals[currentProfile.vertical].label
+        : "";
       const body = JSON.stringify({
         id: sessionId.current,
         completed: false,
+        path: currentProfile.path ?? "",
         name: currentProfile.name,
         business: currentProfile.businessText,
         vertical,
         problem: currentProfile.problemText,
-        frequency: currentProfile.frequency ? frequencyLabel[currentProfile.frequency] : "",
-        website: currentProfile.website ? websiteLabel[currentProfile.website] : "",
-        intent: currentProfile.intent ? intentLabel[currentProfile.intent] : "",
+        frequency: currentProfile.frequency
+          ? frequencyLabel[currentProfile.frequency]
+          : "",
+        goal: currentProfile.goal ? goalLabel[currentProfile.goal] : "",
+        obstacle: currentProfile.obstacle
+          ? obstacleLabel[currentProfile.obstacle]
+          : "",
+        website: currentProfile.website
+          ? websiteLabel[currentProfile.website]
+          : "",
+        fit: currentProfile.fit ?? "",
         transcript,
       });
-      navigator.sendBeacon?.("/api/chat-log", new Blob([body], { type: "application/json" }));
+      navigator.sendBeacon?.(
+        "/api/chat-log",
+        new Blob([body], { type: "application/json" }),
+      );
     }
     document.addEventListener("pagehide", onHide);
     return () => document.removeEventListener("pagehide", onHide);
@@ -360,7 +438,11 @@ export function SiteAssistant() {
   // Keep the newest message in view as the conversation grows.
   useEffect(() => {
     const node = scrollRef.current;
-    if (node) node.scrollTo({ top: node.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
+    if (node)
+      node.scrollTo({
+        top: node.scrollHeight,
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
   }, [messages, aiPending, queue.length, reduceMotion]);
 
   /* ---------------------------------------------------------------------- */
@@ -426,7 +508,10 @@ export function SiteAssistant() {
     const viewport = window.visualViewport;
     if (!viewport) return;
     const sync = () => {
-      const inset = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
+      const inset = Math.max(
+        0,
+        window.innerHeight - viewport.height - viewport.offsetTop,
+      );
       setKeyboardInset(inset);
     };
     sync();
@@ -441,7 +526,9 @@ export function SiteAssistant() {
   // Anything on the page marked `data-open-chat` opens the assistant.
   useEffect(() => {
     function onClick(event: MouseEvent) {
-      const trigger = (event.target as HTMLElement | null)?.closest("[data-open-chat]");
+      const trigger = (event.target as HTMLElement | null)?.closest(
+        "[data-open-chat]",
+      );
       if (!trigger) return;
       event.preventDefault();
       openPanel();
@@ -500,7 +587,7 @@ export function SiteAssistant() {
   function restart() {
     setMessages([]);
     setQueue([]);
-    setStep("business");
+    setStep("route");
     setProfile(emptyProfile);
     setAiUsed(0);
     aiUsedRef.current = 0;
@@ -532,7 +619,10 @@ export function SiteAssistant() {
       const summary = buildSummary(next);
       const transcript = log
         .filter(isText)
-        .map((message) => `${message.role === "user" ? "Them" : "Bot"}: ${message.text}`)
+        .map(
+          (message) =>
+            `${message.role === "user" ? "Them" : "Bot"}: ${message.text}`,
+        )
         .join("\n");
 
       void fetch("/api/lead", {
@@ -545,18 +635,24 @@ export function SiteAssistant() {
           business: summary.business,
           websiteState: summary.website,
           problem: summary.problem,
+          path: summary.path,
+          goal: summary.goal,
+          obstacle: summary.obstacle,
+          fit: summary.fit,
           transcript,
         }),
-      }).then((response) => {
-        if (!response.ok) throw new Error("lead failed");
-      }).catch(() => {
-        say([
-          {
-            kind: "text",
-            text: "If you don't hear back, tap WhatsApp below - that reaches him directly.",
-          },
-        ]);
-      });
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("lead failed");
+        })
+        .catch(() => {
+          say([
+            {
+              kind: "text",
+              text: "If you don't hear back, tap WhatsApp below - that reaches him directly.",
+            },
+          ]);
+        });
     },
     [say],
   );
@@ -581,12 +677,19 @@ export function SiteAssistant() {
         .filter(isText)
         .slice(-HISTORY_TURNS)
         .map((message) => ({
-          role: message.role === "user" ? ("user" as const) : ("assistant" as const),
+          role:
+            message.role === "user"
+              ? ("user" as const)
+              : ("assistant" as const),
           content: message.text.slice(0, MAX_CHARS),
         }));
 
       // The server requires the last turn to be from the visitor.
-      while (history.length > 0 && history[0]!.role === "assistant" && history.length > HISTORY_TURNS - 1) {
+      while (
+        history.length > 0 &&
+        history[0]!.role === "assistant" &&
+        history.length > HISTORY_TURNS - 1
+      ) {
         history.shift();
       }
 
@@ -609,7 +712,9 @@ export function SiteAssistant() {
           say([
             {
               kind: "text",
-              text: data.error ?? "You're sending messages a bit fast - give it a second, then ask again.",
+              text:
+                data.error ??
+                "You're sending messages a bit fast - give it a second, then ask again.",
             },
           ]);
           return;
@@ -645,29 +750,66 @@ export function SiteAssistant() {
       // question the visitor could have typed. Only the first kind skips the
       // "is this a question?" check.
       const answers = Boolean(
-        chip?.vertical || chip?.website || chip?.frequency || chip?.intent || chip?.skip,
+        chip?.path ||
+        chip?.vertical ||
+        chip?.frequency ||
+        chip?.amplifyConfirm ||
+        chip?.goal ||
+        chip?.obstacle ||
+        chip?.website ||
+        chip?.fit ||
+        chip?.skip,
       );
 
       setNotice(null);
       setDraft("");
 
-      const log: Message[] = [...messages, { role: "user", kind: "text", text: content }];
+      const log: Message[] = [
+        ...messages,
+        { role: "user", kind: "text", text: content },
+      ];
       setMessages(log);
 
-      // Skipping the number is always allowed. Hiding that exit would only
-      // trade a warm WhatsApp conversation for an abandoned widget.
+      /* --- Route: choose consult vs quick, before anything else ----------- */
+
+      if (step === "route") {
+        if (!chip?.path) {
+          void askModel(log, step, profile);
+          return;
+        }
+        const next = { ...profile, path: chip.path };
+        setProfile(next);
+        setStep("business");
+        syncConversation(next, log, false);
+        say([{ kind: "text", text: "What kind of business do you run?" }]);
+        return;
+      }
+
+      /* --- Skip: quickProblem / name / contact each mean something different */
+
       if (chip?.skip) {
+        if (step === "quickProblem") {
+          setStep("name");
+          syncConversation(profile, log, false);
+          say([
+            { kind: "facts" },
+            {
+              kind: "text",
+              text: "Here's what Shailesh charges and how it works - leave your name and number if you want him to take a look, or skip straight to WhatsApp.",
+            },
+            { kind: "contactPrompt" },
+            { kind: "text", text: "What should I call you?" },
+          ]);
+          return;
+        }
         if (step === "name") {
           setStep("contact");
           syncConversation(profile, log, false);
-          const leadIn =
-            profile.website === "fine"
-              ? "If it does turn out to be worth building something, this is what it costs:"
-              : "Here's what fixing that costs, before you have to ask:";
           say([
-            { kind: "text", text: `${diagnosis(profile)} ${leadIn}` },
-            { kind: "facts" },
-            { kind: "text", text: closingAsk(profile.intent) },
+            {
+              kind: "text",
+              text: "And the number Shailesh should message you on?",
+            },
           ]);
           return;
         }
@@ -707,7 +849,12 @@ export function SiteAssistant() {
 
         if (namedBusiness) {
           const vertical = verticals[id];
-          const next = { ...emptyProfile, vertical: id, businessText: content };
+          const next = {
+            ...emptyProfile,
+            path: "consult" as Path,
+            vertical: id,
+            businessText: content,
+          };
           setProfile(next);
           setStep("problem");
           syncConversation(next, log, false);
@@ -721,9 +868,9 @@ export function SiteAssistant() {
           return;
         }
 
-        setProfile(emptyProfile);
+        setProfile({ ...emptyProfile, path: "consult" });
         setStep("business");
-        syncConversation(emptyProfile, log, false);
+        syncConversation({ ...emptyProfile, path: "consult" }, log, false);
         say([{ kind: "text", text: reopenAsk }]);
         return;
       }
@@ -750,7 +897,10 @@ export function SiteAssistant() {
         }
 
         // A short run of letters at this point is almost always their name.
-        if (/^[A-Za-z][A-Za-z .'-]{1,40}$/.test(content) && !looksLikeQuestion(content)) {
+        if (
+          /^[A-Za-z][A-Za-z .'-]{1,40}$/.test(content) &&
+          !looksLikeQuestion(content)
+        ) {
           setProfile((current) => ({ ...current, name: content }));
           say([
             {
@@ -775,6 +925,57 @@ export function SiteAssistant() {
         return;
       }
 
+      /* --- Name: asked once the facts are already on screen, either path --- */
+
+      if (step === "name") {
+        // Someone eager enough to give both at once shouldn't have to repeat
+        // the number a turn later.
+        const eagerPhone = extractPhone(content);
+        if (eagerPhone) {
+          const cleaned = content
+            .replace(/\d/g, "")
+            .replace(/[+\-(),.]+/g, " ")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+          const name = /^[A-Za-z][A-Za-z .'-]{1,40}$/.test(cleaned)
+            ? cleaned
+            : "";
+          const next = { ...profile, name, phone: eagerPhone };
+          setProfile(next);
+          setStep("done");
+          endingShown.current = true;
+          sendLead(next, log);
+          syncConversation(next, log, true);
+          say([
+            {
+              kind: "text",
+              text: `Got it${name ? `, ${name.split(" ")[0]}` : ""} - ${formatPhone(eagerPhone)}. Shailesh will message you himself, usually within a few hours. If you don't hear back, tap WhatsApp below.`,
+            },
+            { kind: "handoff" },
+          ]);
+          return;
+        }
+
+        if (looksLikeQuestion(content)) {
+          void askModel(log, step, profile);
+          return;
+        }
+
+        // A name field is not worth validating strictly - almost anything
+        // typed here is meant as one, and rejecting it just adds friction.
+        const next = { ...profile, name: content.slice(0, 60) };
+        setProfile(next);
+        setStep("contact");
+        syncConversation(next, log, false);
+        say([
+          {
+            kind: "text",
+            text: `Thanks${next.name.split(" ")[0] ? ` ${next.name.split(" ")[0]}` : ""}. And the number Shailesh should message you on?`,
+          },
+        ]);
+        return;
+      }
+
       /* --- A question at any other point goes to the model ---------------- */
 
       if (!answers && looksLikeQuestion(content)) {
@@ -789,11 +990,31 @@ export function SiteAssistant() {
         const vertical = verticals[id];
         const next = { ...profile, vertical: id, businessText: content };
         setProfile(next);
-        setStep("problem");
+        setStep(next.path === "quick" ? "quickProblem" : "problem");
         syncConversation(next, log, false);
         say([
-          { kind: "text", text: id === "other" ? "Got it." : `Right, ${vertical.trade}.` },
+          {
+            kind: "text",
+            text: id === "other" ? "Got it." : `Right, ${vertical.trade}.`,
+          },
           { kind: "text", text: vertical.question },
+        ]);
+        return;
+      }
+
+      if (step === "quickProblem") {
+        const next = { ...profile, problemText: content };
+        setProfile(next);
+        setStep("name");
+        syncConversation(next, log, false);
+        say([
+          { kind: "facts" },
+          {
+            kind: "text",
+            text: "Here's what Shailesh charges and how it works - leave your name and number if you want him to take a look, or skip straight to WhatsApp.",
+          },
+          { kind: "contactPrompt" },
+          { kind: "text", text: "What should I call you?" },
         ]);
         return;
       }
@@ -801,26 +1022,83 @@ export function SiteAssistant() {
       if (step === "problem") {
         const next = { ...profile, problemText: content };
         setProfile(next);
-        setStep("impact");
+        setStep("amplify");
         syncConversation(next, log, false);
         say([
           { kind: "text", text: problemAcknowledgement },
-          { kind: "text", text: pendingQuestion("impact", profile) },
+          { kind: "text", text: "How often would you say that happens?" },
         ]);
         return;
       }
 
-      if (step === "impact") {
-        const frequency = chip?.frequency ?? classifyFrequency(content);
-        if (!frequency) {
+      if (step === "amplify") {
+        // Phase 1: frequency. Phase 2 (once frequency is set): the reflection
+        // confirm. Both live under one rail step - see lib/chat/flow.ts.
+        if (!profile.frequency) {
+          const frequency = chip?.frequency ?? classifyFrequency(content);
+          if (!frequency) {
+            void askModel(log, step, profile);
+            return;
+          }
+          const next = { ...profile, frequency };
+          setProfile(next);
+          syncConversation(next, log, false);
+          say([{ kind: "text", text: amplifyReflection(next) }]);
+          return;
+        }
+
+        const confirm = chip?.amplifyConfirm ?? classifyAmplifyConfirm(content);
+        if (!confirm) {
           void askModel(log, step, profile);
           return;
         }
-        const next = { ...profile, frequency };
+        const next = { ...profile, amplifyConfirm: confirm };
+        setProfile(next);
+        setStep("goal");
+        syncConversation(next, log, false);
+        say([
+          {
+            kind: "text",
+            text:
+              confirm === "unsure"
+                ? "Fair - let's look at it from another angle."
+                : "Good, that's worth knowing.",
+          },
+          {
+            kind: "text",
+            text: "If this were sorted, what would that actually look like for you?",
+          },
+        ]);
+        return;
+      }
+
+      if (step === "goal") {
+        const goal = chip?.goal ?? classifyGoal(content);
+        if (!goal) {
+          void askModel(log, step, profile);
+          return;
+        }
+        const next = { ...profile, goal };
+        setProfile(next);
+        setStep("obstacle");
+        syncConversation(next, log, false);
+        say([
+          { kind: "text", text: "What's stopped you from fixing this so far?" },
+        ]);
+        return;
+      }
+
+      if (step === "obstacle") {
+        const obstacle = chip?.obstacle ?? classifyObstacle(content);
+        if (!obstacle) {
+          void askModel(log, step, profile);
+          return;
+        }
+        const next = { ...profile, obstacle };
         setProfile(next);
         setStep("website");
         syncConversation(next, log, false);
-        say([{ kind: "text", text: pendingQuestion("website", next) }]);
+        say([{ kind: "text", text: "Do you have a website right now?" }]);
         return;
       }
 
@@ -834,60 +1112,60 @@ export function SiteAssistant() {
         const next = { ...profile, website: state };
         const vertical = verticals[next.vertical ?? "other"];
         setProfile(next);
-        setStep("intent");
+        setStep("fit");
         syncConversation(next, log, false);
         say([
           { kind: "text", text: websiteReply(state, vertical) },
-          { kind: "text", text: pendingQuestion("intent", next) },
+          { kind: "text", text: diagnosis(next) },
+          { kind: "text", text: solutionBridge(next) },
+          { kind: "text", text: fitQuestion },
         ]);
         return;
       }
 
-      if (step === "intent") {
-        const intent = chip?.intent ?? classifyIntent(content);
-        if (!intent) {
+      if (step === "fit") {
+        const fit = chip?.fit ?? classifyFit(content);
+        if (!fit) {
           void askModel(log, step, profile);
           return;
         }
-        const next = { ...profile, intent };
-        setProfile(next);
-        setStep("name");
-        syncConversation(next, log, false);
-        say([
-          { kind: "text", text: intentAcknowledgement(intent) },
-          { kind: "contactPrompt" },
-          { kind: "text", text: pendingQuestion("name", next) },
-        ]);
-        return;
-      }
 
-      if (step === "name") {
-        if (/^[A-Za-z][A-Za-z .'-]{1,40}$/.test(content) && !looksLikeQuestion(content)) {
-          const next = { ...profile, name: content };
+        if (fit === "yes") {
+          const next = { ...profile, fit: "yes" as Fit };
           setProfile(next);
-          setStep("contact");
+          setStep("name");
           syncConversation(next, log, false);
-          const leadIn =
-            next.website === "fine"
-              ? "If it does turn out to be worth building something, this is what it costs:"
-              : "Here's what fixing that costs, before you have to ask:";
           say([
-            { kind: "text", text: `${diagnosis(next)} ${leadIn}` },
             { kind: "facts" },
-            { kind: "text", text: closingAsk(next.intent) },
+            { kind: "text", text: closingAsk },
+            { kind: "contactPrompt" },
+            { kind: "text", text: "What should I call you?" },
           ]);
           return;
         }
-        if (looksLikeQuestion(content)) {
-          void askModel(log, step, profile);
+
+        if (fit === "no") {
+          const next = { ...profile, fit: "no" as Fit };
+          setProfile(next);
+          setStep("done");
+          endingShown.current = true;
+          syncConversation(next, log, true);
+          say([{ kind: "text", text: gracefulExit }, { kind: "handoff" }]);
           return;
         }
-        say([{ kind: "text", text: "Just a first name is enough - or skip it." }]);
+
+        // "questions": stays on "fit" - the chips re-offer the same agreement
+        // check once the model answers, and no phone gets asked until a yes.
+        const next = { ...profile, fit: "questions" as Fit };
+        setProfile(next);
+        syncConversation(next, log, false);
+        void askModel(log, step, next);
         return;
       }
 
-      // Past the sequence: everything is a question for the model.
-      if (step === "done" || endingShown.current) return;
+      // Past the sequence: everything is a question for the model. ("done" is
+      // unreachable here - the earlier step === "done" branch already returned.)
+      if (endingShown.current) return;
       void askModel(log, step, profile);
     },
     [busy, messages, profile, say, sendLead, step, askModel, syncConversation],
@@ -900,18 +1178,76 @@ export function SiteAssistant() {
   const chips: Chip[] | null = useMemo(() => {
     if (busy || messages.length === 0) return null;
 
+    if (step === "route") {
+      return [
+        {
+          label: "Ask me a few questions",
+          path: "consult" as Path,
+          icon: "question" as IconKey,
+        },
+        {
+          label: "Skip to price + WhatsApp",
+          path: "quick" as Path,
+          icon: "rupee" as IconKey,
+        },
+      ];
+    }
+
     if (step === "business") {
-      return verticalChips.map((id) => ({ label: verticals[id].label, vertical: id, icon: id }));
+      return verticalChips.map((id) => ({
+        label: verticals[id].label,
+        vertical: id,
+        icon: id,
+      }));
+    }
+
+    if (step === "quickProblem" && profile.vertical) {
+      return [
+        ...verticals[profile.vertical].answers.map((answer) => ({
+          label: answer,
+        })),
+        {
+          label: "Skip",
+          send: "Skip this one",
+          skip: true,
+          icon: "skip" as IconKey,
+        },
+      ];
     }
 
     if (step === "problem" && profile.vertical) {
-      return verticals[profile.vertical].answers.map((answer) => ({ label: answer }));
+      return verticals[profile.vertical].answers.map((answer) => ({
+        label: answer,
+      }));
     }
 
-    if (step === "impact") {
-      return frequencyChips.map((option) => ({
+    if (step === "amplify") {
+      if (!profile.frequency) {
+        return frequencyChips.map((option) => ({
+          label: option.label,
+          frequency: option.id,
+          icon: option.icon,
+        }));
+      }
+      return amplifyConfirmChips.map((option) => ({
         label: option.label,
-        frequency: option.id,
+        amplifyConfirm: option.id,
+        icon: option.icon,
+      }));
+    }
+
+    if (step === "goal") {
+      return goalChips.map((option) => ({
+        label: option.label,
+        goal: option.id,
+        icon: option.icon,
+      }));
+    }
+
+    if (step === "obstacle") {
+      return obstacleChips.map((option) => ({
+        label: option.label,
+        obstacle: option.id,
         icon: option.icon,
       }));
     }
@@ -924,10 +1260,10 @@ export function SiteAssistant() {
       }));
     }
 
-    if (step === "intent") {
-      return intentChips.map((option) => ({
+    if (step === "fit") {
+      return fitChips.map((option) => ({
         label: option.label,
-        intent: option.id,
+        fit: option.id,
         icon: option.icon,
       }));
     }
@@ -961,9 +1297,11 @@ export function SiteAssistant() {
       { label: "Can I see your samples?", icon: "images" as IconKey },
       { label: "How does payment work?", icon: "rupee" as IconKey },
     ];
-  }, [busy, messages.length, profile.vertical, step]);
+  }, [busy, messages.length, profile.vertical, profile.frequency, step]);
 
-  const progress = step === "done" ? stepOrder.length : stepOrder.indexOf(step);
+  const rail = useMemo(() => stepOrderForPath(profile.path), [profile.path]);
+  const progress =
+    step === "done" ? rail.length : Math.max(0, rail.indexOf(step));
   const askingForName = step === "name";
   const askingForPhone = step === "contact";
   const summary = useMemo(() => buildSummary(profile), [profile]);
@@ -1008,7 +1346,10 @@ export function SiteAssistant() {
           nearCta && !open && "sm:right-auto sm:left-6",
         )}
       >
-        <span className="breathe size-1.5 shrink-0 rounded-full bg-accent-soft group-hover:bg-paper" aria-hidden="true" />
+        <span
+          className="breathe size-1.5 shrink-0 rounded-full bg-accent-soft group-hover:bg-paper"
+          aria-hidden="true"
+        />
         <span className="hidden sm:inline">Ask about your business</span>
         <span className="sm:hidden">Ask a question</span>
       </button>
@@ -1043,7 +1384,10 @@ export function SiteAssistant() {
                   {corelinePersona.title}
                 </p>
                 <p className="mt-1 flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-widest text-paper/55">
-                  <span className="breathe size-1 rounded-full bg-accent-soft" aria-hidden="true" />
+                  <span
+                    className="breathe size-1 rounded-full bg-accent-soft"
+                    aria-hidden="true"
+                  />
                   On this page
                 </p>
               </div>
@@ -1074,32 +1418,40 @@ export function SiteAssistant() {
           </div>
 
           {/* The brand's line-and-node motif, doing an actual job: how far
-              through the four questions you are. */}
-          <div className="relative mt-3 h-px w-full bg-hairline-inverse" aria-hidden="true">
-            <span
-              className="absolute inset-y-0 left-0 origin-left bg-accent-soft transition-transform duration-500 ease-line"
-              style={{
-                width: "100%",
-                transform: `scaleX(${progress / stepOrder.length})`,
-              }}
-            />
-            {stepOrder.map((name, index) => (
-              <span
-                key={name}
-                data-filled={index < progress}
-                className={cn(
-                  "chat-node absolute top-1/2 block size-1.25 -translate-x-1/2 -translate-y-1/2 rounded-full",
-                  index < progress ? "bg-accent-soft" : "bg-paper/25",
-                )}
-                style={{ left: `${((index + 1) / stepOrder.length) * 100}%` }}
-              />
-            ))}
-          </div>
-          <p className="sr-only" aria-live="polite">
-            {progress < stepOrder.length
-              ? `Question ${progress + 1} of ${stepOrder.length}`
-              : "All questions answered"}
-          </p>
+              through the questions you are. Hidden while the path is not yet
+              chosen - there is nothing to show progress against yet. */}
+          {step !== "route" && (
+            <>
+              <div
+                className="relative mt-3 h-px w-full bg-hairline-inverse"
+                aria-hidden="true"
+              >
+                <span
+                  className="absolute inset-y-0 left-0 origin-left bg-accent-soft transition-transform duration-500 ease-line"
+                  style={{
+                    width: "100%",
+                    transform: `scaleX(${progress / rail.length})`,
+                  }}
+                />
+                {rail.map((name, index) => (
+                  <span
+                    key={name}
+                    data-filled={index < progress}
+                    className={cn(
+                      "chat-node absolute top-1/2 block size-1.25 -translate-x-1/2 -translate-y-1/2 rounded-full",
+                      index < progress ? "bg-accent-soft" : "bg-paper/25",
+                    )}
+                    style={{ left: `${((index + 1) / rail.length) * 100}%` }}
+                  />
+                ))}
+              </div>
+              <p className="sr-only" aria-live="polite">
+                {progress < rail.length
+                  ? `Question ${progress + 1} of ${rail.length}`
+                  : "All questions answered"}
+              </p>
+            </>
+          )}
         </header>
 
         {/* Log */}
@@ -1129,7 +1481,10 @@ export function SiteAssistant() {
             ) : message.kind === "contactPrompt" ? (
               <ContactPromptCard key={index} />
             ) : (
-              <HandoffCard key={index} href={whatsappHref(site.whatsapp, summary)} />
+              <HandoffCard
+                key={index}
+                href={whatsappHref(site.whatsapp, summary)}
+              />
             ),
           )}
 
@@ -1182,23 +1537,35 @@ export function SiteAssistant() {
           className="flex shrink-0 items-center gap-2 border-t border-hairline px-3 py-2.5"
         >
           <label htmlFor="coreline-chat-input" className="sr-only">
-            {askingForName ? "Your name" : askingForPhone ? "Your phone number" : "Your message"}
+            {askingForName
+              ? "Your name"
+              : askingForPhone
+                ? "Your phone number"
+                : "Your message"}
           </label>
           {/* A quiet icon prefix at exactly the two info-collecting steps -
               the moment "proper UX for collecting info" matters most - rather
               than on every turn, where it would just be noise. */}
           {(askingForName || askingForPhone) && (
             <span className="flex size-5 shrink-0 items-center justify-center text-grey">
-              {askingForName ? <chatIcons.person className="size-4" /> : <chatIcons.phone className="size-4" />}
+              {askingForName ? (
+                <chatIcons.person className="size-4" />
+              ) : (
+                <chatIcons.phone className="size-4" />
+              )}
             </span>
           )}
           <input
             ref={inputRef}
             id="coreline-chat-input"
             value={draft}
-            onChange={(event) => setDraft(event.target.value.slice(0, MAX_CHARS))}
+            onChange={(event) =>
+              setDraft(event.target.value.slice(0, MAX_CHARS))
+            }
             maxLength={MAX_CHARS}
-            autoComplete={askingForPhone ? "tel" : askingForName ? "given-name" : "off"}
+            autoComplete={
+              askingForPhone ? "tel" : askingForName ? "given-name" : "off"
+            }
             inputMode={askingForPhone ? "tel" : "text"}
             type={askingForPhone ? "tel" : "text"}
             placeholder={
@@ -1261,7 +1628,11 @@ export function SiteAssistant() {
  * nobody has to copy-paste.
  */
 const PAGE_ACTIONS: { pattern: RegExp; href: string; label: string }[] = [
-  { pattern: /\/work\b|sample sites?|portfolio|example sites?/i, href: "/work", label: "See sample sites" },
+  {
+    pattern: /\/work\b|sample sites?|portfolio|example sites?/i,
+    href: "/work",
+    label: "See sample sites",
+  },
   { pattern: /\/services\b/i, href: "/services", label: "See services" },
   { pattern: /\/contact\b/i, href: "/contact", label: "Talk to Shailesh" },
   { pattern: /\/about\b/i, href: "/about", label: "About Coreline" },
@@ -1280,7 +1651,9 @@ function resolveHref(raw: string): { href: string; internal: boolean } {
     return { href: cleaned, internal: true };
   }
   try {
-    const url = new URL(cleaned.startsWith("www.") ? `https://${cleaned}` : cleaned);
+    const url = new URL(
+      cleaned.startsWith("www.") ? `https://${cleaned}` : cleaned,
+    );
     const internal = /(^|\.)corelinedigital\.in$/i.test(url.hostname);
     return {
       href: internal ? `${url.pathname}${url.search}` || "/" : url.href,
@@ -1363,9 +1736,9 @@ function BotBubble({ text }: { text: string }) {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Price, time and terms, given before the number is asked for. Same three facts
- * as the hero trust line, on purpose - the visitor should have already read
- * them once and recognise them here.
+ * Price, time and terms, given only once agreement has landed (consult) or on
+ * request (quick). Same three facts as the hero trust line, on purpose - the
+ * visitor should have already read them once and recognise them here.
  */
 function FactsCard() {
   return (
@@ -1376,14 +1749,21 @@ function FactsCard() {
       </p>
       <dl className="mt-2.5 space-y-2.5">
         {trustFacts.map((fact) => (
-          <div key={fact.label} className="border-t border-hairline-inverse pt-2.5 first:border-0 first:pt-0">
+          <div
+            key={fact.label}
+            className="border-t border-hairline-inverse pt-2.5 first:border-0 first:pt-0"
+          >
             <div className="flex items-baseline justify-between gap-3">
               <dt className="font-mono text-[0.625rem] uppercase tracking-widest text-paper/50">
                 {fact.label}
               </dt>
-              <dd className="font-display text-[0.875rem] font-semibold">{fact.value}</dd>
+              <dd className="font-display text-[0.875rem] font-semibold">
+                {fact.value}
+              </dd>
             </div>
-            <p className="mt-0.5 text-[0.6875rem] leading-snug text-paper/50">{fact.note}</p>
+            <p className="mt-0.5 text-[0.6875rem] leading-snug text-paper/50">
+              {fact.note}
+            </p>
           </div>
         ))}
       </dl>
@@ -1403,7 +1783,8 @@ function ContactPromptCard() {
         <chatIcons.person className="size-3.5" />
       </span>
       <p className="text-[0.8125rem] leading-relaxed text-body">
-        Just a name and a number - Shailesh replies personally, and it&apos;s never shared or sold.
+        Just a name and a number - Shailesh replies personally, and it&apos;s
+        never shared or sold.
       </p>
     </div>
   );
@@ -1414,7 +1795,8 @@ function HandoffCard({ href }: { href: string }) {
   return (
     <div className="chat-in chat-ring-once border border-accent bg-accent/4 p-3.5">
       <p className="text-[0.8125rem] leading-relaxed text-body">
-        Everything from this chat is already written into the message - just hit send.
+        Everything from this chat is already written into the message - just hit
+        send.
       </p>
       <a
         href={href}
@@ -1436,8 +1818,18 @@ function HandoffCard({ href }: { href: string }) {
 /** The line-and-node mark, small enough for a header. */
 function Mark() {
   return (
-    <svg viewBox="0 0 24 24" className="size-6 shrink-0" fill="none" aria-hidden="true">
-      <path d="M4 12h16" stroke="currentColor" strokeOpacity="0.35" strokeWidth="1.2" />
+    <svg
+      viewBox="0 0 24 24"
+      className="size-6 shrink-0"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 12h16"
+        stroke="currentColor"
+        strokeOpacity="0.35"
+        strokeWidth="1.2"
+      />
       <circle cx="5.5" cy="12" r="2" fill="currentColor" fillOpacity="0.4" />
       <circle cx="18.5" cy="12" r="2.5" className="fill-accent-soft" />
     </svg>
@@ -1479,7 +1871,12 @@ function SendIcon() {
 
 function WhatsAppIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="size-4" fill="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="size-4"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23a8.2 8.2 0 0 1 8.23 8.24c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.13-1.47-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.09-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.54c.13.17 1.74 2.65 4.2 3.72.59.25 1.05.4 1.4.52.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3Z" />
     </svg>
   );

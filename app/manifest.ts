@@ -1,15 +1,15 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/lib/content";
+import { site } from "@/lib/site-content";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: site.legalName,
+    name: site.name,
     short_name: "Coreline",
-    description: site.tagline,
+    description: "Websites, AI agents, automations and local search - one team, no handoffs.",
     start_url: "/",
     display: "browser",
-    background_color: "#f6f7f5",
-    theme_color: "#1f5c4b",
+    background_color: "#060a08",
+    theme_color: "#12e68e",
     lang: "en-IN",
     icons: [
       {

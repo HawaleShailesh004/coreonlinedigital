@@ -4,6 +4,14 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  async redirects() {
+    return [
+      { source: "/demos", destination: "/work", permanent: true },
+      { source: "/demos/:path*", destination: "/work", permanent: true },
+      { source: "/industries", destination: "/work", permanent: true },
+      { source: "/industries/:path*", destination: "/work", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

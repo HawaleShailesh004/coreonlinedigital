@@ -51,7 +51,10 @@ export default async function AdminConversationsPage() {
             <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Business</th>
             <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Website today</th>
             <th className="py-3 pr-4 font-mono text-label uppercase font-normal">How often</th>
-            <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Intent</th>
+            <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Path</th>
+            <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Goal</th>
+            <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Obstacle</th>
+            <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Fit</th>
             <th className="py-3 pr-4 font-mono text-label uppercase font-normal">Status</th>
           </tr>
         </thead>
@@ -80,7 +83,10 @@ export default async function AdminConversationsPage() {
                 <td className="py-3 pr-4 align-top text-body">{c.business || "-"}</td>
                 <td className="py-3 pr-4 align-top text-body">{c.website || "-"}</td>
                 <td className="py-3 pr-4 align-top text-body">{c.frequency || "-"}</td>
-                <td className="py-3 pr-4 align-top text-body">{c.intent || "-"}</td>
+                <td className="py-3 pr-4 align-top text-body capitalize">{c.path || "-"}</td>
+                <td className="py-3 pr-4 align-top text-body">{c.goal || "-"}</td>
+                <td className="py-3 pr-4 align-top text-body">{c.obstacle || "-"}</td>
+                <td className="py-3 pr-4 align-top text-body capitalize">{c.fit || "-"}</td>
                 <td className="py-3 pr-4 align-top">
                   <span className={`inline-block px-2 py-1 font-mono text-[0.6875rem] uppercase tracking-wide ${badge.tone}`}>
                     {badge.label}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline Digital — Sample I · Kinetic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--bone:#F4F2EC;--dim:#75736D;--ac:#12E68E;--line:rgba(244,242,236,.13);--w:1280px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--bone);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 30px}
+.ab{font-family:Anybody,'Arial Narrow',sans-serif;text-transform:uppercase;line-height:.82;letter-spacing:-.01em}
+
+nav{position:fixed;inset:0 0 auto;z-index:90;padding:18px 0}
+.nav-in{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:Anybody;font-variation-settings:'wdth' 118,'wght' 800;font-size:18px;text-transform:uppercase;display:flex;gap:9px;align-items:center}
+.mk{width:14px;height:14px;border:2px solid var(--ac);position:relative}.mk::after{content:"";position:absolute;inset:3px;background:var(--ac)}
+.nl{display:flex;gap:24px;font-size:13.5px;color:var(--dim)}.nl a:hover{color:var(--bone)}
+@media(max-width:900px){.nl{display:none}}
+.btn{padding:11px 22px;border:1px solid var(--line);border-radius:2px;font-size:14px;transition:.2s}
+.btn:hover{border-color:var(--bone)}
+.btn-p{background:var(--ac);color:#04160E;border-color:var(--ac);font-weight:600}
+.btn-p:hover{background:#41f2a9;border-color:#41f2a9}
+.hb{display:flex;gap:10px;flex-wrap:wrap}
+
+/* progress rail */
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--ac);width:0;z-index:100}
+
+/* HERO — variable width morphs on scroll */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:110px 0 50px}
+.kline{font-family:Anybody;text-transform:uppercase;font-size:clamp(40px,11.5vw,160px);line-height:.84;margin:0;display:block;white-space:nowrap;overflow:hidden}
+.kline b{font-weight:800;font-variation-settings:'wdth' 100,'wght' 800;display:inline-block;will-change:font-variation-settings}
+.kline.thin b{font-weight:300;font-variation-settings:'wdth' 62,'wght' 300;color:var(--dim)}
+.kline.ac b{color:var(--ac)}
+.herometa{display:flex;justify-content:space-between;gap:26px;margin-top:46px;padding-top:24px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:flex-end}
+.herometa p{margin:0;color:var(--dim);max-width:38ch;font-size:16.5px}
+
+/* READING HIGHLIGHT block */
+.read{padding:34vh 0}
+.read p{font-family:Anybody;font-variation-settings:'wdth' 96,'wght' 500;text-transform:none;
+ font-size:clamp(24px,3.9vw,50px);line-height:1.22;letter-spacing:-.02em;margin:0;max-width:20ch}
+.read .wd{color:#26251F;transition:color .18s}
+.read .wd.lit{color:var(--bone)}
+.read .wd.key.lit{color:var(--ac)}
+
+/* SERVICE SLABS — full width type rows */
+.slabs{border-top:1px solid var(--line)}
+.slab{border-bottom:1px solid var(--line);padding:0;overflow:hidden;position:relative}
+.slab a{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;padding:36px 0;transition:padding .35s}
+.slab:hover a{padding-left:26px}
+.slab h3{font-family:Anybody;text-transform:uppercase;font-size:clamp(28px,5.4vw,74px);margin:0;line-height:.84;
+ font-variation-settings:'wdth' 78,'wght' 700;transition:font-variation-settings .45s,color .3s}
+.slab:hover h3{font-variation-settings:'wdth' 128,'wght' 800;color:var(--ac)}
+.slab p{margin:0;color:var(--dim);font-size:15px;max-width:34ch;text-align:right}
+@media(max-width:760px){.slab a{grid-template-columns:1fr;gap:8px}.slab p{text-align:left}}
+
+/* MARQUEE that changes speed with scroll */
+.vmq{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:22px 0;white-space:nowrap}
+.vmq div{display:inline-block;font-family:Anybody;text-transform:uppercase;font-size:clamp(24px,3.6vw,46px);
+ font-variation-settings:'wdth' 70,'wght' 600;will-change:transform}
+.vmq span{margin:0 20px;color:var(--dim)}
+.vmq b{color:var(--ac)}
+
+/* WORK — index with scroll-scaled type */
+.work{padding:110px 0}
+h2.sec{font-family:Anybody;text-transform:uppercase;font-size:clamp(30px,6vw,84px);font-variation-settings:'wdth' 108,'wght' 800;margin:0 0 16px;line-height:.85}
+.lead{color:var(--dim);max-width:42ch;margin:0 0 50px;font-size:17px}
+.wl{display:grid;gap:14px}
+.wl a{display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:24px;border:1px solid var(--line);transition:.3s}
+.wl a:hover{background:#0B0B0B;border-color:var(--ac)}
+.wl h3{font-family:Anybody;text-transform:uppercase;font-size:clamp(20px,3vw,34px);margin:0;font-variation-settings:'wdth' 92,'wght' 700;line-height:.9}
+.wl span{color:var(--dim);font-size:14px}
+
+/* END */
+.end{padding:22vh 0;text-align:center;border-top:1px solid var(--line)}
+.end h2{font-family:Anybody;text-transform:uppercase;font-size:clamp(44px,13vw,190px);line-height:.8;margin:0 0 34px;font-variation-settings:'wdth' 130,'wght' 900}
+footer{padding:30px 0 60px;color:var(--dim);font-size:13.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.read .wd{color:var(--bone)}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="#"><span class="mk"></span>Coreline</a>
+  <div class="nl"><a href="#services">Services</a><a href="#work">Work</a><a href="#contact">Contact</a></div>
+  <a class="btn btn-p" href="#contact">Book a call</a>
+</div></nav>
+
+<section class="hero"><div class="wrap">
+  <h1 style="margin:0">
+    <span class="kline" data-k><b>We build</b></span>
+    <span class="kline thin" data-k><b>the whole</b></span>
+    <span class="kline ac" data-k><b>thing</b></span>
+  </h1>
+  <div class="herometa">
+    <p>Websites, AI agents, automations and search for businesses across Thane and Mumbai. One team, every part of it.</p>
+    <div class="hb"><a class="btn btn-p" href="#contact">Book a call</a><a class="btn" href="#contact">WhatsApp</a></div>
+  </div>
+</div></section>
+
+<section class="read"><div class="wrap">
+  <p id="r1">Most businesses here are invisible online. Not because they are bad at what they do, but because nobody built them a thing that works. We build that thing.</p>
+</div></section>
+
+<div class="vmq"><div id="vm">
+  <span>Websites</span><span><b>/</b></span><span>AI agents</span><span><b>/</b></span><span>Automations</span><span><b>/</b></span><span>Local search</span><span><b>/</b></span><span>Apps</span><span><b>/</b></span><span>CRM</span><span><b>/</b></span><span>Branding</span><span><b>/</b></span><span>Social</span><span><b>/</b></span>
+</div></div>
+
+<section class="slabs" id="services"><div class="wrap">
+  <div class="slab"><a href="#"><h3>Websites</h3><p>Hand-built and fast on mobile data. Made to turn visitors into calls.</p></a></div>
+  <div class="slab"><a href="#"><h3>AI agents</h3><p>Trained on your services and timings. Answers and books while you sleep.</p></a></div>
+  <div class="slab"><a href="#"><h3>Automations</h3><p>Confirmations, reminders and review requests that send themselves.</p></a></div>
+  <div class="slab"><a href="#"><h3>Local search</h3><p>Found by the people already searching for what you sell nearby.</p></a></div>
+  <div class="slab"><a href="#"><h3>Apps</h3><p>Android and iOS, for when a website genuinely is not enough.</p></a></div>
+  <div class="slab"><a href="#"><h3>CRM</h3><p>Custom tools shaped around how your business already runs.</p></a></div>
+  <div class="slab"><a href="#"><h3>Branding</h3><p>Logo, palette, cards, signage. One face everywhere.</p></a></div>
+  <div class="slab"><a href="#"><h3>Social</h3><p>Monthly graphics and reels, handled on retainer.</p></a></div>
+</div></section>
+
+<section class="read"><div class="wrap">
+  <p id="r2">One team designs it, codes it, ranks it and runs it. No handoffs. No chasing three vendors. Nobody left to blame but us.</p>
+</div></section>
+
+<section class="work" id="work"><div class="wrap">
+  <h2 class="sec">Work</h2>
+  <p class="lead">Open them on your phone. That is the only review that counts.</p>
+  <div class="wl">
+    <a><h3>MNK Jewels</h3><span>Jewellery · online store</span></a>
+    <a><h3>KC Physio Care</h3><span>Clinic · appointments</span></a>
+    <a><h3>Iron Yard Fitness</h3><span>Gym · AI agent</span></a>
+    <a><h3>Sharma &amp; Associates</h3><span>Chartered accountants</span></a>
+    <a><h3>Vista Interiors</h3><span>Interiors · portfolio</span></a>
+  </div>
+</div></section>
+
+<section class="end" id="contact"><div class="wrap">
+  <h2>Let's talk</h2>
+  <div class="hb" style="justify-content:center"><a class="btn btn-p" href="#">Book a call</a><a class="btn" href="#">WhatsApp</a></div>
+</div></section>
+
+<div class="wrap"><footer><div>© 2026 Coreline Digital</div><div>Wagle Estate, Thane · Maharashtra</div></footer></div>
+
+<script>
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* progress */
+const prog=document.getElementById('prog');
+/* reading highlight */
+function splitWords(el,keys){
+  const words=el.textContent.split(' ');
+  el.innerHTML=words.map(w=>{
+    const clean=w.replace(/[^a-z]/gi,'').toLowerCase();
+    return `<span class="wd${keys.includes(clean)?' key':''}">${w}</span>`;
+  }).join(' ');
+}
+splitWords(document.getElementById('r1'),['invisible','build','thing']);
+splitWords(document.getElementById('r2'),['us','handoffs','no']);
+const blocks=[...document.querySelectorAll('.read p')];
+/* marquee */
+const vm=document.getElementById('vm');vm.innerHTML+=vm.innerHTML;
+let mx=0,vel=0,lastY=scrollY;
+/* hero variable width scrub */
+const klines=[...document.querySelectorAll('[data-k] b')];
+
+function frame(){
+  const y=scrollY,max=document.body.scrollHeight-innerHeight;
+  prog.style.width=(y/max*100)+'%';
+  if(RM)return;
+  /* hero morph */
+  const p=Math.min(y/innerHeight,1);
+  klines.forEach((b,i)=>{
+    const base=[100,62,110][i],tgt=[150,110,58][i];
+    const wd=base+(tgt-base)*p;
+    const wg=[800,300,800][i]+([300,800,300][i]-[800,300,800][i])*p;
+    b.style.fontVariationSettings=`'wdth' ${wd.toFixed(0)},'wght' ${wg.toFixed(0)}`;
+  });
+  /* reading highlight */
+  blocks.forEach(bl=>{
+    const wd=[...bl.querySelectorAll('.wd')];
+    const r=bl.getBoundingClientRect();
+    const prog2=(innerHeight*.78-r.top)/(r.height+innerHeight*.42);
+    const n=Math.round(Math.min(Math.max(prog2,0),1)*wd.length);
+    wd.forEach((w,i)=>w.classList.toggle('lit',i<n));
+  });
+  /* marquee speed reacts to scroll */
+  vel=Math.min(Math.abs(y-lastY),40);lastY=y;
+  mx-=(0.6+vel*0.09);
+  const half=vm.scrollWidth/2;
+  if(-mx>half)mx+=half;
+  vm.style.transform=`translateX(${mx}px)`;
+}
+let t=false;
+function tick(){frame();requestAnimationFrame(tick)}
+if(!RM)tick();else frame();
+addEventListener('scroll',()=>{if(RM)frame()},{passive:true});
+</script>
+</body>
+</html>

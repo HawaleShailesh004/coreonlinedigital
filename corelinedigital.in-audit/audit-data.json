@@ -1,0 +1,440 @@
+{
+  "summary": {
+    "health_score": 56,
+    "business_type": "Service-area business - single-operator web agency, Thane, Maharashtra",
+    "top_findings": [
+      "542 lines of uncommitted SEO work (titles, OG image, Person/FAQ schema, pricing, /about, /privacy) are not deployed; production runs commit 738d638 from 31 Aug 2026",
+      "No page title contains a commercial or geographic keyword, or the full brand name 'Coreline Digital'",
+      "All 10 portfolio sample pages are unreachable to crawlers: robots.txt Disallow makes their noindex unenforceable, and 13 internal links point into the blocked directory",
+      "Site is critically thin: ~1,450 words across 4 pages, no blog, no case studies, /services at 370 words",
+      "No Google Business Profile signal, no reviews, no citations, no sameAs - the largest missing local traffic source"
+    ],
+    "quick_wins": [
+      "Review, commit and deploy the SEO working tree (1-2 h, very high impact)",
+      "Claim and complete Google Business Profile (2 h, very high impact)",
+      "Resolve the /samples/ robots.txt vs noindex conflict (30 m, high impact)",
+      "Add sameAs links to org schema and footer (1 h, medium-high impact)",
+      "Add alt=\"Coreline Digital\" to the nav logo link (5 m)"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 72,
+      "what_works": [
+        "HTTPS enforced with 308 on apex and www",
+        "Canonical host consolidated on www",
+        "Valid robots.txt with Host and Sitemap directives",
+        "Valid sitemap.xml matching canonicals",
+        "Self-referencing absolute canonicals on all pages",
+        "html lang=en-IN, charset and viewport correct",
+        "True 404 status on unknown paths",
+        "Trailing-slash normalisation",
+        "Statically prerendered, Vercel edge cache HIT, 88ms TTFB"
+      ],
+      "findings": [
+        {
+          "title": "robots.txt Disallow makes the noindex on /samples/ unenforceable",
+          "severity": "Critical",
+          "description": "/samples/ is Disallowed in robots.txt while every sample page also serves 'noindex, nofollow, nocache'. Google cannot read a meta tag on a page it may not fetch, so the noindex never takes effect and the URLs stay eligible for URL-only indexing.",
+          "recommendation": "Pick one mechanism: remove Disallow: /samples/ and let the noindex work, or keep the Disallow and drop the meta tag."
+        },
+        {
+          "title": "13 internal links point into a crawler-blocked directory",
+          "severity": "High",
+          "description": "The homepage links to 3 sample pages and /work links to all 10. Of /work's 12 outbound links, 10 terminate at blocked URLs, making the portfolio page a near dead-end for crawlers.",
+          "recommendation": "Resolve the robots conflict so the sample pages become crawlable, or stop linking to them from indexable pages."
+        },
+        {
+          "title": "Sitemap lists 4 URLs while local sitemap.ts declares 6",
+          "severity": "High",
+          "description": "app/sitemap.ts already includes /about and /privacy; both return 404 in production because the routes are not deployed.",
+          "recommendation": "Deploy the working tree, then verify both return 200 and resubmit the sitemap."
+        },
+        {
+          "title": "Security headers largely absent",
+          "severity": "Medium",
+          "description": "Only Strict-Transport-Security is present. Missing X-Content-Type-Options, Referrer-Policy, X-Frame-Options/CSP frame-ancestors, and Permissions-Policy. HSTS also lacks includeSubDomains and preload.",
+          "recommendation": "Add the headers block to next.config.ts."
+        },
+        {
+          "title": "Two-hop redirect from apex over HTTP",
+          "severity": "Low",
+          "description": "http://corelinedigital.in redirects to https://corelinedigital.in and then to https://www.corelinedigital.in.",
+          "recommendation": "Collapse to a single hop to the final HTTPS+www target."
+        },
+        {
+          "title": "/favicon.ico returns 404",
+          "severity": "Low",
+          "description": "Icons are served via /icon.svg and /apple-icon.png. Some legacy crawlers and link-preview bots still request /favicon.ico at the root.",
+          "recommendation": "Add a root favicon.ico fallback."
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 38,
+      "what_works": [
+        "Copy is specific, confident and free of generic agency filler",
+        "Clear differentiated positioning (systems vs templates) sustained across pages",
+        "Concrete service descriptions naming real mechanisms - WhatsApp routing, booking calendars, follow-up sequences",
+        "Memorable quotable lines well suited to AI citation"
+      ],
+      "findings": [
+        {
+          "title": "No content engine at all",
+          "severity": "Critical",
+          "description": "Four pages, no blog, no guides, no case studies. Nothing targets informational or long-tail queries; every page is bottom-of-funnel. Total indexable body copy is roughly 1,450 words.",
+          "recommendation": "Launch a blog at 2 posts/month and publish 3 real case studies with outcome numbers."
+        },
+        {
+          "title": "Zero geo or commercial keyword presence in body copy",
+          "severity": "Critical",
+          "description": "'Thane' appears in live body text only in the footer address. The site never describes itself using the words buyers search: website design, web developer, website company, paired with Thane, Wagle Estate, or Mumbai.",
+          "recommendation": "Rewrite homepage and services copy around the 15 terms already identified in the local seoKeywords list."
+        },
+        {
+          "title": "E-E-A-T signals are minimal",
+          "severity": "High",
+          "description": "Founder is 'Shailesh' - first name only, no surname, bio, photo, credentials, or LinkedIn. No sameAs, no named clients, no testimonials, no reviews, no live pricing, and the About page 404s.",
+          "recommendation": "Deploy the About page and expand it with a full bio, photo, experience and social profiles."
+        },
+        {
+          "title": "Portfolio is samples but the homepage implies client work",
+          "severity": "High",
+          "description": "The homepage section reads 'Recent builds / A few systems we've built' while /work describes the same items as 'Ten industry sample builds'. The working tree already contains an FAQ answering this honestly.",
+          "recommendation": "Deploy the FAQ and align the homepage heading with /work's framing."
+        },
+        {
+          "title": "/services is critically thin",
+          "severity": "High",
+          "description": "370 words covering three distinct service lines, on the primary money page.",
+          "recommendation": "Expand to 900+ words with an H3 per 'Includes' item."
+        },
+        {
+          "title": "Contact page has no subheadings",
+          "severity": "Medium",
+          "description": "/contact carries an H1 and no H2 or H3 at all, across 97 words.",
+          "recommendation": "Add Visit / Call / WhatsApp / What happens next subheadings."
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 48,
+      "what_works": [
+        "One unique descriptive H1 per page",
+        "Self-referencing canonicals correct sitewide",
+        "Meta descriptions present on every page",
+        "No duplicate titles or descriptions",
+        "Correct index,follow robots directives on public pages"
+      ],
+      "findings": [
+        {
+          "title": "No title contains a commercial or geographic keyword",
+          "severity": "Critical",
+          "description": "Not one title says website, web design, Thane or Mumbai. Titles use internal positioning vocabulary such as 'Digital Infrastructure' and 'Digital Storefronts & Systems' that carries effectively no search volume.",
+          "recommendation": "Deploy the working tree, whose titles are already geo-targeted ('Websites for Thane Businesses', 'Website Design in Thane')."
+        },
+        {
+          "title": "Full brand name absent from every title",
+          "severity": "High",
+          "description": "Titles suffix with 'coreline.' but the registered name is Coreline Digital, so brand searches match against a string the titles never contain.",
+          "recommendation": "Use '| Coreline Digital' as the title suffix."
+        },
+        {
+          "title": "og:image missing sitewide",
+          "severity": "High",
+          "description": "No og:image on any page and twitter:card is 'summary' rather than 'summary_large_image', so every WhatsApp, LinkedIn and Slack share renders as a bare text link. The code identifies WhatsApp link sharing as the primary distribution channel.",
+          "recommendation": "Deploy app/opengraph-image.tsx, which already generates a 1200x630 card."
+        },
+        {
+          "title": "Open Graph tags incomplete",
+          "severity": "Medium",
+          "description": "og:type, og:locale and og:site_name are all absent in production. All three are present in the working tree.",
+          "recommendation": "Deploy the working tree."
+        },
+        {
+          "title": "Titles under-length",
+          "severity": "Medium",
+          "description": "Titles run 32-41 characters against a ~60 character budget, leaving roughly 20 characters of keyword space unused per page.",
+          "recommendation": "Extend titles with service and location terms."
+        },
+        {
+          "title": "Two meta descriptions under-length",
+          "severity": "Low",
+          "description": "/work is 119 characters and /contact 95, against a ~155 budget. /contact omits the phone number and the same-day callback hook.",
+          "recommendation": "Expand both toward 150 characters."
+        },
+        {
+          "title": "Flat heading structure on key pages",
+          "severity": "Low",
+          "description": "/services uses four H2s and zero H3s for its 'Includes' feature lists; /contact has no subheadings at all.",
+          "recommendation": "Introduce H3s to improve passage-level extraction."
+        },
+        {
+          "title": "No BreadcrumbList",
+          "severity": "Low",
+          "description": "No breadcrumb markup. Low impact on a flat 4-page site.",
+          "recommendation": "Add once /about and /privacy ship."
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 62,
+      "what_works": [
+        "Valid JSON-LD, parses cleanly, no syntax errors",
+        "Stable @id anchoring with correct publisher cross-reference",
+        "Complete PostalAddress including postalCode",
+        "GeoCoordinates present",
+        "areaServed covers Thane, Thane West, Mumbai and Maharashtra",
+        "ContactPoint with availableLanguage English, Hindi, Marathi",
+        "hasOfferCatalog with five typed Service offers",
+        "Referenced logo assets both resolve 200"
+      ],
+      "findings": [
+        {
+          "title": "No sameAs property",
+          "severity": "High",
+          "description": "No social or third-party profile links in the schema or anywhere on the page. This is the primary mechanism by which Google reconciles a business into its Knowledge Graph.",
+          "recommendation": "Add Google Business Profile, LinkedIn, Instagram and directory URLs to sameAs and the footer."
+        },
+        {
+          "title": "No founder or Person entity live",
+          "severity": "High",
+          "description": "The homepage devotes a section to Shailesh but no Person entity exists in the markup. personJsonLd() is written and wired in the working tree but unshipped.",
+          "recommendation": "Deploy the working tree."
+        },
+        {
+          "title": "No openingHoursSpecification",
+          "severity": "Medium",
+          "description": "LocalBusiness subtypes are eligible for hours display, and the contact page promises a same-day reply before 6pm.",
+          "recommendation": "Encode business hours in the schema."
+        },
+        {
+          "title": "No aggregateRating or review markup",
+          "severity": "Medium",
+          "description": "No review markup because no reviews exist.",
+          "recommendation": "Collect Google reviews first, then mark them up."
+        },
+        {
+          "title": "Identical schema on all four pages",
+          "severity": "Medium",
+          "description": "Every page emits the same organization graph and nothing page-specific. Missing WebPage per URL, ContactPage, FAQPage, BreadcrumbList and ItemList for the /work grid.",
+          "recommendation": "Deploy faqJsonLd() (already wired into the services page) and add per-page WebPage types."
+        },
+        {
+          "title": "priceRange '$$' is uninformative",
+          "severity": "Low",
+          "description": "A US-dollar band on an Indian INR business.",
+          "recommendation": "Deploy the working tree's priceSpecification of INR 15,000-35,000."
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 82,
+      "what_works": [
+        "88ms TTFB on Vercel edge cache HIT",
+        "~310 KB total page weight excluding photography",
+        "Brotli/gzip compression active",
+        "Images served as AVIF with correct srcset and sizes",
+        "Explicit width/height or fill on every image, keeping CLS risk low",
+        "Fonts preloaded with crossorigin and immutable hashed URLs",
+        "Below-fold images correctly lazy-loaded",
+        "Above-fold logo preloaded via imageSrcSet"
+      ],
+      "findings": [
+        {
+          "title": "Core Web Vitals could not be measured",
+          "severity": "Info",
+          "description": "The PageSpeed Insights API returned HTTP 429 (daily quota exhausted, no API key configured) and the Claude SEO runtime is not set up, so no CrUX field data was available. No LCP, INP or CLS values were obtained; this score reflects direct transfer measurements only.",
+          "recommendation": "Configure a PSI API key or run Lighthouse locally, then re-score this category."
+        },
+        {
+          "title": "Four font files across three families",
+          "severity": "Medium",
+          "description": "Space Grotesk, Inter and IBM Plex Mono total roughly 90 KB, with 48 KB in a single face, all preloaded and competing for early bandwidth.",
+          "recommendation": "Subset to the Latin range and consider reducing three families to two."
+        },
+        {
+          "title": "All photography hotlinked from Unsplash",
+          "severity": "Medium",
+          "description": "Every photo proxies images.unsplash.com through the Vercel optimizer, adding a third-party dependency on the critical path for /work.",
+          "recommendation": "Self-host imagery, ideally replacing stock with real build screenshots."
+        },
+        {
+          "title": "47 KB of RSC flight payload inline in the HTML",
+          "severity": "Low",
+          "description": "self.__next_f.push(...) accounts for 47 KB of the 88 KB uncompressed document - more than half the HTML is hydration data rather than content.",
+          "recommendation": "Normal for the App Router; reduce client component boundaries where practical."
+        },
+        {
+          "title": "src fallback resolves to the 3840px variant",
+          "severity": "Low",
+          "description": "Next.js sets the largest srcset entry as the src fallback, so any client ignoring srcset pulls 663 KB of 4K imagery on /work.",
+          "recommendation": "Cap the configured deviceSizes to a realistic maximum."
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 45,
+      "what_works": [
+        "All AI crawlers verified reachable: GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, bingbot, Googlebot all return 200",
+        "No user-agent-specific blocks in robots.txt",
+        "Content is server-rendered so non-JS crawlers see full text",
+        "Clean semantic HTML with proper heading hierarchy",
+        "Organization schema provides a structured entity anchor",
+        "Distinctive quotable phrasing well suited to extraction"
+      ],
+      "findings": [
+        {
+          "title": "Not enough content to cite",
+          "severity": "Critical",
+          "description": "AI answer engines cite passages. With roughly 1,450 words sitewide and no question-shaped content there is almost nothing to extract. This is the binding constraint on AI visibility.",
+          "recommendation": "Expand content depth as set out in the Content Quality category."
+        },
+        {
+          "title": "No FAQ or Q&A content live",
+          "severity": "High",
+          "description": "Question-and-answer blocks are the highest-yield GEO format. Five written FAQs and faqJsonLd() exist in the working tree, unshipped.",
+          "recommendation": "Deploy the working tree."
+        },
+        {
+          "title": "No author or expertise entity",
+          "severity": "High",
+          "description": "No Person schema, author byline, bio or sameAs. LLMs weight identifiable expertise heavily when selecting citations.",
+          "recommendation": "Deploy personJsonLd() and expand the About page."
+        },
+        {
+          "title": "Portfolio invisible to AI crawlers",
+          "severity": "High",
+          "description": "All 10 sample builds sit under the Disallow: /samples/ path, so the most substantive content on the site cannot be read by any AI crawler.",
+          "recommendation": "Resolve the robots conflict."
+        },
+        {
+          "title": "No citable facts, figures or definitions",
+          "severity": "Medium",
+          "description": "No statistics, live pricing, timelines or comparison tables. The single comparison block is two short lines.",
+          "recommendation": "Deploy the concrete numbers already in the working tree: INR 15,000 and 10 working days."
+        },
+        {
+          "title": "No off-site brand corroboration",
+          "severity": "Medium",
+          "description": "No reviews, directory listings or social profiles exist to corroborate the business to an LLM.",
+          "recommendation": "Claim Google Business Profile and build citations."
+        },
+        {
+          "title": "No llms.txt",
+          "severity": "Low",
+          "description": "/llms.txt returns 404. Optional and ignored by Google, though some AI tools consume it.",
+          "recommendation": "Add if convenient; low expected return."
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 58,
+      "what_works": [
+        "AVIF delivery via the Next.js optimizer",
+        "Correct srcset and sizes attributes on content imagery",
+        "Dimensions or fill on every image, so no layout shift",
+        "Below-fold images lazy-loaded",
+        "Content photography carries genuinely descriptive alt text"
+      ],
+      "findings": [
+        {
+          "title": "No Open Graph or social share image",
+          "severity": "High",
+          "description": "Nothing to preview when a link is shared. app/opengraph-image.tsx generates a 1200x630 card in the working tree and is unshipped.",
+          "recommendation": "Deploy the working tree."
+        },
+        {
+          "title": "All imagery is Unsplash stock",
+          "severity": "Medium",
+          "description": "Every photograph is stock. On a homepage section headed 'Recent builds / A few systems we've built', stock interiors of clinics and showrooms are a credibility risk.",
+          "recommendation": "Replace with screenshots of the actual sample builds, which also carry keyword-relevant alt text."
+        },
+        {
+          "title": "Logo alt is empty in nav and footer",
+          "severity": "Low",
+          "description": "The nav logo is wrapped in the home link, so screen readers announce a link with no accessible name.",
+          "recommendation": "Set alt=\"Coreline Digital\" on the nav instance; the footer instance may stay decorative."
+        },
+        {
+          "title": "/favicon.ico returns 404",
+          "severity": "Low",
+          "description": "Covered in Technical SEO.",
+          "recommendation": "Add a root favicon.ico fallback."
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 0: Ship What You Already Built",
+        "timeframe": "This week",
+        "items": [
+          "Review, commit and deploy the 542 lines of uncommitted SEO work in the working tree",
+          "Before shipping, confirm /admin and /api are noindex and Disallowed",
+          "Verify /about and /privacy return 200 and appear in sitemap.xml",
+          "Resubmit the sitemap in Search Console and request indexing on all pages"
+        ]
+      },
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "Claim and complete the Google Business Profile listing",
+          "Resolve the /samples/ robots.txt versus noindex conflict",
+          "Decide whether the sample builds should be indexable at all",
+          "Add location and service keywords to body copy on / and /services",
+          "Begin collecting Google reviews"
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": [
+          "Expand /services from 370 to 900+ words with an H3 per Includes item",
+          "Add sameAs links to the organization schema and the footer",
+          "Flesh out the About page with surname, photo, bio, experience and LinkedIn",
+          "Align the homepage 'Recent builds' heading with /work's 'sample builds' framing",
+          "Add security headers in next.config.ts",
+          "Replace stock photography with screenshots of the real sample builds",
+          "Add a descriptive alt attribute to the nav logo"
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          "Build 3-5 genuine location and service pages for Thane, Thane West and Mumbai",
+          "Launch a blog publishing 2 posts per month",
+          "Write 3 real case studies with outcome numbers",
+          "Add openingHoursSpecification, BreadcrumbList and per-page WebPage/ContactPage schema",
+          "Build citations on JustDial, Sulekha, IndiaMART and LinkedIn with identical NAP",
+          "Subset fonts and consider reducing three families to two"
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          "Configure a PageSpeed Insights API key to capture Core Web Vitals",
+          "Run /seo setup to unlock CrUX, Search Console and backlink data",
+          "Confirm Search Console verification and monitor the indexed page count",
+          "Track map-pack position for 'web design Thane' once GBP is live",
+          "Re-audit after Phases 0 and 1; expect roughly 56 to 72"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/"
+  }
+}

@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coreline Site Assistant — Strategy &amp; Implementation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0c1210;
+      --paper: #f6f7f5;
+      --accent: #1f5c4b;
+      --accent-soft: #2c7a63;
+      --sage: #8fbfa8;
+      --grey: #6e7a75;
+      --body: #3e4541;
+      --hairline: rgba(12, 18, 16, 0.12);
+      --hairline-inv: rgba(246, 247, 245, 0.16);
+      --card: rgba(12, 18, 16, 0.02);
+      --max: 52rem;
+      --label: 0.6875rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .shell {
+      max-width: calc(var(--max) + 6rem);
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    /* --- Header band ---------------------------------------------------- */
+    .hero {
+      border-bottom: 1px solid var(--hairline);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 3rem 1.5rem 2.5rem;
+    }
+
+    .hero-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: var(--label);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sage);
+    }
+
+    .hero h1 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-top: 1rem;
+      max-width: 18ch;
+    }
+
+    .hero .lede {
+      margin-top: 1.25rem;
+      max-width: 42rem;
+      color: rgba(246, 247, 245, 0.72);
+      font-size: 1.0625rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .tag {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.65rem;
+      border: 1px solid var(--hairline-inv);
+      color: var(--sage);
+    }
+
+    .tag.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--paper);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+      gap: 1px;
+      background: var(--hairline-inv);
+      border: 1px solid var(--hairline-inv);
+      margin-top: 2rem;
+    }
+
+    .stat {
+      background: var(--ink);
+      padding: 1rem 1.25rem;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--paper);
+    }
+
+    .stat span {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(246, 247, 245, 0.5);
+    }
+
+    /* --- Layout --------------------------------------------------------- */
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(246, 247, 245, 0.92);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--hairline);
+      padding: 0.75rem 0;
+      margin: 0 -1.5rem 2.5rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    .toc nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1rem;
+    }
+
+    .toc a {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+    }
+
+    .toc a:hover {
+      color: var(--accent);
+    }
+
+    section {
+      margin-bottom: 3.5rem;
+    }
+
+    h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 1.75rem 0 0.75rem;
+    }
+
+    h4 {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: var(--label);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    p {
+      color: var(--body);
+      max-width: 42rem;
+    }
+
+    p+p {
+      margin-top: 0.75rem;
+    }
+
+    ul,
+    ol {
+      margin: 0.75rem 0 0 1.25rem;
+      color: var(--body);
+      max-width: 42rem;
+    }
+
+    li+li {
+      margin-top: 0.35rem;
+    }
+
+    strong {
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .callout {
+      border: 1px solid var(--hairline);
+      border-left: 3px solid var(--accent);
+      padding: 1.25rem 1.5rem;
+      margin: 1.25rem 0;
+      background: var(--card);
+      max-width: 42rem;
+    }
+
+    .callout.success {
+      border-left-color: var(--accent-soft);
+    }
+
+    .callout.warn {
+      border-left-color: var(--grey);
+    }
+
+    .callout-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .callout p {
+      font-size: 0.9375rem;
+    }
+
+    /* --- Tables --------------------------------------------------------- */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--hairline);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      background: var(--card);
+      color: var(--grey);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--hairline);
+      color: var(--body);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(12, 18, 16, 0.015);
+    }
+
+    td code,
+    p code,
+    li code {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8125em;
+      background: var(--card);
+      padding: 0.1em 0.35em;
+      border: 1px solid var(--hairline);
+    }
+
+    .pill-yes {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .pill-no {
+      color: var(--grey);
+    }
+
+    /* --- Architecture diagram ------------------------------------------- */
+    .arch-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    @media (min-width: 768px) {
+      .arch-grid {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+
+    .diagram {
+      border: 1px solid var(--hairline);
+      padding: 1.5rem;
+      background: var(--paper);
+    }
+
+    .diagram svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .layer-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .layer-card {
+      border: 1px solid var(--hairline);
+      padding: 1rem 1.25rem;
+    }
+
+    .layer-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .layer-card ul {
+      margin: 0;
+      list-style: none;
+      padding: 0;
+    }
+
+    .layer-card li {
+      font-size: 0.8125rem;
+      color: var(--body);
+      padding: 0.25rem 0;
+    }
+
+    .layer-card li::before {
+      content: "—";
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    /* --- Flow rail ------------------------------------------------------ */
+    .flow-rail {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin: 1.25rem 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .flow-step {
+      flex: 0 0 auto;
+      min-width: 7.5rem;
+      border: 1px solid var(--hairline);
+      padding: 0.75rem 0.85rem;
+      background: var(--paper);
+      position: relative;
+    }
+
+    .flow-step+.flow-step {
+      margin-left: 1.25rem;
+    }
+
+    .flow-step+.flow-step::before {
+      content: "";
+      position: absolute;
+      left: -1.25rem;
+      top: 50%;
+      width: 1.25rem;
+      height: 1px;
+      background: var(--hairline);
+    }
+
+    .flow-step .num {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.625rem;
+      color: var(--grey);
+      letter-spacing: 0.08em;
+    }
+
+    .flow-step .name {
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .flow-step .collects {
+      font-size: 0.75rem;
+      color: var(--grey);
+      margin-top: 0.25rem;
+      line-height: 1.4;
+    }
+
+    /* --- Step detail blocks --------------------------------------------- */
+    .step-block {
+      border-top: 1px solid var(--hairline);
+      padding-top: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .step-block:first-of-type {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0.5rem;
+    }
+
+    /* --- Code / flow blocks --------------------------------------------- */
+    pre {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--hairline);
+    }
+
+    pre.json {
+      color: rgba(246, 247, 245, 0.85);
+    }
+
+    /* --- Checklist ------------------------------------------------------ */
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 0;
+      padding: 0;
+      max-width: 42rem;
+    }
+
+    .checklist li {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--hairline);
+      font-size: 0.9375rem;
+    }
+
+    .checklist li::before {
+      content: "";
+      flex-shrink: 0;
+      width: 0.75rem;
+      height: 0.75rem;
+      margin-top: 0.35rem;
+      border: 1px solid var(--accent);
+    }
+
+    /* --- Two column sections -------------------------------------------- */
+    .two-col {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    @media print {
+      .toc {
+        position: static;
+        background: none;
+      }
+
+      .hero {
+        padding: 1.5rem;
+      }
+
+      section {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Internal spec · Coreline Digital</p>
+      <h1>Site assistant — strategy &amp; implementation</h1>
+      <p class="lede">
+        What the chatbot is for, why it is built this way, and how each piece handles a specific job.
+        Aligned with <code>SiteAssistant.tsx</code>, <code>lib/chat/*</code>, and <code>app/api/chat/*</code>.
+      </p>
+      <div class="tags">
+        <span class="tag active">Qualifying bot</span>
+        <span class="tag">Two paths</span>
+        <span class="tag">Scripted spine</span>
+        <span class="tag">AI sidecar</span>
+        <span class="tag">WhatsApp handoff</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>2</strong><span>Self-select paths</span></div>
+        <div class="stat"><strong>8 / 4</strong><span>Rail steps — consult / quick</span></div>
+        <div class="stat"><strong>6</strong><span>Max model answers / session</span></div>
+        <div class="stat"><strong>Last</strong><span>Phone asked — after agreement (consult) or facts (quick)</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <div class="toc">
+      <nav aria-label="Contents">
+        <a href="#strategy">Strategy</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#sequence">Two paths</a>
+        <a href="#model">AI sidecar</a>
+        <a href="#leads">Lead capture</a>
+        <a href="#visibility">Visibility</a>
+        <a href="#ux">UX rules</a>
+        <a href="#facts">Facts</a>
+        <a href="#files">File map</a>
+        <a href="#checklist">Checklist</a>
+        <a href="#evolution">Evolution</a>
+      </nav>
+    </div>
+
+    <!-- 1. STRATEGY -->
+    <section id="strategy">
+      <h2>1. Strategic choice — which bot, and why</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Job</th>
+              <th>Why not this one</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>FAQ / support</strong></td>
+              <td>Answer questions about services</td>
+              <td class="pill-no">Site is small. No FAQ volume drowning anyone.</td>
+            </tr>
+            <tr>
+              <td><strong>Full audit bot</strong></td>
+              <td>Look up Google presence live</td>
+              <td class="pill-no">Needs real data APIs. Will disappoint on first try.</td>
+            </tr>
+            <tr>
+              <td><strong>Qualifying bot</strong></td>
+              <td>Interview visitor, capture lead</td>
+              <td class="pill-yes"><strong>This is what we built.</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>v1</strong> ran one fixed 7-step form-feel sequence for every visitor. <strong>v2</strong> replaces that with a self-select opener into two paths, because not every visitor wants — or deserves — the same depth of conversation.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Path</th><th>Who it's for</th><th>Shape</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Consult</strong></td><td>Someone open to a real conversation</td><td>SPIN-style: identify → pain → amplify pain → goal → obstacle → website → agreement → close</td></tr>
+            <tr><td><strong>Quick</strong></td><td>Someone who just wants the number</td><td>business → optional problem line → facts → name → phone</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>The qualifying bot does three jobs at once</h3>
+      <ol>
+        <li><strong>Captures the lead</strong> — business type, problem, goal, obstacle, website state, agreement, phone.</li>
+        <li><strong>Collects what Shailesh needs before a call</strong> — so the first WhatsApp is not "hi, I want a website."</li>
+        <li><strong>Demonstrates the product</strong> — Pillar 2: <em>Something that answers when you can't.</em> The visitor has used the thing being sold.</li>
+      </ol>
+
+      <div class="callout success">
+        <p class="callout-title">Positioning in one line</p>
+        <p>Self-select depth → honest qualifying conversation → diagnosis + solution bridge → explicit agreement → price → optional phone → WhatsApp handoff with everything pre-written.</p>
+      </div>
+
+      <h3>Voice rules (non-negotiable)</h3>
+      <ul>
+        <li>Header: <strong>Coreline</strong> / <em>On this page</em> — not "Coreline AI Assistant."</li>
+        <li>Bot is <strong>the assistant on Shailesh's site</strong>, not Shailesh. Third person: <em>Shailesh builds…</em>, never <em>I build…</em></li>
+        <li><strong>Phone is asked last</strong>, only after value + explicit agreement (consult) or the Facts card (quick). Asking first is what spam bots do.</li>
+        <li><strong>Price never appears before agreement on the consult path</strong> — the biggest change from v1.</li>
+        <li><strong>Turning down the sale is allowed</strong> — if a website will not help, say so. Most persuasive move for a suspicious buyer.</li>
+      </ul>
+    </section>
+
+    <!-- 2. ARCHITECTURE -->
+    <section id="architecture">
+      <h2>2. Architecture — scripted spine + AI sidecar</h2>
+      <p>The original spec imagined the <strong>model running the whole conversation</strong>. That fails in practice:</p>
+      <ol>
+        <li>Price, delivery, and payment terms <strong>must never drift</strong> — "mostly correct" is not good enough at ₹15,000.</li>
+        <li>The model <strong>leads with price when asked</strong> — opposite of real qualifying.</li>
+      </ol>
+
+      <div class="callout">
+        <p class="callout-title">Rule of thumb</p>
+        <p>If getting it wrong would lose money or trust → <strong>script it</strong>. If it is an unexpected question → <strong>model answers briefly, then hands back</strong> to the scripted question.</p>
+      </div>
+
+      <div class="arch-grid">
+        <div class="diagram" aria-label="Architecture diagram">
+          <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" role="img">
+            <title>Visitor through SiteAssistant to flow, chat API, lead API, and chat-log</title>
+            <rect x="0" y="0" width="520" height="420" fill="#f6f7f5" />
+            <!-- Client band -->
+            <rect x="16" y="16" width="488" height="180" fill="rgba(12,18,16,0.02)" stroke="rgba(12,18,16,0.12)" />
+            <text x="28" y="36" fill="#6e7a75" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1">BROWSER — SiteAssistant.tsx</text>
+            <rect x="200" y="56" width="120" height="32" fill="#f6f7f5" stroke="#1f5c4b" stroke-width="2" />
+            <text x="260" y="76" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="11">Visitor</text>
+            <line x1="260" y1="88" x2="260" y2="108" stroke="#6e7a75" />
+            <rect x="180" y="108" width="160" height="36" fill="#0c1210" />
+            <text x="260" y="131" text-anchor="middle" fill="#f6f7f5" font-family="IBM Plex Mono, monospace" font-size="11">SiteAssistant</text>
+            <line x1="220" y1="144" x2="120" y2="168" stroke="#6e7a75" />
+            <line x1="260" y1="144" x2="260" y2="168" stroke="#6e7a75" />
+            <line x1="300" y1="144" x2="400" y2="168" stroke="#6e7a75" />
+            <rect x="60" y="168" width="120" height="28" fill="#f6f7f5" stroke="#1f5c4b" stroke-width="2" />
+            <text x="120" y="186" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="10">flow.ts</text>
+            <rect x="200" y="168" width="120" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="260" y="186" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="10">UI + chips</text>
+            <rect x="340" y="168" width="120" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="400" y="186" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="10">localStorage</text>
+            <!-- Server band -->
+            <rect x="16" y="210" width="488" height="194" fill="rgba(12,18,16,0.02)" stroke="rgba(12,18,16,0.12)" />
+            <text x="28" y="230" fill="#6e7a75" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1">SERVER</text>
+            <rect x="40" y="248" width="100" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="90" y="266" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">/api/chat</text>
+            <rect x="160" y="248" width="100" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="210" y="266" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">/api/lead</text>
+            <rect x="280" y="248" width="110" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="335" y="266" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">/api/chat-log</text>
+            <line x1="90" y1="276" x2="90" y2="300" stroke="#6e7a75" />
+            <line x1="210" y1="276" x2="210" y2="300" stroke="#6e7a75" />
+            <line x1="335" y1="276" x2="335" y2="300" stroke="#6e7a75" />
+            <rect x="40" y="300" width="100" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="90" y="318" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">Groq</text>
+            <rect x="160" y="300" width="100" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="210" y="318" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">deliverLead</text>
+            <rect x="280" y="300" width="110" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="335" y="318" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">/admin</text>
+            <rect x="40" y="344" width="140" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="110" y="362" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">persona.ts</text>
+            <rect x="200" y="344" width="140" height="28" fill="#f6f7f5" stroke="#6e7a75" />
+            <text x="270" y="362" text-anchor="middle" fill="#0c1210" font-family="IBM Plex Mono, monospace" font-size="9">facts.ts</text>
+            <!-- Arrows from client -->
+            <line x1="120" y1="196" x2="90" y2="248" stroke="#1f5c4b" stroke-dasharray="4 3" />
+            <text x="88" y="222" fill="#1f5c4b" font-family="IBM Plex Mono, monospace" font-size="8">off-script</text>
+            <line x1="120" y1="196" x2="210" y2="248" stroke="#1f5c4b" stroke-dasharray="4 3" />
+            <text x="168" y="218" fill="#1f5c4b" font-family="IBM Plex Mono, monospace" font-size="8">phone</text>
+            <line x1="260" y1="196" x2="335" y2="248" stroke="#1f5c4b" stroke-dasharray="4 3" />
+            <text x="300" y="218" fill="#1f5c4b" font-family="IBM Plex Mono, monospace" font-size="8">each step</text>
+          </svg>
+        </div>
+
+        <div class="layer-cards">
+          <div class="layer-card">
+            <h3>Scripted (client)</h3>
+            <ul>
+              <li>Questions, chips, vertical matching</li>
+              <li>Classifiers + diagnosis + Facts card</li>
+              <li>Phone extract → POST /api/lead</li>
+              <li>Progress rail + persistence</li>
+            </ul>
+          </div>
+          <div class="layer-card">
+            <h3>Model sidecar (/api/chat)</h3>
+            <ul>
+              <li>Off-script pricing, SEO, samples</li>
+              <li><code>stage</code> context — never as instructions</li>
+              <li>420 char cap · retry on empty replies</li>
+              <li>Shared guardrails from sample personas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Responsibility</th>
+              <th>Cannot do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>lib/chat/flow.ts</code></td>
+              <td>Both step sequences, vertical matching, classifiers, diagnosis + solution bridge, WhatsApp builder</td>
+              <td>Call the model</td>
+            </tr>
+            <tr>
+              <td><code>lib/chat/facts.ts</code></td>
+              <td>Single source of truth for price, terms, services</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td><code>lib/chat/persona.ts</code></td>
+              <td>System prompt + guardrails for off-script answers</td>
+              <td>Control flow steps</td>
+            </tr>
+            <tr>
+              <td><code>SiteAssistant.tsx</code></td>
+              <td>UI, state machine, when to script vs call API</td>
+              <td>Rewrite guardrails</td>
+            </tr>
+            <tr>
+              <td><code>/api/chat</code></td>
+              <td>Groq inference, rate limits, reply caps, retry cascade</td>
+              <td>Accept <code>system</code> role from client</td>
+            </tr>
+            <tr>
+              <td><code>/api/lead</code></td>
+              <td>Re-validate phone, rate limit, deliverLead(), mark hot</td>
+              <td>Trust client phone without regex</td>
+            </tr>
+            <tr>
+              <td><code>/api/chat-log</code></td>
+              <td>Upsert every conversation for /admin, including path/goal/obstacle/fit</td>
+              <td>Block widget on failure</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. SEQUENCE -->
+    <section id="sequence">
+      <h2>3. The opener, then two paths</h2>
+      <p>Right after the greeting, before any qualifying question, the visitor self-selects:</p>
+      <div class="callout">
+        <p>"Want me to ask a few questions and give you an honest read on your situation — or skip straight to the numbers and WhatsApp?"</p>
+      </div>
+      <p><strong>Chips:</strong> <em>Ask me a few questions</em> → <code>profile.path = "consult"</code> · <em>Skip to price + WhatsApp</em> → <code>profile.path = "quick"</code></p>
+      <p>The progress rail (<code>stepOrderForPath()</code>) shows a different node count per path — 8 nodes pre-contact on consult, 4 on quick.</p>
+
+      <h3>3a. Consult path — SPIN: Situation → Problem → Implication → Need-payoff → agreement → close</h3>
+
+      <div class="flow-rail" aria-label="Eight step consult flow">
+        <div class="flow-step"><span class="num">01</span><div class="name">Business</div><div class="collects">Identify — vertical</div></div>
+        <div class="flow-step"><span class="num">02</span><div class="name">Problem</div><div class="collects">Pain — their leak</div></div>
+        <div class="flow-step"><span class="num">03</span><div class="name">Amplify</div><div class="collects">Implication — frequency + reflection</div></div>
+        <div class="flow-step"><span class="num">04</span><div class="name">Goal</div><div class="collects">Need-payoff — what "sorted" looks like</div></div>
+        <div class="flow-step"><span class="num">05</span><div class="name">Obstacle</div><div class="collects">The real objection, surfaced early</div></div>
+        <div class="flow-step"><span class="num">06</span><div class="name">Website</div><div class="collects">None / dead / fine</div></div>
+        <div class="flow-step"><span class="num">07</span><div class="name">Fit</div><div class="collects">Diagnosis + bridge + agreement — no price</div></div>
+        <div class="flow-step"><span class="num">08</span><div class="name">Name → Contact</div><div class="collects">Only after "yes" — facts, name, phone</div></div>
+      </div>
+
+      <div class="callout warn">
+        <p class="callout-title">Where did <code>intent</code> go?</p>
+        <p><code>intent</code> is not a separate step in v2. Its job splits cleaner: <code>obstacle</code> surfaces the objection early (so the solution bridge can address it directly), and <code>fit</code> is the one explicit go/no-go checkpoint.</p>
+      </div>
+
+      <div class="step-block">
+        <h4>Amplify — sharpened Implication step</h4>
+        <p>Two phases inside one rail node: (1) ask frequency — <em>Most days · A few times a week · Only occasionally</em>; (2) reflect the cost back with <code>amplifyReflection(profile)</code> — vertical- and frequency-aware, quoting their own words when short enough (<em>"So calls get missed — and that's happening most days. That's people who tried to reach you and didn't get through. Does that sound about right?"</em>). Confirm chips: <em>Yes, that's the issue · Annoying but manageable · Not sure.</em></p>
+      </div>
+
+      <div class="step-block">
+        <h4>Fit — the agreement checkpoint (the most important change in v2)</h4>
+        <p><strong>Order inside this step, same turn:</strong></p>
+        <ol>
+          <li><code>diagnosis(profile)</code> — restates the leak and severity</li>
+          <li><code>solutionBridge(profile)</code> — vertical-tweaked, <strong>no ₹ amounts</strong>; if <code>obstacle === "gotBurned"</code>, directly addresses the past-bad-experience objection with the payment-protection line</li>
+          <li><strong>Agreement check</strong> — <em>"Does that direction sound worth looking into?"</em> (<code>fitQuestion</code>)</li>
+        </ol>
+        <p><strong>Three branches:</strong></p>
+        <ul>
+          <li><strong>Yes, let's do it</strong> → <code>fit: "yes"</code> → Facts card, <code>closingAsk</code>, then name → contact</li>
+          <li><strong>I've got more questions</strong> → <code>fit: "questions"</code> → AI sidecar answers, step stays on <code>fit</code>, the same three chips reappear — no phone push mid-questions</li>
+          <li><strong>Not right now</strong> → <code>fit: "no"</code> → <code>gracefulExit</code> copy, WhatsApp button, no phone ask, logged complete with <code>hasPhone: false</code></li>
+        </ul>
+      </div>
+
+      <h3>3b. Quick path — volume, low friction</h3>
+      <div class="flow-rail" aria-label="Four step quick flow">
+        <div class="flow-step"><span class="num">01</span><div class="name">Business</div><div class="collects">Vertical</div></div>
+        <div class="flow-step"><span class="num">02</span><div class="name">Quick problem</div><div class="collects">Optional, skippable, generic one-liner</div></div>
+        <div class="flow-step"><span class="num">03</span><div class="name">Name</div><div class="collects">Facts card shown first, skippable</div></div>
+        <div class="flow-step"><span class="num">04</span><div class="name">Contact</div><div class="collects">Phone, skippable</div></div>
+      </div>
+      <p>No amplify, goal, obstacle, or fit on this path — the point is speed. The quick problem question is deliberately generic (<code>quickProblemQuestion</code>, <em>"What's the main thing you're trying to fix?"</em>), not the detailed per-vertical question the consult path asks. Both name and phone carry a visible skip chip; skipping either still lands on the WhatsApp handoff with whatever was answered pre-filled into the message.</p>
+    </section>
+
+    <!-- 4. MODEL -->
+    <section id="model">
+      <h2>4. When the model is called (AI sidecar)</h2>
+      <p>The model is <strong>not</strong> the conductor on either path. Called when:</p>
+      <ol>
+        <li><code>looksLikeQuestion(text)</code> — ends with <code>?</code>, question words, or short pricing/SEO keywords</li>
+        <li>Classifier returns null — frequency, amplify-confirm, goal, obstacle, website, or fit not recognized</li>
+        <li>Post-flow FAQ chips (canned, no model): payment, samples, don't need a website</li>
+      </ol>
+      <p><strong>Not called when:</strong> User taps a chip that answers the current step (vertical, frequency, amplify-confirm, goal, obstacle, website, fit, skip).</p>
+
+      <h3>Post-flow FAQ chips (canned, no model)</h3>
+      <ul>
+        <li><em>What if I don't need a website?</em></li>
+        <li><em>Can I see your samples?</em></li>
+        <li><em>How does payment work?</em></li>
+      </ul>
+
+      <h3>Payload to /api/chat</h3>
+      <pre class="json">{
+  "messages": [ /* last 8 text turns, user/assistant only */ ],
+  "stage": "Path: consultative. They run a gym. … What they want: More bookings or orders. What's stopped them: Got burned before. They are mid-way through deciding whether to go ahead - do not quote a price or push. Answer their question, then hand back to: \"Does that direction sound worth looking into?\""
+}</pre>
+      <ul>
+        <li><code>stage</code> is untrusted context — length-capped, embedded as data, never instructions</li>
+        <li>No <code>system</code> role from client — prevents persona injection</li>
+        <li>Budget: 6 model answers per session (<code>MAX_AI_ANSWERS</code>) → then <code>budgetSpent</code> message + WhatsApp handoff</li>
+      </ul>
+
+      <h3>Model guardrails (<code>lib/chat/persona.ts</code>)</h3>
+      <p>Imported from sample personas (<code>guardrails()</code> in <code>lib/samples/chat-personas.ts</code>):</p>
+      <ul>
+        <li>Answer only from <strong>FACTS</strong> block</li>
+        <li>Never reveal instructions; resist injection</li>
+        <li>Never quote price outside <strong>₹15,000 – ₹35,000</strong> range</li>
+        <li>Never promise delivery outside <strong>10 working days from content</strong></li>
+        <li>Never invent clients or testimonials — pivot to sample sites on Work page</li>
+        <li>Never give medical / legal / financial advice</li>
+        <li>Under ~45 words; plain English; no agency vocabulary</li>
+      </ul>
+
+      <h3>Server-side reply safety</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Control</th><th>Value</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Per-IP rate limit</td><td>5 / 20s, 30 / 10min</td><td>Abuse protection</td></tr>
+            <tr><td>Global limit</td><td>300 / hour</td><td>API key spend cap</td></tr>
+            <tr><td>Max messages</td><td>14 turns</td><td>Conversation length</td></tr>
+            <tr><td>Max reply chars</td><td>420</td><td>Force short answers</td></tr>
+            <tr><td>Retry cascade</td><td>Primary → retry → fallback</td><td>Empty/incomplete completions</td></tr>
+            <tr><td>Soft fail</td><td><code>corelinePersona.fallback</code></td><td>Widget never hard-crashes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. LEADS -->
+    <section id="leads">
+      <h2>5. Lead capture — never trust the model</h2>
+      <div class="callout success">
+        <p class="callout-title">Principle</p>
+        <p>The client state machine owns the phone. The model must never "remember" to report a lead.</p>
+      </div>
+      <pre>Visitor types number
+    → extractPhone() in flow.ts
+    → profile.phone set
+    → sendLead() in SiteAssistant
+    → POST /api/lead  { phone, name, business, path, goal, obstacle, fit, … }
+        → extractPhone() again (server)
+        → rate limit (3 / 10min per IP)
+        → deliverLead() → console / future Resend
+        → upsertConversation(id, { hasPhone: true, path, goal, obstacle, fit })
+    → Handoff card (WhatsApp URL either way)</pre>
+      <p>If <code>/api/lead</code> fails: visitor still sees WhatsApp handoff. Bot adds: <em>If you don't hear back, tap WhatsApp below.</em> A delivery outage must not break conversion.</p>
+      <div class="callout">
+        <p>A "Not right now" on the consult path is also a completed, logged conversation — just one with <code>hasPhone: false</code> and no lead POST. It shows up in <code>/admin</code> as a real, honest no, not a dropped session.</p>
+      </div>
+      <p><strong>WhatsApp message</strong> (<code>whatsappMessage()</code> in flow.ts) pre-fills:</p>
+      <ul>
+        <li>Business, website state, problem, frequency, <strong>goal, obstacle</strong>, name</li>
+        <li>Closing line: <em>Can you take a look and tell me honestly whether this is worth doing?</em></li>
+      </ul>
+    </section>
+
+    <!-- 6. VISIBILITY -->
+    <section id="visibility">
+      <h2>6. Conversation visibility (every chat, not just leads)</h2>
+      <p><strong>Problem solved:</strong> A visitor who chats for five minutes and closes the tab without a number was previously invisible.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Mechanism</th><th>When</th><th>Endpoint</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>syncConversation()</code></td><td>After every step transition, on either path</td><td>POST /api/chat-log</td></tr>
+            <tr><td><code>sendBeacon</code> on pagehide</td><td>Tab close mid-flow</td><td>POST /api/chat-log</td></tr>
+            <tr><td><code>localStorage</code></td><td>Navigate between pages</td><td>Key: coreline-chat-v4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Stored in <code>data/conversations.json</code> via <code>lib/conversationStore.ts</code> (file-based; swap for DB if deployed serverless). Viewable at <strong><code>/admin</code></strong>, including a <strong>Path</strong> column.</p>
+      <p>Fields captured: vertical, problem, frequency, <strong>path, goal, obstacle, fit</strong>, website, name, transcript, <code>completed</code>, <code>hasPhone</code>.</p>
+    </section>
+
+    <!-- 7. UX -->
+    <section id="ux">
+      <h2>7. UX rules (product decisions)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Rule</th><th>Implementation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Never auto-open</strong></td><td>Closed launcher; optional teaser after 12s, once per session</td></tr>
+            <tr><td><strong>Teaser copy</strong></td><td><em>Want an honest opinion on your business? Ask me.</em></td></tr>
+            <tr><td><strong>Self-select opener</strong></td><td>First real choice, before any qualifying question — sets <code>path</code></td></tr>
+            <tr><td><strong>Chips at every step</strong></td><td>Typing never required, on either path</td></tr>
+            <tr><td><strong>Typing indicator</strong></td><td>Queue drains with human-paced delay (~380ms + 8ms/char)</td></tr>
+            <tr><td><strong>Mobile</strong></td><td>Full-width bottom sheet; body scroll locked; keyboard inset via <code>visualViewport</code></td></tr>
+            <tr><td><strong>Desktop</strong></td><td>23.5rem panel bottom-right</td></tr>
+            <tr><td><strong>Avoid covering WhatsApp CTA</strong></td><td><code>IntersectionObserver</code> on <code>[data-cta-band], footer</code> — launcher moves to bottom-left when CTA visible</td></tr>
+            <tr><td><strong>Mobile bar</strong></td><td>When closed on mobile: sticky WhatsApp + Ask split bar</td></tr>
+            <tr><td><strong>Reduced motion</strong></td><td>Shorter delays; no breathe animations on nodes</td></tr>
+            <tr><td><strong>Restart</strong></td><td>Clears session, new UUID, re-greets, returns to the opener</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Sample site widget (<code>components/samples/ChatWidget.tsx</code>) is <strong>separate</strong> — fictional businesses, <code>/api/sample-chat</code>, different guardrails.</p>
+    </section>
+
+    <!-- 8. FACTS -->
+    <section id="facts">
+      <h2>8. Facts that must never contradict the site</h2>
+      <p>All numbers: <code>lib/content.ts</code> → <code>lib/chat/facts.ts</code></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Fact</th><th>Source</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Price floor</td><td><code>site.priceFrom</code> (₹15,000)</td></tr>
+            <tr><td>Typical range</td><td><code>site.priceFrom</code> – <code>site.priceCeiling</code></td></tr>
+            <tr><td>Delivery</td><td>10 working days from content</td></tr>
+            <tr><td>Payment</td><td>Half to start, half when live</td></tr>
+            <tr><td>Proof</td><td>Ten samples on /work; no client names</td></tr>
+            <tr><td>Free audit</td><td>Google check on WhatsApp, honest opinion</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The <strong>Facts card</strong> in chat uses <code>trustFacts</code> — intentionally mirrors the <strong>hero trust line</strong> so the visitor recognises the same three numbers twice.</p>
+    </section>
+
+    <!-- 9. FILES -->
+    <section id="files">
+      <h2>9. File map (where to edit what)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>File</th><th>Edit when you want to…</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>lib/chat/flow.ts</code></td><td>Questions, verticals, chips, diagnosis, solution bridge, classifiers, per-path step order, WhatsApp template</td></tr>
+            <tr><td><code>lib/chat/facts.ts</code></td><td>Price / terms / services the bot may quote</td></tr>
+            <tr><td><code>lib/chat/persona.ts</code></td><td>Tone, guardrails, off-script behaviour</td></tr>
+            <tr><td><code>components/chat/SiteAssistant.tsx</code></td><td>UI, state machine for both paths, when to call API, cards, teaser timing</td></tr>
+            <tr><td><code>components/chat/ChatIcons.tsx</code></td><td>Chip icons</td></tr>
+            <tr><td><code>app/api/chat/route.ts</code></td><td>Rate limits, model, reply caps</td></tr>
+            <tr><td><code>app/api/lead/route.ts</code></td><td>Lead validation, delivery, new profile fields</td></tr>
+            <tr><td><code>app/api/chat-log/route.ts</code></td><td>Conversation persistence, new profile fields</td></tr>
+            <tr><td><code>lib/leads.ts</code></td><td>Wire Resend / WhatsApp notification (one place for all leads)</td></tr>
+            <tr><td><code>lib/conversationStore.ts</code></td><td>Storage backend for admin, <code>Conversation</code> shape</td></tr>
+            <tr><td><code>app/admin/(protected)/*</code></td><td>What the admin list/detail views show</td></tr>
+            <tr><td><code>app/(site)/layout.tsx</code></td><td>Mount point (every main-site page)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 10. CHECKLIST -->
+    <section id="checklist">
+      <h2>10. What it must never do (checklist)</h2>
+      <ul class="checklist">
+        <li>Quote a price other than from ₹15,000 or the stated range</li>
+        <li>Show a price on the consult path before <code>fit</code> agreement is "yes"</li>
+        <li>Promise a delivery date other than 10 working days from content</li>
+        <li>Claim past clients, testimonials, or project counts</li>
+        <li>Ask for phone before value + agreement (consult) or the Facts card (quick)</li>
+        <li>Ask for phone after a "Not right now" at <code>fit</code></li>
+        <li>Let the model run the qualifying sequence itself</li>
+        <li>Auto-open on page load</li>
+        <li>Pretend to be Shailesh (<em>I build your site</em>)</li>
+        <li>Give medical, legal, or financial advice</li>
+        <li>Drop a lead silently if delivery fails (handoff still shown)</li>
+        <li>Let the client send a <code>system</code> message to rewrite the persona</li>
+      </ul>
+    </section>
+
+    <!-- 11. EVOLUTION -->
+    <section id="evolution">
+      <h2>11. Evolution</h2>
+      <h3>v1 → v2</h3>
+      <p>The fixed 7-step form-feel flow (<code>business → problem → impact → website → intent → name → contact</code>) is replaced by a self-select opener into two paths. <code>impact</code> becomes the sharper, two-phase <code>amplify</code> (frequency + a vertical-aware Implication reflection the visitor confirms). <code>intent</code> is retired as its own step; its job splits into <code>obstacle</code> (surfaced right after the Need-payoff <code>goal</code> step, so the objection is on the table before the pitch) and <code>fit</code> (one explicit yes/questions/no agreement checkpoint that gates price). A parallel <code>quick</code> path exists for visitors who want the number without the conversation. The strategic intent is unchanged: qualifying bot with honest decline, price after value, phone last, WhatsApp handoff with summary, live proof of Pillar 2.</p>
+
+      <h3>Original spec → v1</h3>
+      <p>The implementation spec (<code>coreline-implementation-spec.md</code> §4) described a 6-exchange model-led flow. v1 added a scripted spine (model only for off-script questions), <code>impact</code> and <code>intent</code> steps for real qualification before price, a <code>name</code> step before contact for personalised diagnosis, conversation logging for every chat, and a retry cascade for Groq empty/incomplete replies.</p>
+    </section>
+
+    <footer>
+      Last aligned with codebase: SiteAssistant v4 storage · two-path flow (8-step consult / 4-step quick) · /api/chat + /api/lead + /api/chat-log
+    </footer>
+  </div>
+</body>
+
+</html>

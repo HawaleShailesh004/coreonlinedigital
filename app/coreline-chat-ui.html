@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline — Chat widget UI demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#060A08; --surface:#0D1211; --raised:#141A18;
+  --line:rgba(239,237,230,.12); --line-2:rgba(239,237,230,.22);
+  --bone:#EFEDE6; --muted:#868D89;
+  --em:#12E68E; --em-dim:rgba(18,230,142,.16);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--bone);
+  font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;
+  background-image:radial-gradient(55vw 45vh at 78% 12%,rgba(18,230,142,.10),transparent 62%),
+                   radial-gradient(45vw 40vh at 12% 88%,rgba(18,230,142,.05),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--em);outline-offset:2px}
+
+/* ---- page chrome, just for context ---- */
+.page{max-width:1240px;margin:0 auto;padding:26px 30px;position:relative;z-index:2}
+.nav{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;gap:10px;align-items:center;font-family:Archivo;font-weight:700;font-size:17px;letter-spacing:-.02em}
+.mk{width:17px;height:17px;border:2px solid var(--em);position:relative}
+.mk::after{content:"";position:absolute;inset:4px;background:var(--em)}
+.navcta{background:var(--em);color:#04160E;padding:10px 18px;border-radius:100px;font-weight:600;font-size:14px;text-decoration:none;font-family:Archivo}
+.stage{padding:16vh 0 10vh;max-width:20ch}
+.stage h1{font-family:Archivo;font-weight:800;text-transform:uppercase;font-size:clamp(34px,5.4vw,70px);
+  line-height:.92;letter-spacing:-.035em;margin:0 0 18px}
+.stage h1 .cut{background:radial-gradient(70% 140% at 30% 40%,#4DFFC0,#12E68E 45%,#0FBE76 100%);
+  background-size:200% 200%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{from{background-position:0% 40%}to{background-position:100% 60%}}
+.stage p{color:var(--muted);font-size:17px;max-width:44ch}
+.hint{position:fixed;left:30px;bottom:26px;color:var(--muted);font-size:13px;z-index:3}
+.hint b{color:var(--bone);font-weight:500}
+
+/* ================= CHAT WIDGET ================= */
+.launcher{position:fixed;right:24px;bottom:24px;z-index:60;
+  width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--em);color:#04160E;display:grid;place-items:center;
+  box-shadow:0 6px 30px rgba(18,230,142,.28);transition:transform .2s,opacity .2s}
+.launcher:hover{transform:translateY(-2px)}
+.launcher.hide{opacity:0;pointer-events:none;transform:scale(.85)}
+.launcher .dot{position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;
+  background:var(--bone);border:2px solid var(--ink)}
+
+.panel{position:fixed;right:24px;bottom:24px;z-index:70;
+  width:380px;max-height:560px;height:min(560px,calc(100vh - 48px));
+  background:var(--surface);border:1px solid var(--line);border-radius:2px;
+  display:flex;flex-direction:column;overflow:hidden;
+  opacity:0;transform:translateY(12px) scale(.98);pointer-events:none;
+  transition:opacity .22s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+.panel.open{opacity:1;transform:none;pointer-events:auto}
+
+/* header */
+.head{padding:16px 16px 14px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.headtop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.title{font-family:Archivo;font-weight:700;font-size:15.5px;letter-spacing:-.02em;margin:0;display:flex;align-items:center;gap:8px}
+.live{width:7px;height:7px;border-radius:50%;background:var(--em);animation:blip 2s infinite}
+@keyframes blip{0%,100%{opacity:1}50%{opacity:.3}}
+.headbtns{display:flex;gap:6px;align-items:center}
+.tob{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--line-2);color:var(--bone);
+  font-family:Archivo;font-weight:600;font-size:12.5px;padding:7px 12px;border-radius:2px;cursor:pointer;transition:.18s;white-space:nowrap}
+.tob:hover{border-color:var(--em);color:var(--em)}
+.x{background:none;border:0;color:var(--muted);cursor:pointer;padding:6px;line-height:0;border-radius:2px}
+.x:hover{color:var(--bone)}
+.sub{margin:8px 0 0;color:var(--muted);font-size:12.5px;line-height:1.45}
+
+/* messages */
+.log{flex:1 1 auto;overflow-y:auto;padding:18px 16px 8px;display:flex;flex-direction:column;gap:16px;
+  scrollbar-width:thin;scrollbar-color:rgba(18,230,142,.45) transparent}
+.log::-webkit-scrollbar{width:2px}
+.log::-webkit-scrollbar-track{background:transparent}
+.log::-webkit-scrollbar-thumb{background:rgba(18,230,142,.45)}
+
+.msg{font-size:15px;line-height:1.55;max-width:92%;animation:rise .3s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.bot{color:var(--bone)}            /* no bubble, no border — sits on the surface */
+.bot a{color:var(--em);text-decoration:none;border-bottom:1px solid rgba(18,230,142,.4)}
+.bot a:hover{border-bottom-color:var(--em)}
+.user{align-self:flex-end;max-width:80%;background:var(--em);color:#04160E;
+  padding:9px 13px;border-radius:2px;font-weight:500}
+
+.typing{display:flex;gap:5px;align-items:center;padding:4px 0}
+.typing i{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:bob 1.1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bob{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+/* chips */
+.chips{display:flex;gap:7px;padding:6px 16px 14px;flex-wrap:wrap;flex:0 0 auto}
+.chip{background:none;border:1px solid var(--line-2);color:var(--bone);font-family:'Inter Tight';
+  font-size:13.5px;padding:8px 13px;border-radius:2px;cursor:pointer;transition:.18s;white-space:nowrap}
+.chip:hover{border-color:var(--em);color:var(--em)}
+
+/* input */
+.bar{flex:0 0 auto;padding:12px 16px 16px;border-top:1px solid var(--line);display:flex;gap:8px}
+.bar input{flex:1;background:var(--ink);border:1px solid var(--line);color:var(--bone);
+  font-family:'Inter Tight';font-size:14.5px;padding:12px 13px;border-radius:2px;outline:none;min-width:0}
+.bar input::placeholder{color:#5C625E}
+.bar input:focus{border-color:var(--em)}
+.send{background:var(--em);color:#04160E;border:0;font-family:Archivo;font-weight:700;font-size:13.5px;
+  padding:0 18px;border-radius:100px;cursor:pointer;transition:.18s}
+.send:hover{background:#3ff5a8}
+.send:disabled{opacity:.4;cursor:not-allowed}
+
+/* mobile: full-screen sheet */
+@media(max-width:560px){
+  .panel{right:0;bottom:0;left:0;width:100%;height:88vh;max-height:none;border-radius:12px 12px 0 0;
+    transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s}
+  .panel.open{transform:none}
+  .launcher{right:16px;bottom:16px}
+  .stage{padding:12vh 0 6vh}
+  .hint{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="nav">
+    <span class="logo"><span class="mk"></span>Coreline Digital</span>
+    <a class="navcta" href="#">WhatsApp us</a>
+  </div>
+  <div class="stage">
+    <h1>We build what<br>your business<br><span class="cut">is missing</span></h1>
+    <p>Page context only — the widget is the thing to look at. Bottom right.</p>
+  </div>
+</div>
+
+<p class="hint">Tap a chip, or type anything. Try <b>gym</b>, <b>price</b>, <b>kitna</b>, <b>demo</b>, <b>seo</b>.</p>
+
+<button class="launcher" id="launcher" aria-label="Open chat">
+  <span class="dot"></span>
+  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+
+<section class="panel" id="panel" role="dialog" aria-label="Chat with Coreline">
+  <div class="head">
+    <div class="headtop">
+      <h2 class="title"><span class="live"></span>Chat with Coreline</h2>
+      <div class="headbtns">
+        <button class="tob" id="toShailesh">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.9 5-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.7-1.3 1.3-1.9 1.3-.5 0-1.1.2-3.6-.8-3-1.3-4.9-4.4-5-4.6s-1.2-1.6-1.2-3 .8-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l1 2.3c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.6s.7 1.2 1.5 1.9c1 .9 1.9 1.2 2.2 1.3s.5.1.6-.1l.9-1c.2-.2.4-.2.6-.1l2.1 1c.3.2.5.2.6.4s.1.9-.1 1.5z"/></svg>
+          Talk to Shailesh
+        </button>
+        <button class="x" id="close" aria-label="Close chat">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="sub">This is the same kind of agent we build for clients.</p>
+  </div>
+
+  <div class="log" id="log" aria-live="polite"></div>
+  <div class="chips" id="chips"></div>
+
+  <form class="bar" id="bar" autocomplete="off">
+    <input id="input" placeholder="Type here — Hindi or English is fine" aria-label="Your message">
+    <button class="send" id="send" type="submit">Send</button>
+  </form>
+</section>
+
+<script>
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const log=document.getElementById('log'), chipsEl=document.getElementById('chips'),
+      panel=document.getElementById('panel'), launcher=document.getElementById('launcher'),
+      input=document.getElementById('input'), bar=document.getElementById('bar');
+
+/* ---------- canned responses (stand-in for the real API) ---------- */
+const OPENER = {
+  text: "Hi — we're Coreline, a two-person studio in Thane. We build websites, AI agents, automations and local search for small businesses.\n\nWhat kind of business do you run?",
+  chips: ["I run a gym", "How much does it cost?", "Show me your work"]
+};
+
+const REPLIES = [
+  { k:['gym','fitness','trainer'], text:"For gyms we usually build a fast, mobile-first site with class timings, a trial booking, and an AI agent that answers fee and timing questions after hours.\n\nWe've already built one you can look at — [see the gym demo](#).", chips:["Does the agent book trials?","What would ours cost?","Talk to someone"] },
+  { k:['jewel','gold','shop','showroom'], text:"For jewellers we build a proper catalogue with filtering, WhatsApp enquiry on every piece, and trust signals near the top — that's what decides it in the first few seconds.\n\n[See the jewellery demo](#) — it's live and in use.", chips:["Can customers order online?","Show me another demo","Talk to someone"] },
+  { k:['clinic','doctor','physio','hospital','dentist'], text:"Clinics need three things working: appointment enquiries, credentials visible early, and showing up on Google when someone nearby searches.\n\n[See the clinic demo](#) to get a feel for it.", chips:["Do you handle Google listing?","What would ours cost?","Talk to someone"] },
+  { k:['price','cost','charge','rate','budget','kitna','kharcha','paisa','fees'], text:"It depends on how much you need — a simple site and a full setup with agents and automations are very different jobs.\n\nShailesh will give you a real number on a quick call rather than a vague range. Want me to open WhatsApp?", chips:["Yes, open WhatsApp","What affects the price?","Show me your work"] },
+  { k:['demo','work','portfolio','sample','example'], text:"We've built complete demo sites for nine trades — jewellers, clinics, gyms, CAs, interior designers and more.\n\n[Open the demos page](#) and find yours. Most are demo builds; MNK Jewels is live with a real client.", chips:["I run a gym","I have a shop","Talk to someone"] },
+  { k:['seo','google','rank','search','listing'], text:"We fix the Google Business profile first, then build a page for each service and area you serve, then handle the technical side — speed, structure, indexing.\n\nWhat area are you in?", chips:["Thane","Mumbai","What does that involve?"] },
+  { k:['ai','agent','chatbot','bot','automation','whatsapp'], text:"Yes — this chat is one of ours, running on our own site.\n\nWe train it on your services, timings and pricing, put it on your site and WhatsApp, and it captures the number so you get a warm enquiry in the morning.", chips:["Can it book appointments?","What would ours cost?","Talk to someone"] },
+  { k:['book','appointment','trial','slot'], text:"Yes. It can take a booking, confirm it on WhatsApp, and drop it straight into your calendar. Reminders go out on their own too.", chips:["What would ours cost?","Show me a demo","Talk to someone"] },
+  { k:['hindi','hinglish','marathi'], text:"Haan bilkul — aap Hindi mein likh sakte hain. Aapka business kya hai?", chips:["Gym hai","Dukaan hai","Clinic hai"] },
+  { k:['dukaan','dukan'], text:"Theek hai. Dukaan ke liye hum ek fast website banate hain jisme aapka saara saamaan dikhe, WhatsApp button har jagah ho, aur Google pe aap aayein jab koi aas-paas search kare.\n\n[Demo dekhiye](#).", chips:["Kitna kharcha aayega?","Aur demo dikhaiye","Baat karni hai"] },
+  { k:['thane','mumbai','area','where','kahan'], text:"We're in Wagle Estate, Thane, and we work across Thane and Mumbai. Most clients we meet in person, which is half the reason things get done.", chips:["Show me your work","What would ours cost?","Talk to someone"] },
+  { k:['who','team','you','company','about'], text:"Two of us. We design it, code it, rank it and run it — no handoffs and no third vendor to chase.", chips:["Show me your work","What do you build?","Talk to someone"] },
+  { k:['talk','human','shailesh','call','whatsapp','number'], text:"I'll hand you over. Tap the WhatsApp button at the top of this window and it'll open with a short summary of what we discussed.", chips:["Show me your work","What do you build?"] },
+  { k:['affect','depends','what affects'], text:"Mostly three things: how many pages, whether you need an AI agent and automations, and whether you need branding done too.\n\nA quick call sorts it in five minutes.", chips:["Talk to someone","Show me your work"] }
+];
+
+const FALLBACK = { text:"I'm not sure about that one, so I won't guess.\n\nShailesh can answer it properly — tap 'Talk to Shailesh' above and it'll open WhatsApp.", chips:["What do you build?","Show me your work"] };
+
+function match(t){
+  const s=t.toLowerCase();
+  for(const r of REPLIES) if(r.k.some(k=>s.includes(k))) return r;
+  return FALLBACK;
+}
+
+/* ---------- rendering ---------- */
+function mdLinks(s){
+  return s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>')
+          .replace(/\n\n/g,'<br><br>');
+}
+function addUser(text){
+  const el=document.createElement('div');
+  el.className='msg user'; el.textContent=text;
+  log.appendChild(el); scroll();
+}
+function addBot(html){
+  const el=document.createElement('div');
+  el.className='msg bot'; el.innerHTML=mdLinks(html);
+  log.appendChild(el); scroll(); return el;
+}
+function typing(){
+  const el=document.createElement('div');
+  el.className='msg bot typing'; el.innerHTML='<i></i><i></i><i></i>';
+  log.appendChild(el); scroll(); return el;
+}
+function setChips(list){
+  chipsEl.innerHTML='';
+  (list||[]).slice(0,3).forEach(c=>{
+    const b=document.createElement('button');
+    b.className='chip'; b.type='button'; b.textContent=c;
+    b.onclick=()=>ask(c);
+    chipsEl.appendChild(b);
+  });
+}
+function scroll(){ log.scrollTop=log.scrollHeight; }
+
+/* streams the reply in, the way the real one will */
+function stream(el,text){
+  if(RM){ el.innerHTML=mdLinks(text); scroll(); return Promise.resolve(); }
+  return new Promise(res=>{
+    let i=0;
+    const step=()=>{
+      i+=Math.max(2,Math.round(Math.random()*4));
+      el.innerHTML=mdLinks(text.slice(0,i));
+      scroll();
+      if(i<text.length) setTimeout(step,16); else res();
+    };
+    step();
+  });
+}
+
+let busy=false;
+async function ask(text){
+  if(busy) return;
+  busy=true; setChips([]);
+  addUser(text);
+  const t=typing();
+  await new Promise(r=>setTimeout(r, RM?0:600+Math.random()*400));
+  t.remove();
+  const r=match(text);
+  const el=addBot('');
+  await stream(el,r.text);
+  setChips(r.chips);
+  busy=false;
+}
+
+bar.addEventListener('submit',e=>{
+  e.preventDefault();
+  const v=input.value.trim();
+  if(!v||busy) return;
+  input.value='';
+  ask(v);
+});
+
+/* open / close */
+function open(){
+  panel.classList.add('open');
+  launcher.classList.add('hide');
+  if(!log.children.length){
+    const t=typing();
+    setTimeout(async()=>{
+      t.remove();
+      const el=addBot('');
+      await stream(el,OPENER.text);
+      setChips(OPENER.chips);
+    }, RM?0:700);
+  }
+  if(innerWidth>560) setTimeout(()=>input.focus(),250);
+}
+function close(){ panel.classList.remove('open'); launcher.classList.remove('hide'); }
+launcher.onclick=open;
+document.getElementById('close').onclick=close;
+document.getElementById('toShailesh').onclick=()=>{
+  const el=addBot('');
+  stream(el,"Opening WhatsApp with a summary of this chat…");
+  setChips([]);
+};
+addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+
+/* auto-open after 20s, as specified */
+setTimeout(()=>{ if(!panel.classList.contains('open')) open(); }, 20000);
+</script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline Digital — Sample D · Assembly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08090A;--sur:#101214;--bone:#EDEDE8;--dim:#878C90;--em:#00E08A;--line:rgba(237,237,232,.12);--w:1240px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--bone);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--em);outline-offset:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 28px}
+.syne{font-family:Syne,sans-serif;letter-spacing:-.03em}
+/* grain */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.045;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:80;background:linear-gradient(180deg,rgba(8,9,10,.95),rgba(8,9,10,0));padding:20px 0}
+.nav-in{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;gap:10px;align-items:center;font-family:Syne;font-weight:800;font-size:18px;letter-spacing:-.03em}
+.mk{width:18px;height:18px;border:2px solid var(--em);position:relative}.mk::after{content:"";position:absolute;inset:4px;background:var(--em)}
+.nl{display:flex;gap:26px;font-size:14px;color:var(--dim)}.nl a:hover{color:var(--bone)}
+@media(max-width:880px){.nl{display:none}}
+.cta{background:var(--em);color:#04160F;padding:11px 20px;font-weight:600;font-size:14px;border-radius:2px}
+.cta:hover{background:#1af5a0}
+.ghost{border:1px solid var(--line);padding:11px 20px;font-size:14px;border-radius:2px}
+.ghost:hover{border-color:var(--bone)}
+
+/* HERO — words assemble on load */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;padding-top:80px}
+.hero::before{content:"";position:absolute;inset:0;background:
+ radial-gradient(60vw 50vh at 78% 22%,rgba(0,224,138,.13),transparent 62%);pointer-events:none}
+h1{font-family:Syne;font-weight:800;font-size:clamp(44px,8vw,104px);line-height:.94;margin:0 0 26px;max-width:13ch;position:relative}
+h1 .w{display:inline-block;opacity:0;transform:translateY(28px) rotate(2deg);animation:asm .7s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes asm{to{opacity:1;transform:none}}
+.sub{color:var(--dim);font-size:19px;max-width:44ch;margin:0 0 34px;opacity:0;animation:asm .8s .9s forwards}
+.hbtns{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:asm .8s 1.05s forwards}
+.scrollcue{position:absolute;bottom:36px;left:28px;font-size:12.5px;color:var(--dim);display:flex;gap:10px;align-items:center}
+.scrollcue i{display:block;width:1px;height:38px;background:linear-gradient(var(--em),transparent);animation:drop 1.9s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* marquee */
+.mq{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;overflow:hidden;white-space:nowrap}
+.mq div{display:inline-block;animation:slide 26s linear infinite;font-family:Syne;font-weight:600;font-size:15px;color:var(--dim)}
+.mq span{margin:0 26px}.mq b{color:var(--em)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* THE BUILD — sticky scroll-scrubbed */
+.build{position:relative;height:420vh}
+.stage{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr 1.15fr;gap:50px;align-items:center}
+.copyside{position:relative;height:280px}
+.step{position:absolute;inset:0;opacity:0;transform:translateY(20px);transition:opacity .45s,transform .45s;pointer-events:none}
+.step.on{opacity:1;transform:none}
+.step .no{font-family:Syne;font-weight:700;font-size:13px;color:var(--em);margin:0 0 14px}
+.step h2{font-family:Syne;font-weight:800;font-size:clamp(28px,3.7vw,46px);line-height:1.02;margin:0 0 14px;letter-spacing:-.03em}
+.step p{color:var(--dim);margin:0;max-width:40ch}
+.railwrap{display:flex;gap:12px;margin-top:26px}
+.rail{height:2px;flex:1;background:var(--line);position:relative;overflow:hidden}
+.rail i{position:absolute;inset:0;background:var(--em);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.rail.on i{transform:scaleX(1)}
+
+/* the artboard that gets built */
+.art{aspect-ratio:16/11;border:1px solid var(--line);background:var(--sur);position:relative;overflow:hidden;border-radius:3px}
+.art .blueprint{position:absolute;inset:0;
+ background-image:linear-gradient(rgba(0,224,138,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(0,224,138,.14) 1px,transparent 1px);
+ background-size:32px 32px;transition:opacity .5s}
+.lay{position:absolute;border-radius:3px;transition:all .55s cubic-bezier(.2,.8,.2,1)}
+.l1{left:6%;top:9%;width:26%;height:7%;background:rgba(237,237,232,.16)}
+.l2{left:6%;top:24%;width:62%;height:13%;background:rgba(237,237,232,.16)}
+.l3{left:6%;top:41%;width:44%;height:6%;background:rgba(237,237,232,.12)}
+.l4{left:6%;top:56%;width:22%;height:9%;background:rgba(237,237,232,.16)}
+.l5{left:6%;top:74%;width:88%;height:17%;background:rgba(237,237,232,.08)}
+.l6{right:6%;top:9%;width:26%;height:38%;background:rgba(237,237,232,.10)}
+/* phase 2: design */
+.art[data-p="2"] .blueprint,.art[data-p="3"] .blueprint,.art[data-p="4"] .blueprint{opacity:.18}
+.art[data-p="2"] .l1,.art[data-p="3"] .l1,.art[data-p="4"] .l1{background:var(--em);width:16%}
+.art[data-p="2"] .l2,.art[data-p="3"] .l2,.art[data-p="4"] .l2{background:linear-gradient(90deg,var(--bone),rgba(237,237,232,.35))}
+.art[data-p="2"] .l4,.art[data-p="3"] .l4,.art[data-p="4"] .l4{background:var(--em)}
+.art[data-p="2"] .l6,.art[data-p="3"] .l6,.art[data-p="4"] .l6{background:linear-gradient(160deg,rgba(0,224,138,.5),rgba(0,224,138,.06))}
+.art[data-p="2"] .l5,.art[data-p="3"] .l5,.art[data-p="4"] .l5{background:linear-gradient(90deg,rgba(237,237,232,.14),rgba(237,237,232,.04))}
+/* phase 3: systems */
+.pods{position:absolute;inset:0;pointer-events:none}
+.pod{position:absolute;padding:7px 11px;font-size:11.5px;background:rgba(8,9,10,.9);border:1px solid var(--em);color:var(--em);border-radius:2px;opacity:0;transform:scale(.8);transition:.45s}
+.art[data-p="3"] .pod,.art[data-p="4"] .pod{opacity:1;transform:none}
+.pod:nth-child(1){left:52%;top:14%}.pod:nth-child(2){left:60%;top:52%}.pod:nth-child(3){left:14%;top:64%}
+/* phase 4: live */
+.livebar{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:var(--em);color:#04160F;font-weight:600;font-size:12.5px;transform:translateY(100%);transition:.5s}
+.art[data-p="4"] .livebar{transform:none}
+@media(max-width:960px){.stage{grid-template-columns:1fr;gap:26px;align-content:center}.copyside{height:230px}.build{height:400vh}}
+
+/* HORIZONTAL SERVICES TRACK */
+.track{position:relative;height:320vh;background:#0B0D0E}
+.tsticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.thead{padding:0 28px;max-width:var(--w);margin:0 auto 34px;width:100%}
+.thead h2{font-family:Syne;font-weight:800;font-size:clamp(28px,4vw,48px);margin:0 0 8px;letter-spacing:-.03em}
+.thead p{color:var(--dim);margin:0}
+.lane{display:flex;gap:20px;padding:0 28px;will-change:transform}
+.card{flex:0 0 330px;height:330px;border:1px solid var(--line);background:var(--bg);padding:26px;display:flex;flex-direction:column;justify-content:space-between;border-radius:3px;transition:border-color .3s,background .3s}
+.card:hover{border-color:var(--em);background:#0D1011}
+.card h3{font-family:Syne;font-weight:700;font-size:23px;margin:0 0 10px;letter-spacing:-.02em}
+.card p{color:var(--dim);font-size:14.5px;margin:0}
+.card .idx{font-size:12px;color:var(--em);font-family:Syne;font-weight:700}
+@media(max-width:700px){.card{flex:0 0 260px;height:300px}}
+
+/* PROOF counters */
+.proof{padding:110px 0;border-top:1px solid var(--line)}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+.pg .n{font-family:Syne;font-weight:800;font-size:clamp(46px,7vw,86px);line-height:1;letter-spacing:-.04em;margin:0 0 10px}
+.pg p{color:var(--dim);margin:0;max-width:26ch;font-size:15px}
+@media(max-width:800px){.pg{grid-template-columns:1fr;gap:40px}}
+
+/* WORK reveal */
+.work{padding:100px 0;border-top:1px solid var(--line)}
+h2.sec{font-family:Syne;font-weight:800;font-size:clamp(30px,4.4vw,52px);letter-spacing:-.03em;margin:0 0 12px}
+.lead{color:var(--dim);max-width:46ch;margin:0 0 48px}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.wcard{position:relative;aspect-ratio:5/4;overflow:hidden;border:1px solid var(--line);border-radius:3px;
+ clip-path:inset(0 0 100% 0);transition:clip-path 1s cubic-bezier(.2,.8,.2,1)}
+.wcard.in{clip-path:inset(0 0 0 0)}
+.wcard .fill{position:absolute;inset:0;transition:transform .8s}
+.wcard:hover .fill{transform:scale(1.05)}
+.wcard .meta{position:absolute;left:0;right:0;bottom:0;padding:24px;background:linear-gradient(0deg,rgba(8,9,10,.95),transparent)}
+.wcard h3{font-family:Syne;font-weight:700;font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+.wcard span{color:var(--dim);font-size:14px}
+@media(max-width:760px){.wgrid{grid-template-columns:1fr}}
+
+.end{padding:130px 0;text-align:center;border-top:1px solid var(--line)}
+.end h2{font-family:Syne;font-weight:800;font-size:clamp(34px,6vw,74px);letter-spacing:-.035em;line-height:1;margin:0 auto 24px;max-width:16ch}
+footer{padding:30px 0 60px;color:var(--dim);font-size:13.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.wcard{clip-path:none}h1 .w,.sub,.hbtns{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="#"><span class="mk"></span>CORELINE</a>
+  <div class="nl"><a href="#build">Process</a><a href="#services">Services</a><a href="#work">Work</a><a href="#contact">Contact</a></div>
+  <a class="cta" href="#contact">Start a project</a>
+</div></div></nav>
+
+<section class="hero"><div class="wrap">
+  <h1 class="syne" id="h1">We design it. We build it. We keep it growing.</h1>
+  <p class="sub">One team for your website, your automations and your search. Thane and Mumbai.</p>
+  <div class="hbtns"><a class="cta" href="#contact">Book a call</a><a class="ghost" href="#work">See our work</a></div>
+  <div class="scrollcue"><i></i>Scroll to watch us build one</div>
+</div></section>
+
+<div class="mq"><div id="mqi">
+  <span>Websites</span><span><b>·</b></span><span>AI agents</span><span><b>·</b></span><span>Automations</span><span><b>·</b></span><span>Local SEO</span><span><b>·</b></span><span>Mobile apps</span><span><b>·</b></span><span>CRM &amp; software</span><span><b>·</b></span><span>Branding</span><span><b>·</b></span><span>Social content</span><span><b>·</b></span>
+</div></div>
+
+<section class="build" id="build"><div class="wrap stage">
+  <div class="copyside">
+    <div class="step" data-s="1"><p class="no">Step 01</p><h2 class="syne">We map it.</h2><p>One call. What you sell, who buys it, what the site has to do. We come back with a structure, not a mood board.</p></div>
+    <div class="step" data-s="2"><p class="no">Step 02</p><h2 class="syne">We design it.</h2><p>Your photos, your words, your colours. You see a real layout by day three, not a template screenshot.</p></div>
+    <div class="step" data-s="3"><p class="no">Step 03</p><h2 class="syne">We wire it up.</h2><p>AI agent, WhatsApp automations, enquiry tracking. The site stops being a brochure and starts doing work.</p></div>
+    <div class="step" data-s="4"><p class="no">Step 04</p><h2 class="syne">We ship it.</h2><p>Live on your domain in ten working days, on Google, with a video showing your team how to edit it.</p></div>
+    <div class="railwrap"><span class="rail" data-r="1"><i></i></span><span class="rail" data-r="2"><i></i></span><span class="rail" data-r="3"><i></i></span><span class="rail" data-r="4"><i></i></span></div>
+  </div>
+  <div class="art" id="art" data-p="1">
+    <div class="blueprint"></div>
+    <div class="lay l1"></div><div class="lay l2"></div><div class="lay l3"></div>
+    <div class="lay l4"></div><div class="lay l5"></div><div class="lay l6"></div>
+    <div class="pods"><span class="pod">AI agent</span><span class="pod">WhatsApp</span><span class="pod">Enquiry log</span></div>
+    <div class="livebar">Live · corelinedigital.in · loads in 1.4s</div>
+  </div>
+</div></section>
+
+<section class="track" id="services">
+  <div class="tsticky">
+    <div class="thead"><h2 class="syne">Eight services. One team.</h2><p>No handoffs. The people who design it are the people who ship it.</p></div>
+    <div class="lane" id="lane">
+      <article class="card"><span class="idx">01</span><div><h3 class="syne">Websites</h3><p>Hand-coded, fast on mobile data, built to turn visitors into calls.</p></div></article>
+      <article class="card"><span class="idx">02</span><div><h3 class="syne">AI agents</h3><p>Trained on your services and timings. Answers at midnight, books at midnight.</p></div></article>
+      <article class="card"><span class="idx">03</span><div><h3 class="syne">Automations</h3><p>Confirmations, reminders and review requests that send themselves.</p></div></article>
+      <article class="card"><span class="idx">04</span><div><h3 class="syne">Local SEO</h3><p>Get found by the people already searching for what you sell nearby.</p></div></article>
+      <article class="card"><span class="idx">05</span><div><h3 class="syne">Mobile apps</h3><p>Android and iOS, built when a website genuinely is not enough.</p></div></article>
+      <article class="card"><span class="idx">06</span><div><h3 class="syne">CRM &amp; software</h3><p>Built around how your business runs. Not the other way around.</p></div></article>
+      <article class="card"><span class="idx">07</span><div><h3 class="syne">Branding</h3><p>Logo, colours, cards, signage, packaging. One face everywhere.</p></div></article>
+      <article class="card"><span class="idx">08</span><div><h3 class="syne">Social content</h3><p>Monthly graphics and reels, handled on retainer.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="proof"><div class="wrap">
+  <div class="pg">
+    <div><p class="n syne" data-count="10">0</p><p>Working days from your content to a live site. Promised, not estimated.</p></div>
+    <div><p class="n syne" data-count="15" data-pre="₹" data-post="k">0</p><p>Starting price, published. No call needed to find out what it costs.</p></div>
+    <div><p class="n syne" data-count="24" data-post="/7">0</p><p>Your AI agent answers customers while your shop is shut.</p></div>
+  </div>
+</div></section>
+
+<section class="work" id="work"><div class="wrap">
+  <h2 class="sec syne">Real businesses. Real results.</h2>
+  <p class="lead">Open them on your phone. Time how fast they load. That is the only review that matters.</p>
+  <div class="wgrid">
+    <a class="wcard"><span class="fill" style="background:radial-gradient(90% 80% at 25% 20%,rgba(201,162,39,.55),transparent 60%),linear-gradient(160deg,#1A1710,#0B0A08)"></span><span class="meta"><h3 class="syne">MNK Jewels</h3><span>Jewellery · custom store</span></span></a>
+    <a class="wcard"><span class="fill" style="background:radial-gradient(90% 80% at 70% 25%,rgba(0,224,138,.4),transparent 60%),linear-gradient(160deg,#0C1614,#080B0A)"></span><span class="meta"><h3 class="syne">KC Physio Care</h3><span>Clinic · bookings</span></span></a>
+    <a class="wcard"><span class="fill" style="background:radial-gradient(90% 80% at 30% 70%,rgba(232,255,58,.32),transparent 60%),linear-gradient(160deg,#141610,#0A0B08)"></span><span class="meta"><h3 class="syne">Iron Yard Fitness</h3><span>Gym · site + AI agent</span></span></a>
+    <a class="wcard"><span class="fill" style="background:radial-gradient(90% 80% at 75% 65%,rgba(76,141,255,.38),transparent 60%),linear-gradient(160deg,#0D1119,#08090D)"></span><span class="meta"><h3 class="syne">Sharma &amp; Associates</h3><span>Chartered accountants</span></span></a>
+  </div>
+</div></section>
+
+<section class="end" id="contact"><div class="wrap">
+  <h2 class="syne">Tell us what you sell. We'll show you what it should look like.</h2>
+  <div class="hbtns" style="justify-content:center;opacity:1;animation:none"><a class="cta" href="#">Message us on WhatsApp</a><a class="ghost" href="#">hello@corelinedigital.in</a></div>
+</div></section>
+
+<div class="wrap"><footer><div>© 2026 Coreline Digital</div><div>Wagle Estate, Thane · Maharashtra</div></footer></div>
+
+<script>
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* hero word assembly */
+const h1=document.getElementById('h1');
+h1.innerHTML=h1.textContent.split(' ').map((w,i)=>`<span class="w" style="animation-delay:${.08*i+.15}s">${w}</span>`).join(' ');
+/* marquee duplicate */
+const mqi=document.getElementById('mqi');mqi.innerHTML+=mqi.innerHTML;
+/* build scrub */
+const build=document.querySelector('.build'),art=document.getElementById('art'),
+ steps=[...document.querySelectorAll('.step')],rails=[...document.querySelectorAll('.rail')];
+function scrub(){
+  const r=build.getBoundingClientRect(),h=build.offsetHeight-window.innerHeight;
+  let p=Math.min(Math.max(-r.top/h,0),1);
+  const phase=Math.min(4,Math.floor(p*4)+1);
+  art.dataset.p=phase;
+  steps.forEach(s=>s.classList.toggle('on',+s.dataset.s===phase));
+  rails.forEach(x=>x.classList.toggle('on',+x.dataset.r<=phase));
+}
+/* horizontal lane */
+const track=document.querySelector('.track'),lane=document.getElementById('lane');
+function laneScrub(){
+  const r=track.getBoundingClientRect(),h=track.offsetHeight-window.innerHeight;
+  let p=Math.min(Math.max(-r.top/h,0),1);
+  const max=lane.scrollWidth-window.innerWidth+56;
+  lane.style.transform=`translateX(${-p*Math.max(max,0)}px)`;
+}
+let tick=false;
+function onScroll(){if(tick)return;tick=true;requestAnimationFrame(()=>{scrub();laneScrub();tick=false})}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+
+/* reveals + counters */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  e.target.classList.add('in');
+  if(e.target.dataset.count){
+    const t=+e.target.dataset.count,pre=e.target.dataset.pre||'',post=e.target.dataset.post||'';
+    if(RM){e.target.textContent=pre+t+post;io.unobserve(e.target);return}
+    let n=0;const st=performance.now();
+    (function f(now){const k=Math.min((now-st)/900,1);n=Math.round(t*(1-Math.pow(1-k,3)));
+      e.target.textContent=pre+n+post;if(k<1)requestAnimationFrame(f)})(st);
+  }
+  io.unobserve(e.target);
+}),{threshold:.35});
+document.querySelectorAll('.wcard,[data-count]').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

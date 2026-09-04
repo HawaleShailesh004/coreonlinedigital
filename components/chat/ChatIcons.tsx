@@ -200,7 +200,9 @@ function BarsLowIcon(props: IconProps) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Intent / timeline                                                          */
+/* Reused across a few late-flow chip sets - see the lookup table for exactly */
+/* which key points where. Kept as three components, not six, since the same */
+/* forward/weighing/exploring shapes read correctly in more than one place.   */
 /* -------------------------------------------------------------------------- */
 
 function ArrowRightIcon(props: IconProps) {
@@ -224,6 +226,64 @@ function CompassIcon(props: IconProps) {
     <Svg {...props}>
       <circle cx="8" cy="8" r="5.5" />
       <path d="m9.8 6.2-1 3.6-3.6 1 1-3.6 3.6-1Z" />
+    </Svg>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Amplify confirm / goal / obstacle / fit - the v2 consultative-flow chips   */
+/* -------------------------------------------------------------------------- */
+
+function MinusCircleIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="8" cy="8" r="5" />
+      <path d="M6 8h4" />
+    </Svg>
+  );
+}
+
+function TrendUpIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M2.5 11 6 7.5 8.5 10l5-5.5" />
+      <path d="M10 4.2h3.5V7.7" />
+    </Svg>
+  );
+}
+
+function RepeatSlashIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M3.5 6.5a4.5 4.5 0 0 1 7.6-2.3M12.5 9.5a4.5 4.5 0 0 1-7.6 2.3" />
+      <path d="M9.5 3.7h2v2M6.5 12.3h-2v-2" />
+      <path d="M2.5 2.5l11 11" />
+    </Svg>
+  );
+}
+
+function SearchIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="6.8" cy="6.8" r="4" />
+      <path d="m9.7 9.7 3.3 3.3" />
+    </Svg>
+  );
+}
+
+function ClockIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="8" cy="8" r="5.5" />
+      <path d="M8 4.8V8l2.3 1.4" />
+    </Svg>
+  );
+}
+
+function FlameIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M8 2.5c1.5 2 .5 3-0.3 3.8C6.8 7.2 6 8.3 6 9.7a2 2 0 0 0 4 0c0-.6-.2-1-.5-1.4.6.5 1 1.3 1 2.2a3 3 0 0 1-6 0c0-2.6 1.8-3.7 2.7-5.3.3-.5.5-1.2-.2-2.7Z" />
     </Svg>
   );
 }
@@ -323,9 +383,20 @@ export const chatIcons: Record<IconKey, React.ComponentType<IconProps>> = {
   frequencyMid: BarsMidIcon,
   frequencyLow: BarsLowIcon,
 
-  intentReady: ArrowRightIcon,
-  intentWeighing: ScaleIcon,
-  intentExploring: CompassIcon,
+  confirmYes: CircleCheckIcon,
+  confirmManageable: MinusCircleIcon,
+
+  goalGrowth: TrendUpIcon,
+  goalRepeat: RepeatSlashIcon,
+  goalLegit: SparkleIcon,
+  goalFound: SearchIcon,
+
+  obstacleTime: ClockIcon,
+  obstacleBurned: FlameIcon,
+  obstacleWorth: ScaleIcon,
+
+  fitYes: ArrowRightIcon,
+  fitNotNow: CompassIcon,
 
   person: PersonIcon,
   phone: PhoneIcon,

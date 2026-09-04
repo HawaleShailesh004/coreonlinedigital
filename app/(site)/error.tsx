@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { WhatsAppButton } from "@/components/WhatsAppLink";
-import { Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { LineNode } from "@/components/LineNode";
-import { site } from "@/lib/content";
+import { WhatsAppButton } from "@/components/v3/CtaButtons";
 
 export default function SiteError({
   reset,
@@ -19,25 +14,22 @@ export default function SiteError({
   }, []);
 
   return (
-    <main className="flex-1">
-      <Container className="flex flex-col items-start py-24 md:py-40">
-        <Eyebrow>Something broke</Eyebrow>
-        <div className="mb-10 mt-8 w-24">
-          <LineNode nodes={[100]} tone="accent" />
-        </div>
-        <h1 className="max-w-2xl font-display text-h2 font-semibold">
+    <section className="flex min-h-[70vh] flex-col items-start justify-center py-24">
+      <div className="v3-container">
+        <p className="text-xs uppercase tracking-[0.14em] opacity-60">Something broke</p>
+        <h1 className="v3-display mt-4 max-w-2xl text-[clamp(1.75rem,5vw,2.75rem)] leading-[1.05] tracking-[-0.02em]">
           That page didn&apos;t load.
         </h1>
-        <p className="mt-6 max-w-xl text-lead text-body">
+        <p className="mt-6 max-w-xl text-[15px] opacity-70">
           Try again, or message us on WhatsApp and we&apos;ll sort it.
         </p>
-        <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-          <Button type="button" onClick={reset}>
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <button type="button" onClick={reset} className="v3-pill v3-pill--outline">
             Try again
-          </Button>
-          <WhatsAppButton variant="secondary">{site.primaryCta}</WhatsAppButton>
+          </button>
+          <WhatsAppButton context="the error page" />
         </div>
-      </Container>
-    </main>
+      </div>
+    </section>
   );
 }

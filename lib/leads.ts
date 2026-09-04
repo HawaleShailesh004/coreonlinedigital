@@ -21,6 +21,12 @@ export type Lead = {
   business?: string;
   websiteState?: string;
   problem?: string;
+  /** "consult" | "quick" - chat only. */
+  path?: string;
+  goal?: string;
+  obstacle?: string;
+  /** "yes" | "questions" | "no" - chat only. */
+  fit?: string;
   /** Trimmed conversation, chat only. */
   transcript?: string;
 };

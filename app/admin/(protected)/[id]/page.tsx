@@ -58,7 +58,10 @@ export default async function AdminConversationPage({
         <Field label="Website today" value={conversation.website} />
         <Field label="Where they're losing customers" value={conversation.problem} />
         <Field label="How often" value={conversation.frequency} />
-        <Field label="Intent" value={conversation.intent} />
+        <Field label="Path" value={conversation.path} />
+        <Field label="Goal" value={conversation.goal} />
+        <Field label="Obstacle" value={conversation.obstacle} />
+        <Field label="Fit" value={conversation.fit} />
         <Field
           label="Status"
           value={conversation.hasPhone ? "Hot lead" : conversation.completed ? "Completed, no number" : "In progress / left mid-chat"}

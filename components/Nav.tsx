@@ -2,57 +2,91 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Logo } from "@/components/Logo";
-import { WhatsAppButton } from "@/components/WhatsAppLink";
-import { Container } from "@/components/ui/Container";
+import { useEffect, useRef, useState } from "react";
+import { LogoMark } from "@/components/LogoMark";
+import { WhatsAppButton } from "@/components/v3/CtaButtons";
 import { cn } from "@/lib/cn";
-import { nav, site } from "@/lib/content";
+import { nav, site } from "@/lib/site-content";
 
-/** Survives client-side navigation, resets on a real page load. */
-let logoHasDrawn = false;
+function parseRgb(color: string): [number, number, number] | null {
+  const match = color.match(/rgba?\(([^)]+)\)/);
+  if (!match) return null;
+  const [r, g, b, a] = match[1].split(",").map((n) => parseFloat(n));
+  if (a === 0) return null;
+  return [r, g, b];
+}
 
+/** Walks up from the point behind the nav to find the nearest opaque background. */
+function sampleBackgroundTone(x: number, y: number): "light" | "dark" {
+  let node = document.elementFromPoint(x, y) as HTMLElement | null;
+  while (node) {
+    const rgb = parseRgb(getComputedStyle(node).backgroundColor);
+    if (rgb) {
+      const [r, g, b] = rgb;
+      const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+      return luminance > 150 ? "light" : "dark";
+    }
+    node = node.parentElement;
+  }
+  return "dark";
+}
+
+/**
+ * Fixed nav that adapts to whatever panel sits behind it (brief §6.1) by
+ * sampling the actual background luminance on scroll, rather than relying
+ * on `mix-blend-mode` - see the comment in site-theme.css for why.
+ */
 export function Nav() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  // Tracking the route the menu was opened on closes it on navigation
-  // without an extra effect.
-  const [menu, setMenu] = useState({ open: false, path: pathname });
-  const menuOpen = menu.open && menu.path === pathname;
-  const [drawLogo] = useState(() => !logoHasDrawn);
-
-  useEffect(() => {
-    logoHasDrawn = true;
-  }, []);
+  const [open, setOpen] = useState(false);
+  const [tone, setTone] = useState<"light" | "dark">("dark");
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let frame = 0;
 
+    const measure = () => {
+      frame = 0;
+      const header = headerRef.current;
+      if (!header) return;
+      const wasVisible = header.style.visibility;
+      // Hide the nav for one point-sample so elementFromPoint reads what's
+      // actually behind it, not the nav itself.
+      header.style.visibility = "hidden";
+      const next = sampleBackgroundTone(24, 40);
+      header.style.visibility = wasVisible;
+      setTone(next);
+    };
+
     const onScroll = () => {
       if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 8);
-        frame = 0;
-      });
+      frame = window.requestAnimationFrame(measure);
     };
 
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [pathname]);
+
+  const toneColor = tone === "light" ? "var(--ink)" : "var(--bone)";
+  const navBg =
+    tone === "light" ? "rgba(239, 237, 230, 0.92)" : "rgba(6, 10, 8, 0.92)";
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 bg-paper/90 backdrop-blur-sm",
-        scrolled && "border-b border-hairline",
-      )}
-    >
-      <Container>
-        <div className="flex h-18 items-center justify-between gap-6">
-          <Logo animate={drawLogo} />
+    <header ref={headerRef} className="v3-nav" style={{ backgroundColor: navBg }}>
+      <div className="v3-container flex h-20 items-center justify-between gap-6">
+        <div className="v3-nav-invert flex flex-1 items-center gap-8" style={{ color: toneColor }}>
+          <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
+            <LogoMark className="size-7" />
+            <span className="v3-display text-lg tracking-[-0.02em]">
+              {site.name}
+            </span>
+          </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
             {nav.map((item) => {
@@ -63,10 +97,8 @@ export function Nav() {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative py-1 font-display text-sm font-medium transition-colors duration-150 ease-linear after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-accent after:transition-transform after:duration-200 after:ease-out",
-                    active
-                      ? "text-accent after:scale-x-100"
-                      : "text-ink hover:text-accent after:origin-left after:scale-x-0 hover:after:scale-x-100",
+                    "v3-display text-sm font-semibold transition-opacity",
+                    active ? "opacity-100" : "opacity-80 hover:opacity-100",
                   )}
                 >
                   {item.label}
@@ -74,71 +106,45 @@ export function Nav() {
               );
             })}
           </nav>
-
-          <div className="flex items-center gap-3">
-            {/*
-              The wrapper carries the visibility, not the Button.
-
-              Button's base class already sets `inline-flex`, and Tailwind
-              utilities all have the same specificity - which one wins is
-              decided by their order in the generated stylesheet, not by the
-              order of the class attribute. So `hidden` passed through
-              className silently lost, and this CTA rendered on every phone,
-              wrapping onto two lines and pushing the bar to 66px tall.
-
-              On small phones the persistent close is the bottom bar
-              (WhatsApp | Ask), so this stays off until sm.
-            */}
-            <span className="hidden sm:block">
-              <WhatsAppButton variant="ink" size="sm">
-                {site.primaryCta}
-              </WhatsAppButton>
-            </span>
-
-            <button
-              type="button"
-              aria-expanded={menuOpen}
-              aria-controls="mobile-nav"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              onClick={() => setMenu({ open: !menuOpen, path: pathname })}
-              className="flex size-10 flex-col items-center justify-center gap-1.5 border border-hairline md:hidden"
-            >
-              <span
-                className={cn(
-                  "block h-px w-4 bg-ink transition-transform duration-200 ease-out",
-                  menuOpen && "translate-y-[3.5px] rotate-45",
-                )}
-              />
-              <span
-                className={cn(
-                  "block h-px w-4 bg-ink transition-transform duration-200 ease-out",
-                  menuOpen && "-translate-y-[3.5px] -rotate-45",
-                )}
-              />
-            </button>
-          </div>
         </div>
-      </Container>
 
-      {menuOpen && (
-        <div id="mobile-nav" className="border-t border-hairline bg-paper md:hidden">
-          <Container className="flex flex-col py-4">
+        <div className="flex items-center gap-3">
+          <span className="hidden sm:block">
+            <WhatsAppButton context="the nav" />
+          </span>
+
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+            className="v3-nav-invert flex size-10 flex-col items-center justify-center gap-1.5 md:hidden"
+            style={{ color: toneColor }}
+          >
+            <span className={cn("block h-px w-5 bg-current transition-transform", open && "translate-y-[3.5px] rotate-45")} />
+            <span className={cn("block h-px w-5 bg-current transition-transform", open && "-translate-y-[3.5px] -rotate-45")} />
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div id="mobile-nav" className="md:hidden" style={{ backgroundColor: "var(--ink)" }}>
+          <div className="v3-container flex flex-col py-2">
             {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={cn(
-                  "border-b border-hairline py-4 font-display text-base font-medium",
-                  pathname === item.href ? "text-accent" : "text-ink",
-                )}
+                onClick={() => setOpen(false)}
+                className="v3-hairline-b py-4 v3-display text-base font-semibold"
               >
                 {item.label}
               </Link>
             ))}
-            <WhatsAppButton variant="ink" size="md" className="mt-6 w-full">
-              {site.primaryCta}
-            </WhatsAppButton>
-          </Container>
+            <div className="py-4">
+              <WhatsAppButton context="the nav" className="w-full" />
+            </div>
+          </div>
         </div>
       )}
     </header>

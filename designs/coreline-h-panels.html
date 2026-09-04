@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline Digital — Sample H · Panels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0A0B0A;--bone:#F0EFE9;--forest:#07281C;--em:#12E68E;--dim:#8B908B;--w:1240px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--black);color:var(--bone);font-family:'Space Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--em);outline-offset:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 30px;width:100%}
+
+nav{position:fixed;inset:0 0 auto;z-index:100;padding:20px 0;mix-blend-mode:difference}
+.nav-in{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:19px;letter-spacing:-.04em;display:flex;gap:9px;align-items:center}
+.mk{width:15px;height:15px;border:2px solid var(--bone);position:relative}.mk::after{content:"";position:absolute;inset:3px;background:var(--bone)}
+.nl{display:flex;gap:24px;font-size:14px}
+@media(max-width:900px){.nl{display:none}}
+
+.btn{display:inline-block;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:500;transition:.25s;border:1px solid transparent}
+.b-em{background:var(--em);color:#04160E;font-weight:600}
+.b-em:hover{background:#3ff5a8}
+.b-out{border-color:currentColor}
+.b-out:hover{background:currentColor;color:var(--black)}
+.hb{display:flex;gap:12px;flex-wrap:wrap}
+
+/* PANEL SYSTEM */
+.panel{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;padding:110px 0 90px;
+ border-radius:26px 26px 0 0;box-shadow:0 -30px 70px rgba(0,0,0,.5);overflow:hidden}
+.p1{background:var(--black);border-radius:0}
+.p2{background:var(--forest);color:var(--bone)}
+.p3{background:var(--bone);color:#0A0B0A}
+.p4{background:var(--black)}
+.p5{background:var(--em);color:#04160E}
+h1{font-size:clamp(42px,7.6vw,96px);line-height:.96;letter-spacing:-.05em;font-weight:700;margin:0 0 24px;max-width:14ch}
+h2{font-size:clamp(32px,5.4vw,68px);line-height:.98;letter-spacing:-.045em;font-weight:700;margin:0 0 20px;max-width:16ch}
+.sub{font-size:19px;max-width:46ch;margin:0 0 34px;opacity:.7}
+.tag{font-size:13.5px;margin:0 0 20px;opacity:.6}
+
+/* panel 1 extras */
+.p1::before{content:"";position:absolute;inset:0;background:radial-gradient(55vw 45vh at 80% 18%,rgba(18,230,142,.14),transparent 62%)}
+.p1 .wrap{position:relative}
+.ticker{position:absolute;left:0;right:0;bottom:34px;overflow:hidden;white-space:nowrap;opacity:.5;font-size:14px}
+.ticker div{display:inline-block;animation:mv 28s linear infinite}
+.ticker span{margin:0 22px}
+@keyframes mv{to{transform:translateX(-50%)}}
+
+/* panel 2 — services grid */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(240,239,233,.14);border:1px solid rgba(240,239,233,.14);margin-top:20px}
+.sgrid div{background:var(--forest);padding:24px 20px;min-height:150px}
+.sgrid h3{margin:0 0 8px;font-size:17px;font-weight:600;letter-spacing:-.02em}
+.sgrid p{margin:0;font-size:14px;opacity:.62}
+@media(max-width:1000px){.sgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.sgrid{grid-template-columns:1fr}}
+
+/* panel 3 — work, light */
+.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+.wc{border-radius:10px;overflow:hidden;background:#E4E2DA;aspect-ratio:4/5;position:relative;transition:transform .4s}
+.wc:hover{transform:translateY(-6px)}
+.wc .im{position:absolute;inset:0}
+.wc .lab{position:absolute;left:0;right:0;bottom:0;padding:20px;background:linear-gradient(0deg,rgba(10,11,10,.88),transparent);color:var(--bone)}
+.wc h3{margin:0 0 3px;font-size:19px;font-weight:600;letter-spacing:-.02em}
+.wc span{font-size:13px;opacity:.75}
+@media(max-width:820px){.wgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.wgrid{grid-template-columns:1fr}}
+
+/* panel 4 — split statement */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.bars{display:grid;gap:12px}
+.bar{height:52px;border-radius:6px;background:rgba(240,239,233,.07);position:relative;overflow:hidden;display:flex;align-items:center;padding:0 18px;font-size:14.5px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(18,230,142,.35),rgba(18,230,142,.05));transform:scaleX(0);transform-origin:left;transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+.bar.in i{transform:scaleX(var(--v))}
+.bar b{position:relative;z-index:2;font-weight:500}
+.bar em{position:relative;z-index:2;margin-left:auto;font-style:normal;color:var(--em);font-size:13.5px}
+@media(max-width:880px){.split{grid-template-columns:1fr;gap:34px}}
+
+/* panel 5 — CTA, magnetic */
+.p5 .wrap{text-align:center}
+.p5 h2{margin:0 auto 30px;max-width:14ch;font-size:clamp(36px,7vw,90px)}
+.mag{display:inline-block;background:#04160E;color:var(--em);padding:20px 46px;border-radius:100px;font-size:18px;font-weight:600;will-change:transform;transition:transform .18s ease-out}
+.mag:hover{background:#0A0B0A}
+.p5 .alt{display:block;margin-top:20px;font-size:15px;opacity:.75}
+
+footer{background:var(--black);padding:44px 0 60px;color:var(--dim);font-size:13.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;position:relative;z-index:5}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.panel{position:relative;border-radius:0}.bar i{transform:scaleX(var(--v))}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="#"><span class="mk"></span>CORELINE</a>
+  <div class="nl"><a href="#services">Services</a><a href="#work">Work</a><a href="#contact">Contact</a></div>
+</div></nav>
+
+<section class="panel p1"><div class="wrap">
+  <p class="tag">Coreline Digital · Thane &amp; Mumbai</p>
+  <h1>Design that performs. Systems that run. Search that pays.</h1>
+  <p class="sub">We build the whole online setup for small businesses. Website, AI agents, automations and visibility, from one team.</p>
+  <div class="hb"><a class="btn b-em" href="#contact">Book a call</a><a class="btn b-out" href="#contact">WhatsApp</a></div>
+  <div class="ticker"><div id="tk">
+    <span>Jewellers</span><span>—</span><span>Clinics</span><span>—</span><span>Gyms</span><span>—</span><span>Real estate</span><span>—</span><span>Schools</span><span>—</span><span>Chartered accountants</span><span>—</span><span>Interior designers</span><span>—</span><span>Travel</span><span>—</span><span>Traders</span><span>—</span>
+  </div></div>
+</div></section>
+
+<section class="panel p2" id="services"><div class="wrap">
+  <h2>Eight services. One team. No handoffs.</h2>
+  <p class="sub">The people who design it are the people who ship it, rank it and pick up the phone when it breaks.</p>
+  <div class="sgrid">
+    <div><h3>Websites</h3><p>Hand-built, fast on mobile data, made to turn visitors into calls.</p></div>
+    <div><h3>AI agents</h3><p>Trained on your services and timings. Answers and books while you sleep.</p></div>
+    <div><h3>Automations</h3><p>Confirmations, reminders and review requests that send themselves.</p></div>
+    <div><h3>Local search</h3><p>Found by the people already searching for what you sell nearby.</p></div>
+    <div><h3>Mobile apps</h3><p>Android and iOS, when a website genuinely is not enough.</p></div>
+    <div><h3>CRM &amp; software</h3><p>Custom tools shaped around how your business already runs.</p></div>
+    <div><h3>Branding</h3><p>Logo, palette, cards, signage. One face everywhere.</p></div>
+    <div><h3>Social content</h3><p>Monthly graphics and reels, handled on retainer.</p></div>
+  </div>
+</div></section>
+
+<section class="panel p3" id="work"><div class="wrap">
+  <h2>Real businesses. Real results.</h2>
+  <p class="sub">Open them on your phone. That is the only review that counts.</p>
+  <div class="wgrid">
+    <a class="wc"><span class="im" style="background:radial-gradient(80% 90% at 30% 25%,rgba(201,162,39,.75),transparent 62%),linear-gradient(160deg,#2A2416,#0F0D08)"></span><span class="lab"><h3>MNK Jewels</h3><span>Jewellery · online store</span></span></a>
+    <a class="wc"><span class="im" style="background:radial-gradient(80% 90% at 65% 25%,rgba(18,230,142,.6),transparent 62%),linear-gradient(160deg,#0E211B,#07100C)"></span><span class="lab"><h3>KC Physio Care</h3><span>Clinic · appointments</span></span></a>
+    <a class="wc"><span class="im" style="background:radial-gradient(80% 90% at 35% 70%,rgba(232,255,58,.5),transparent 62%),linear-gradient(160deg,#1D2113,#0B0C07)"></span><span class="lab"><h3>Iron Yard Fitness</h3><span>Gym · AI agent</span></span></a>
+    <a class="wc"><span class="im" style="background:radial-gradient(80% 90% at 70% 60%,rgba(76,141,255,.55),transparent 62%),linear-gradient(160deg,#101522,#08090F)"></span><span class="lab"><h3>Sharma &amp; Associates</h3><span>Chartered accountants</span></span></a>
+    <a class="wc"><span class="im" style="background:radial-gradient(80% 90% at 40% 35%,rgba(217,132,82,.6),transparent 62%),linear-gradient(160deg,#1E1512,#0C0908)"></span><span class="lab"><h3>Vista Interiors</h3><span>Interiors · portfolio</span></span></a>
+    <a class="wc"><span class="im" style="background:radial-gradient(80% 90% at 55% 40%,rgba(240,239,233,.35),transparent 62%),linear-gradient(160deg,#1A1A1A,#0A0A0A)"></span><span class="lab"><h3>Your business</h3><span>Book a call</span></span></a>
+  </div>
+</div></section>
+
+<section class="panel p4"><div class="wrap split">
+  <div>
+    <h2>Most sites are brochures. Ours do work.</h2>
+    <p class="sub">A site should answer questions, capture numbers and book appointments on its own. Here is where the time actually goes.</p>
+    <a class="btn b-em" href="#contact">Book a call</a>
+  </div>
+  <div class="bars">
+    <div class="bar" style="--v:.92"><i></i><b>Enquiries answered without you</b><em>92%</em></div>
+    <div class="bar" style="--v:.68"><i></i><b>Leads arriving after 9pm</b><em>68%</em></div>
+    <div class="bar" style="--v:.85"><i></i><b>Visitors on a phone, not a laptop</b><em>85%</em></div>
+    <div class="bar" style="--v:.4"><i></i><b>Who leave if it loads slowly</b><em>40%</em></div>
+  </div>
+</div></section>
+
+<section class="panel p5" id="contact"><div class="wrap">
+  <h2>Let's build it.</h2>
+  <a class="mag" id="mag" href="#">Book a call</a>
+  <span class="alt">or message us on WhatsApp</span>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 30px">
+  <div>© 2026 Coreline Digital · corelinedigital.in</div><div>Wagle Estate, Thane · Maharashtra</div>
+</div></footer>
+
+<script>
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const tk=document.getElementById('tk');tk.innerHTML+=tk.innerHTML;
+/* bar reveal */
+const io=new IntersectionObserver(es=>es.forEach((e,i)=>{
+  if(!e.isIntersecting)return;setTimeout(()=>e.target.classList.add('in'),i*110);io.unobserve(e.target)}),{threshold:.4});
+document.querySelectorAll('.bar').forEach(b=>io.observe(b));
+/* magnetic button */
+const mag=document.getElementById('mag');
+if(!RM&&matchMedia('(pointer:fine)').matches){
+  mag.addEventListener('pointermove',e=>{
+    const r=mag.getBoundingClientRect();
+    mag.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.28}px,${(e.clientY-r.top-r.height/2)*.4}px)`;
+  });
+  mag.addEventListener('pointerleave',()=>mag.style.transform='translate(0,0)');
+}
+</script>
+</body>
+</html>

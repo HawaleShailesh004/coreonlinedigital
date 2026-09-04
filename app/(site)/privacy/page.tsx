@@ -1,15 +1,12 @@
-import { FinalCta } from "@/components/FinalCta";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { Container } from "@/components/ui/Container";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { privacyPage } from "@/lib/content";
+import { ContactPanel } from "@/components/v3/ContactPanel";
 import { breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
+import { privacyPageCopy } from "@/lib/site-content";
 
-const title = "Privacy";
-const description =
-  "How I handle the name and phone number you send from the site. Your number stays with me. I don't sell it.";
+const TITLE = "Privacy";
+const DESCRIPTION = "How we handle the name and number you send us. It stays with us. We don't sell it.";
 
-export const metadata = pageMetadata({ title, description, path: "/privacy" });
+export const metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/privacy" });
 
 const crumbs = breadcrumbJsonLd([{ name: "Privacy", path: "/privacy" }]);
 
@@ -18,26 +15,29 @@ export default function PrivacyPage() {
     <>
       <JsonLd
         data={[
-          webPageJsonLd({
-            title,
-            description,
-            path: "/privacy",
-            breadcrumbId: crumbs["@id"],
-          }),
+          webPageJsonLd({ title: TITLE, description: DESCRIPTION, path: "/privacy", breadcrumbId: crumbs["@id"] }),
           crumbs,
         ]}
       />
-      <PageHeader heading={privacyPage.heading} sub={privacyPage.sub} />
-      <Container className="pb-16 md:pb-32">
-        <div className="max-w-2xl">
-          {privacyPage.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 40)} className="mt-8 text-lead text-body first:mt-0">
-              {paragraph}
-            </p>
-          ))}
+
+      <section className="py-32 sm:py-40">
+        <div className="v3-container max-w-2xl">
+          <h1 className="v3-display text-[clamp(1.75rem,5vw,2.75rem)] leading-[1.05] tracking-[-0.02em]">
+            {privacyPageCopy.heading}
+          </h1>
+          <p className="mt-5 text-[15px] opacity-70">{privacyPageCopy.sub}</p>
+
+          <div className="mt-12 flex flex-col gap-6">
+            {privacyPageCopy.paragraphs.map((paragraph) => (
+              <p key={paragraph.slice(0, 40)} className="text-[15px] leading-[1.7] opacity-80">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
-      </Container>
-      <FinalCta heading={privacyPage.ctaHeading} body={privacyPage.ctaBody} />
+      </section>
+
+      <ContactPanel />
     </>
   );
 }

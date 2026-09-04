@@ -1,69 +1,72 @@
-import { FinalCta } from "@/components/FinalCta";
-import { FaqList } from "@/components/FaqList";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { aboutPage } from "@/lib/content";
-import {
-  breadcrumbJsonLd,
-  faqJsonLd,
-  pageMetadata,
-  webPageJsonLd,
-} from "@/lib/seo";
+import { Panel } from "@/components/v3/Panel";
+import { ReadingHighlight } from "@/components/v3/ReadingHighlight";
+import { TeamGrid } from "@/components/v3/TeamCard";
+import { ProcessSteps } from "@/components/v3/ProcessSteps";
+import { ContactPanel } from "@/components/v3/ContactPanel";
+import { pageMetadata, webPageJsonLd } from "@/lib/seo";
+import { aboutPageCopy, homeCopy, team } from "@/lib/site-content";
 
-const title = "About Shailesh Hawale - Coreline Digital";
-const description =
-  "Shailesh Hawale runs Coreline Digital from Wagle Estate, Thane, building websites for local businesses. Fixed price, fixed date, half paid only when live.";
+const TITLE = "About Coreline Digital - Thane";
+const DESCRIPTION =
+  "One person, no handoffs. Design, code, search and automation for Thane and Mumbai businesses, done by the same person who answers the phone.";
 
-export const metadata = {
-  ...pageMetadata({ title, description, path: "/about" }),
-  // Absolute so this does not render as "About Shailesh Hawale - Coreline Digital | Coreline Digital".
-  title: { absolute: title },
-};
-
-const crumbs = breadcrumbJsonLd([{ name: "About", path: "/about" }]);
+export const metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/about" });
 
 export default function AboutPage() {
   return (
     <>
-      <JsonLd
-        data={[
-          webPageJsonLd({
-            title,
-            description,
-            path: "/about",
-            type: "AboutPage",
-            breadcrumbId: crumbs["@id"],
-          }),
-          crumbs,
-          faqJsonLd(aboutPage.faqs),
-        ]}
-      />
-      <PageHeader heading={aboutPage.heading} sub={aboutPage.sub} />
-      <Container className="pb-16 md:pb-32">
-        <div className="max-w-2xl">
-          {aboutPage.paragraphs.map((paragraph) => (
-            <p
-              key={paragraph.slice(0, 40)}
-              className="mt-8 text-lead text-body first:mt-0"
-            >
-              {paragraph}
-            </p>
+      <JsonLd data={webPageJsonLd({ title: TITLE, description: DESCRIPTION, path: "/about", type: "AboutPage" })} />
+
+      <section className="pt-28 pb-16 sm:pt-36 sm:pb-24">
+        <div className="v3-container">
+          <h1 className="v3-display text-[clamp(1.85rem,5vw,3rem)] leading-[1.02] tracking-[-0.03em]">
+            {aboutPageCopy.hero.lines[0]}
+            <br />
+            {aboutPageCopy.hero.lines[1]}
+          </h1>
+        </div>
+      </section>
+
+      <section className="py-16 sm:py-24">
+        <div className="v3-container max-w-2xl">
+          {aboutPageCopy.origin.map((paragraph, i) => (
+            <ReadingHighlight
+              key={i}
+              text={paragraph}
+              className="mt-6 text-lg leading-[1.7] first:mt-0"
+            />
           ))}
         </div>
-      </Container>
-      <Section bordered size="tight">
-        <Reveal>
-          <p className="font-mono text-label uppercase text-grey">Questions</p>
-          <h2 className="mt-5 max-w-3xl font-display text-h2 font-semibold">
-            Straight answers before you message.
-          </h2>
-          <FaqList faqs={aboutPage.faqs} />
-        </Reveal>
-      </Section>
-      <FinalCta heading={aboutPage.ctaHeading} body={aboutPage.ctaBody} />
+      </section>
+
+      <section className="py-24 sm:py-32">
+        <div className="v3-container">
+          <h2 className="v3-display text-[clamp(1.45rem,3.2vw,1.9rem)]">The team</h2>
+          <div className="mt-10">
+            <TeamGrid members={team} />
+          </div>
+        </div>
+      </section>
+
+      <Panel variant="forest" stack>
+        <ProcessSteps heading={homeCopy.process.heading} steps={homeCopy.process.steps} />
+      </Panel>
+
+      <section className="py-24 sm:py-32">
+        <div className="v3-container max-w-xl">
+          <h2 className="v3-display text-[clamp(1.45rem,3.2vw,1.9rem)]">What we won&apos;t do</h2>
+          <div className="mt-8 flex flex-col gap-1">
+            {aboutPageCopy.wontDo.map((line) => (
+              <p key={line} className="v3-hairline-t py-4 text-[15px] opacity-75">
+                {line}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <ContactPanel />
     </>
   );
 }

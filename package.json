@@ -9,9 +9,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "mockup": "node scripts/generate-mockup.mjs",
+    "mockups": "node scripts/generate-mockup.mjs --all"
   },
   "dependencies": {
+    "framer-motion": "^13.2.0",
     "next": "^16.3.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
