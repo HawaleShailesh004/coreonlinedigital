@@ -819,13 +819,22 @@
    *
    * The transition zone is wide on purpose: at this mask-size, the
    * container only ever sees a fifth of the strip at a time, so a narrow
-   * transition (the first version used 20 of the 100 points) meant most of
-   * the sweep crossed the window in a quick middle burst either side of
-   * which nothing visibly changed. Widening it to 60 of 100 points keeps
-   * the window inside the transition for nearly the whole animation, so
-   * the fade reads as one continuous, unhurried dissolve rather than a
-   * flat pause - fast fade - flat pause. Paired with the slower 22s cycle
-   * below for the "deep, premium" pace asked for.
+   * transition meant most of the sweep crossed the window in a quick
+   * middle burst either side of which nothing visibly changed. Widening
+   * it to 60 of 100 points keeps the window inside the transition for
+   * nearly the whole animation, so the fade reads as one continuous,
+   * unhurried dissolve rather than a flat pause - fast fade - flat pause.
+   *
+   * The boundary is angled, not "to right" (90deg), on purpose. Two
+   * things had to be balanced: past 135deg the direction vector points
+   * more down than right, and the fade stops reading as a left-to-right
+   * sweep at all - it flips into a top/bottom band instead. Under 135deg
+   * the lean is too subtle against a word this wide and short to read as
+   * diagonal rather than straight. 135deg is the ceiling - a true 45°
+   * angle, the most tilt available before the sweep direction flips, and
+   * the point where the diagonal is least ambiguous. Moving mask-position
+   * on the X axis alone still sweeps the whole tilted strip right to
+   * left; no Y motion needed.
    *
    * mask-position 0% shows the strip's fully-visible zone; 100% shows the
    * faded zone. Checked against the actual background-position formula
@@ -836,14 +845,14 @@
    * it plays, and mirrors back the same way on the way out.
    */
   -webkit-mask-image: linear-gradient(
-    to right,
+    135deg,
     rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 1) 20%,
     rgba(0, 0, 0, 0) 80%,
     rgba(0, 0, 0, 0) 100%
   );
   mask-image: linear-gradient(
-    to right,
+    135deg,
     rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 1) 20%,
     rgba(0, 0, 0, 0) 80%,
@@ -857,13 +866,14 @@
   mask-position: 0% 0%;
   animation:
     v3-drift 16s linear infinite,
-    v3-going-missing 22s ease-in-out infinite;
+    v3-going-missing 40s ease-in-out infinite;
   will-change: background-position, mask-position;
 }
 
-/* 0% → 50% (11s): dissolves to fully invisible, right edge first. 50% →
-   100% (the next 11s): the same dissolve in reverse, word fully back by
-   22s. Slow on purpose - this one is meant to feel noticed, not missed. */
+/* 0% → 50% (20s): dissolves to fully invisible, right edge first. 50% →
+   100% (the next 20s): the same dissolve in reverse, word fully back by
+   40s. Very slow on purpose - this one is meant to feel noticed, not
+   missed. */
 @keyframes v3-going-missing {
   0%,
   100% {
