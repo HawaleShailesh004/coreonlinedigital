@@ -10,6 +10,9 @@ export function Footer() {
 
   return (
     <footer className="v3-hairline-t relative z-10" itemScope itemType="https://schema.org/Organization" style={{ backgroundColor: "var(--ink)" }}>
+      <div className="v3-footer-mark-wrap" aria-hidden="true">
+        <span className="v3-footer-mark">CORELINE</span>
+      </div>
       <div className="v3-container">
         <div className="flex flex-col gap-10 py-16 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-3">

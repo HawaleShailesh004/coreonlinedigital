@@ -276,6 +276,60 @@
   transition: color 0.15s ease-out;
 }
 
+/* Footer -----------------------------------------------------------------
+   A giant, near-invisible wordmark sitting above the footer links - a quiet
+   brand signature at the point people are leaving the page, not something
+   meant to be read. Sized via vw so it's reliably wider than the viewport
+   at any width (8 letters at ~0.62em average advance * 21vw ≈ 104vw), and
+   `overflow: hidden` on the wrapper crops it at both edges rather than
+   shrinking to fit - the crop is the point, not a side effect.
+
+   No top margin - it should bleed flush against whatever section precedes
+   the footer, like a continuation, not sit in its own padded block. And it
+   doesn't stop with a hard edge: a top-to-bottom mask dissolves it into
+   the footer's black before the logo/nav row starts.
+
+   The wrap owns a fixed height (well under the font-size, so only the
+   upper portion of the letters ever shows) and the negative bottom margin
+   that pulls the logo/nav row up into the faded tail - both live on the
+   wrap, not the text. Putting either on `.v3-footer-mark` itself was the
+   first version's bug: that element sits inside the wrap's own
+   overflow:hidden, so a negative margin there shrank the wrap's own
+   auto-height and hard-clipped the letters before the mask finished
+   fading - which is what read as "not a smooth gradient." The text is
+   `position: absolute; inset: 0` with `line-height: 1` (no tight
+   line-height trick) so it renders at its natural size and the mask's 0%
+   -100% stops resolve against the wrap's own height - not the text's
+   full, mostly-offscreen height - so the fade actually completes inside
+   the visible window instead of barely starting by the time it's clipped. */
+
+.v3-footer-mark-wrap {
+  position: relative;
+  overflow: hidden;
+  height: clamp(3.5rem, 12vw, 9.5rem);
+  margin-bottom: clamp(-2rem, -5vw, -1rem);
+}
+
+.v3-footer-mark {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 100, "wght" 800;
+  letter-spacing: -0.04em;
+  font-size: clamp(5.5rem, 21vw, 15rem);
+  line-height: 1;
+  color: rgba(239, 237, 230, 0.1);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Reading highlight ---------------------------------------------------------
    Word-by-word scroll-driven highlight. JS toggles data-lit on each .v3-rhw
    span as the paragraph crosses the read band; CSS just handles the
@@ -811,48 +865,81 @@
   -webkit-text-fill-color: transparent;
   /*
    * "Going missing": a soft wipe, not a flat opacity tween. The mask is a
-   * gradient 3x the element's width with two flat zones (fully visible,
-   * 60%-invisible) and one soft transition between them - moving that whole
-   * strip via mask-position, rather than animating opacity directly, is
-   * what makes the fade itself travel across the word instead of dimming
-   * everywhere at once.
+   * gradient 5x the element's width with two small flat zones (fully
+   * visible, fully invisible) and one wide, gradual transition between
+   * them - moving that whole strip via mask-position, rather than
+   * animating opacity directly, is what makes the fade itself travel
+   * across the word instead of dimming everywhere at once.
+   *
+   * The transition zone is wide on purpose: at this mask-size, the
+   * container only ever sees a fifth of the strip at a time, so a narrow
+   * transition meant most of the sweep crossed the window in a quick
+   * middle burst either side of which nothing visibly changed. Widening
+   * it to 60 of 100 points keeps the window inside the transition for
+   * nearly the whole animation, so the fade reads as one continuous,
+   * unhurried dissolve rather than a flat pause - fast fade - flat pause.
+   *
+   * The boundary is angled, not "to right" (90deg), on purpose. Two
+   * things had to be balanced: past 135deg the direction vector points
+   * more down than right, and the fade stops reading as a left-to-right
+   * sweep at all - it flips into a top/bottom band instead. Under 135deg
+   * the lean is too subtle against a word this wide and short to read as
+   * diagonal rather than straight. 135deg is the ceiling - a true 45°
+   * angle, the most tilt available before the sweep direction flips, and
+   * the point where the diagonal is least ambiguous. Moving mask-position
+   * on the X axis alone still sweeps the whole tilted strip right to
+   * left; no Y motion needed.
    *
    * mask-position 0% shows the strip's fully-visible zone; 100% shows the
    * faded zone. Checked against the actual background-position formula
-   * (position = (container - image) * pct, image = 3x container): at 50%
-   * of the animation the container is reading the strip's middle third -
-   * left edge still in the visible zone, right edge already in the faded
-   * one - so the fade visibly starts at the right of the word and spreads
-   * left as it plays, and mirrors back the same way on the way out.
+   * (position = (container - image) * pct, image = 5x container): at 50%
+   * of the animation the container is reading the strip's middle fifth -
+   * left edge still leaning visible, right edge already leaning faded - so
+   * the fade visibly starts at the right of the word and spreads left as
+   * it plays, and mirrors back the same way on the way out.
    */
   -webkit-mask-image: linear-gradient(
-    to right,
+    135deg,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 40%,
-    rgba(0, 0, 0, 0.4) 60%,
-    rgba(0, 0, 0, 0.4) 100%
+    rgba(0, 0, 0, 1) 20%,
+    rgba(0, 0, 0, 0) 80%,
+    rgba(0, 0, 0, 0) 100%
   );
   mask-image: linear-gradient(
-    to right,
+    135deg,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 40%,
-    rgba(0, 0, 0, 0.4) 60%,
-    rgba(0, 0, 0, 0.4) 100%
+    rgba(0, 0, 0, 1) 20%,
+    rgba(0, 0, 0, 0) 80%,
+    rgba(0, 0, 0, 0) 100%
   );
-  -webkit-mask-size: 300% 100%;
-  mask-size: 300% 100%;
+  -webkit-mask-size: 500% 100%;
+  mask-size: 500% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: 0% 0%;
   mask-position: 0% 0%;
   animation:
     v3-drift 16s linear infinite,
-    v3-going-missing 14s ease-in-out infinite;
+    v3-going-missing 40s linear 0.6s infinite;
   will-change: background-position, mask-position;
 }
 
-/* 0% → 50% (7s): fades to 60% invisible, right edge first. 50% → 100%
-   (the next 7s): the same wipe in reverse, word fully back by 14s. */
+/* 0% → 50% (20s): dissolves to fully invisible, right edge first. 50% →
+   100% (the next 20s): the same dissolve in reverse, word fully back by
+   40s. Very slow on purpose - this one is meant to feel noticed, not
+   missed.
+
+   `linear`, not `ease-in-out`: easing put the slow part at the very
+   start and end of each half-cycle, so the word sat still for several
+   seconds before any movement was visible, then rushed through the
+   actual dissolve in the eased-in middle - the opposite of "slow and
+   noticed." Linear keeps the pace constant throughout, so the fade
+   itself reads as unhurried the whole way, not just the two ends. The
+   delay is separate and deliberately short (0.6s, not the 2.5s this
+   started at): a visitor who scrolls past the hero in the first couple
+   of seconds needs to have already seen the dissolve start, or they
+   never see it at all - a long, unhurried fade only earns that if
+   people actually catch it beginning. */
 @keyframes v3-going-missing {
   0%,
   100% {
@@ -1055,13 +1142,28 @@
 
 .v3-chat-badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 11px;
-  height: 11px;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
   border-radius: 50%;
-  background: var(--bone);
-  border: 2px solid var(--ink);
+  background: linear-gradient(155deg, #ff5c53 0%, #d81e2c 100%);
+  color: #fff;
+  /* No border - it read as a flat outline sitting on top of the launcher
+     rather than part of it. The glow plus the drop-shadow separating it
+     from the emerald behind it are what make it legible instead. Static,
+     not pulsing: one more looping animation on top of the hero's own
+     wasn't worth it for a badge sitting in the corner of the screen. */
+  box-shadow:
+    0 0 10px 3px rgba(216, 30, 44, 0.55),
+    0 1px 3px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 @media (max-width: 560px) {
@@ -1102,16 +1204,18 @@
 }
 
 @media (max-width: 560px) {
+  /* A floating card with margin on every side, not an edge-to-edge sheet -
+     full width made it read like a takeover rather than a widget, and left
+     nothing to tap to dismiss without hitting the close button. */
   .v3-chat-panel {
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 88dvh;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    height: min(80dvh, 620px);
     max-height: none;
-    border-radius: 12px 12px 0 0;
+    border-radius: 14px;
     border: 1px solid var(--line);
-    border-bottom: none;
     animation: v3-chat-sheet 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 }
@@ -1461,8 +1565,8 @@
   .v3 .v3-cutout {
     /* Drift (a slow internal colour shift) stays, matching the rest of this
        block's policy for the hero. The missing-wipe is a much bigger swing
-       - the word actually reads as fading by 60% - so unlike drift it's
-       switched off here and held fully visible instead of mid-fade. */
+       - the word actually fades to nothing - so unlike drift it's switched
+       off here and held fully visible instead of mid-fade. */
     animation: v3-drift 16s linear infinite !important;
     animation-duration: 16s !important;
     animation-iteration-count: infinite !important;
