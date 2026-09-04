@@ -811,48 +811,59 @@
   -webkit-text-fill-color: transparent;
   /*
    * "Going missing": a soft wipe, not a flat opacity tween. The mask is a
-   * gradient 3x the element's width with two flat zones (fully visible,
-   * fully invisible) and one soft transition between them - moving that
-   * whole strip via mask-position, rather than animating opacity directly,
-   * is what makes the fade itself travel across the word instead of
-   * dimming everywhere at once.
+   * gradient 5x the element's width with two small flat zones (fully
+   * visible, fully invisible) and one wide, gradual transition between
+   * them - moving that whole strip via mask-position, rather than
+   * animating opacity directly, is what makes the fade itself travel
+   * across the word instead of dimming everywhere at once.
+   *
+   * The transition zone is wide on purpose: at this mask-size, the
+   * container only ever sees a fifth of the strip at a time, so a narrow
+   * transition (the first version used 20 of the 100 points) meant most of
+   * the sweep crossed the window in a quick middle burst either side of
+   * which nothing visibly changed. Widening it to 60 of 100 points keeps
+   * the window inside the transition for nearly the whole animation, so
+   * the fade reads as one continuous, unhurried dissolve rather than a
+   * flat pause - fast fade - flat pause. Paired with the slower 22s cycle
+   * below for the "deep, premium" pace asked for.
    *
    * mask-position 0% shows the strip's fully-visible zone; 100% shows the
    * faded zone. Checked against the actual background-position formula
-   * (position = (container - image) * pct, image = 3x container): at 50%
-   * of the animation the container is reading the strip's middle third -
-   * left edge still in the visible zone, right edge already in the faded
-   * one - so the fade visibly starts at the right of the word and spreads
-   * left as it plays, and mirrors back the same way on the way out.
+   * (position = (container - image) * pct, image = 5x container): at 50%
+   * of the animation the container is reading the strip's middle fifth -
+   * left edge still leaning visible, right edge already leaning faded - so
+   * the fade visibly starts at the right of the word and spreads left as
+   * it plays, and mirrors back the same way on the way out.
    */
   -webkit-mask-image: linear-gradient(
     to right,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 40%,
-    rgba(0, 0, 0, 0) 60%,
+    rgba(0, 0, 0, 1) 20%,
+    rgba(0, 0, 0, 0) 80%,
     rgba(0, 0, 0, 0) 100%
   );
   mask-image: linear-gradient(
     to right,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 40%,
-    rgba(0, 0, 0, 0) 60%,
+    rgba(0, 0, 0, 1) 20%,
+    rgba(0, 0, 0, 0) 80%,
     rgba(0, 0, 0, 0) 100%
   );
-  -webkit-mask-size: 300% 100%;
-  mask-size: 300% 100%;
+  -webkit-mask-size: 500% 100%;
+  mask-size: 500% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: 0% 0%;
   mask-position: 0% 0%;
   animation:
     v3-drift 16s linear infinite,
-    v3-going-missing 14s ease-in-out infinite;
+    v3-going-missing 22s ease-in-out infinite;
   will-change: background-position, mask-position;
 }
 
-/* 0% → 50% (7s): fades to fully invisible, right edge first. 50% → 100%
-   (the next 7s): the same wipe in reverse, word fully back by 14s. */
+/* 0% → 50% (11s): dissolves to fully invisible, right edge first. 50% →
+   100% (the next 11s): the same dissolve in reverse, word fully back by
+   22s. Slow on purpose - this one is meant to feel noticed, not missed. */
 @keyframes v3-going-missing {
   0%,
   100% {
@@ -1066,6 +1077,11 @@
   background: #ff3b30;
   color: #fff;
   border: 2px solid var(--ink);
+  /* The glow, not the border, is what should read as "alive" - the border
+     stays as-is, purely for legibility against the emerald launcher behind
+     it. Static, not pulsing: one more looping animation on top of the hero's
+     own wasn't worth it for a badge sitting in the corner of the screen. */
+  box-shadow: 0 0 9px 2px rgba(255, 59, 48, 0.65);
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
