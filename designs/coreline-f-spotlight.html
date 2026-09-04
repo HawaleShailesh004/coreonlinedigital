@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline Digital — Sample F · Spotlight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0B0B;--bone:#F1EEE7;--dim:#8A8880;--em:#00E58C;--line:rgba(241,238,231,.14);--w:1300px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--bone);font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--em);outline-offset:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 30px}
+.an{font-family:Anton,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:-.005em;line-height:.86}
+
+nav{position:fixed;inset:0 0 auto;z-index:90;padding:18px 0;mix-blend-mode:difference}
+.nav-in{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:Anton;font-size:20px;letter-spacing:.02em;text-transform:uppercase;display:flex;gap:10px;align-items:center}
+.mk{width:15px;height:15px;border:2px solid var(--bone);position:relative}.mk::after{content:"";position:absolute;inset:3px;background:var(--bone)}
+.nl{display:flex;gap:24px;font-size:13.5px}
+@media(max-width:900px){.nl{display:none}}
+
+/* ---------- SPOTLIGHT HERO ---------- */
+.hero{position:relative;height:100vh;overflow:hidden;display:grid;place-items:center;text-align:center}
+.layer{position:absolute;inset:0;display:grid;place-items:center;padding:0 30px}
+.layer h1{margin:0;font-size:clamp(46px,12.5vw,190px);max-width:11ch}
+.base h1{color:#1C1C1C}
+.base{background:var(--bg)}
+.lit{background:
+ radial-gradient(circle at 50% 42%,rgba(0,229,140,.16),transparent 55%),#050505;
+ -webkit-mask-image:radial-gradient(circle 190px at var(--mx,50%) var(--my,45%),#000 0%,#000 55%,transparent 100%);
+ mask-image:radial-gradient(circle 190px at var(--mx,50%) var(--my,45%),#000 0%,#000 55%,transparent 100%)}
+.lit h1{color:var(--em)}
+.herofoot{position:absolute;left:30px;right:30px;bottom:30px;display:flex;justify-content:space-between;gap:20px;font-size:13.5px;color:var(--dim);flex-wrap:wrap;z-index:5}
+.herofoot b{color:var(--bone);font-weight:500}
+.hint{position:absolute;top:50%;left:50%;transform:translate(-50%,140px);font-size:12.5px;color:var(--dim);z-index:5;animation:fade 2.6s infinite}
+@keyframes fade{0%,100%{opacity:.35}50%{opacity:1}}
+
+/* ---------- statement band ---------- */
+.band{padding:120px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bone);color:#0B0B0B}
+.band h2{margin:0 0 20px;font-size:clamp(34px,6.4vw,86px);max-width:14ch}
+.band p{margin:0;max-width:40ch;font-size:18px;color:#4A4842}
+.bandgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:50px;align-items:end}
+@media(max-width:880px){.bandgrid{grid-template-columns:1fr;gap:28px}}
+
+/* ---------- diagonal marquee ---------- */
+.diag{overflow:hidden;padding:70px 0;background:var(--em);transform:rotate(-2.4deg) scale(1.06);margin:70px 0}
+.diag div{white-space:nowrap;display:inline-block;animation:mv 22s linear infinite;font-family:Anton;text-transform:uppercase;font-size:clamp(28px,4.4vw,56px);color:#04160E}
+.diag span{margin:0 22px}
+@keyframes mv{to{transform:translateX(-50%)}}
+
+/* ---------- pinned stacking work ---------- */
+.stack{position:relative}
+.stack .sticky{position:sticky;top:0;height:100vh;display:grid;place-items:center;padding:0 30px}
+.wcard{width:min(1040px,100%);height:70vh;border-radius:6px;overflow:hidden;position:relative;border:1px solid var(--line);
+ display:grid;grid-template-columns:1fr 1fr;transform-origin:top center}
+.wcard .art{position:relative;overflow:hidden}
+.wcard .art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(11,11,11,.5))}
+.wcard .info{padding:44px;display:flex;flex-direction:column;justify-content:space-between;background:#0E0E0E}
+.wcard .info h3{font-family:Anton;text-transform:uppercase;font-size:clamp(30px,4.2vw,58px);margin:0 0 14px;line-height:.9}
+.wcard .info p{color:var(--dim);margin:0 0 20px;max-width:34ch}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tags span{border:1px solid var(--line);padding:6px 12px;font-size:12.5px;color:var(--dim);border-radius:100px}
+.res{display:flex;gap:30px;margin-top:22px;flex-wrap:wrap}
+.res b{display:block;font-family:Anton;font-size:34px;color:var(--em);line-height:1}
+.res span{font-size:13px;color:var(--dim)}
+@media(max-width:900px){.wcard{grid-template-columns:1fr;height:auto}.wcard .art{height:200px}.wcard .info{padding:28px}.stack .sticky{height:auto;padding:40px 30px}}
+
+/* ---------- services: big list, hover push ---------- */
+.list{padding:120px 0}
+.list h2{font-size:clamp(30px,5.4vw,72px);margin:0 0 14px}
+.list .lead{color:var(--dim);max-width:42ch;margin:0 0 54px;font-size:17px}
+.item{display:grid;grid-template-columns:64px 1fr 1fr;gap:26px;padding:30px 0;border-top:1px solid var(--line);align-items:baseline;transition:padding .3s,color .3s}
+.item:last-of-type{border-bottom:1px solid var(--line)}
+.item:hover{padding-left:22px}
+.item .k{color:var(--dim);font-size:13px}
+.item h3{font-family:Anton;text-transform:uppercase;font-size:clamp(24px,3.4vw,44px);margin:0;line-height:.92;transition:color .25s}
+.item:hover h3{color:var(--em)}
+.item p{margin:0;color:var(--dim);font-size:15px;max-width:42ch}
+@media(max-width:820px){.item{grid-template-columns:44px 1fr;gap:14px}.item p{grid-column:1/-1}}
+
+/* ---------- counters ---------- */
+.nums{padding:120px 0;background:var(--bone);color:#0B0B0B}
+.ng{display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+.ng b{font-family:Anton;font-size:clamp(44px,6.4vw,88px);display:block;line-height:.9;margin-bottom:10px}
+.ng p{margin:0;color:#4A4842;font-size:14.5px;max-width:22ch}
+@media(max-width:880px){.ng{grid-template-columns:1fr 1fr;gap:34px}}
+
+.end{padding:150px 0;text-align:center}
+.end h2{font-size:clamp(40px,9vw,140px);margin:0 0 30px}
+.bigbtn{display:inline-block;background:var(--em);color:#04160E;font-family:Anton;text-transform:uppercase;font-size:20px;padding:20px 44px;border-radius:100px;letter-spacing:.02em}
+.bigbtn:hover{background:var(--bone)}
+footer{padding:34px 0 60px;color:var(--dim);font-size:13.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.lit{-webkit-mask-image:none;mask-image:none;background:none}.base h1{color:var(--bone)}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="#"><span class="mk"></span>Coreline</a>
+  <div class="nl"><a href="#work">Work</a><a href="#services">Services</a><a href="#nums">Results</a><a href="#contact">Contact</a></div>
+</div></nav>
+
+<section class="hero" id="hero">
+  <div class="layer base"><h1 class="an">Most businesses here are invisible online</h1></div>
+  <div class="layer lit" id="lit"><h1 class="an">We are the reason some are not</h1></div>
+  <span class="hint">Move your cursor</span>
+  <div class="herofoot">
+    <div>Coreline Digital · <b>Thane &amp; Mumbai</b></div>
+    <div>Websites · AI agents · Automations · Search</div>
+    <div><b>Live in 10 working days</b></div>
+  </div>
+</section>
+
+<section class="band"><div class="wrap bandgrid">
+  <h2 class="an">One team. Every part of it.</h2>
+  <p>Design, code, search and automation under one roof. No handoffs, no chasing three vendors, no one left to blame but us.</p>
+</div></section>
+
+<div class="diag"><div id="dg">
+  <span>Websites</span><span>·</span><span>AI Agents</span><span>·</span><span>Automations</span><span>·</span><span>Local SEO</span><span>·</span><span>Apps</span><span>·</span><span>CRM</span><span>·</span><span>Branding</span><span>·</span>
+</div></div>
+
+<section class="stack" id="work">
+  <div class="sticky"><article class="wcard" data-i="0">
+    <div class="art" style="background:radial-gradient(80% 90% at 30% 20%,rgba(201,162,39,.6),transparent 62%),linear-gradient(160deg,#221E14,#0B0A07)"></div>
+    <div class="info"><div>
+      <h3>MNK Jewels</h3>
+      <p>A jewellery showroom with a catalogue nobody could browse online. We rebuilt the store on a custom theme and put filtering, enquiry and WhatsApp on every product.</p>
+      <div class="tags"><span>E-commerce</span><span>Custom theme</span><span>Product filtering</span></div>
+    </div>
+    <div class="res"><div><b>3.1×</b><span>enquiries per month</span></div><div><b>1.4s</b><span>mobile load time</span></div></div></div>
+  </article></div>
+  <div class="sticky"><article class="wcard" data-i="1">
+    <div class="art" style="background:radial-gradient(80% 90% at 65% 25%,rgba(0,229,140,.5),transparent 62%),linear-gradient(160deg,#0D1A16,#070B0A)"></div>
+    <div class="info"><div>
+      <h3>KC Physio Care</h3>
+      <p>A new clinic with no online presence at all. Ten pages, appointment enquiries, and a Google listing built properly so people searching in Vikhroli actually find it.</p>
+      <div class="tags"><span>Clinic site</span><span>Bookings</span><span>Local SEO</span></div>
+    </div>
+    <div class="res"><div><b>10</b><span>pages, 10 days</span></div><div><b>Top 3</b><span>local search results</span></div></div></div>
+  </article></div>
+  <div class="sticky"><article class="wcard" data-i="2">
+    <div class="art" style="background:radial-gradient(80% 90% at 35% 70%,rgba(232,255,58,.4),transparent 62%),linear-gradient(160deg,#1A1D10,#0A0B07)"></div>
+    <div class="info"><div>
+      <h3>Iron Yard Fitness</h3>
+      <p>A gym losing late-night enquiries to WhatsApp silence. We added an AI agent trained on timings, fees and trainers. It answers, quotes and books while the gym is shut.</p>
+      <div class="tags"><span>AI agent</span><span>WhatsApp</span><span>Trial bookings</span></div>
+    </div>
+    <div class="res"><div><b>24/7</b><span>enquiry response</span></div><div><b>41%</b><span>of leads after 9pm</span></div></div></div>
+  </article></div>
+</section>
+
+<section class="list" id="services"><div class="wrap">
+  <h2 class="an">What we do</h2>
+  <p class="lead">Eight services. The same people design it, ship it, rank it and run it.</p>
+  <div class="item"><span class="k">01</span><h3>Websites</h3><p>Hand-coded and fast on mobile data. Built to turn visitors into calls, not into scrolling.</p></div>
+  <div class="item"><span class="k">02</span><h3>AI Agents</h3><p>Trained on your services and timings. Answers, quotes and books while you sleep.</p></div>
+  <div class="item"><span class="k">03</span><h3>Automations</h3><p>Confirmations, reminders, review requests and invoices that send themselves.</p></div>
+  <div class="item"><span class="k">04</span><h3>Local SEO</h3><p>Show up when someone two kilometres away searches for exactly what you sell.</p></div>
+  <div class="item"><span class="k">05</span><h3>Apps</h3><p>Android and iOS builds, for when a website genuinely is not enough.</p></div>
+  <div class="item"><span class="k">06</span><h3>CRM &amp; Software</h3><p>Custom tools shaped around your business, replacing the spreadsheet you outgrew.</p></div>
+  <div class="item"><span class="k">07</span><h3>Branding</h3><p>Logo, palette, cards, signage, packaging. One consistent face everywhere.</p></div>
+  <div class="item"><span class="k">08</span><h3>Social</h3><p>Monthly graphics and reels on retainer, so it stops being your problem.</p></div>
+</div></section>
+
+<section class="nums" id="nums"><div class="wrap">
+  <div class="ng">
+    <div><b class="an" data-count="10">0</b><p>working days from your content to a live site</p></div>
+    <div><b class="an" data-count="15" data-pre="₹" data-post="K">0</b><p>starting price, published on the site</p></div>
+    <div><b class="an" data-count="8">0</b><p>services delivered by one team</p></div>
+    <div><b class="an" data-count="0" data-post="">0</b><p>handoffs between separate vendors</p></div>
+  </div>
+</div></section>
+
+<section class="end" id="contact"><div class="wrap">
+  <h2 class="an">Let's build it</h2>
+  <a class="bigbtn" href="#">Message us on WhatsApp</a>
+</div></section>
+
+<div class="wrap"><footer><div>© 2026 Coreline Digital · corelinedigital.in</div><div>Wagle Estate, Thane · Maharashtra</div></footer></div>
+
+<script>
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* spotlight */
+const lit=document.getElementById('lit'),hero=document.getElementById('hero');
+if(!RM){
+  let tx=50,ty=45,cx2=50,cy2=45;
+  hero.addEventListener('pointermove',e=>{
+    const r=hero.getBoundingClientRect();
+    tx=((e.clientX-r.left)/r.width)*100;ty=((e.clientY-r.top)/r.height)*100;
+    document.querySelector('.hint').style.opacity=0;
+  });
+  (function loop(){cx2+=(tx-cx2)*.12;cy2+=(ty-cy2)*.12;
+    lit.style.setProperty('--mx',cx2+'%');lit.style.setProperty('--my',cy2+'%');
+    requestAnimationFrame(loop)})();
+}
+/* marquee dup */
+const dg=document.getElementById('dg');dg.innerHTML+=dg.innerHTML;
+/* stacking cards */
+const cards=[...document.querySelectorAll('.wcard')];
+function stackScrub(){
+  cards.forEach((c,i)=>{
+    const r=c.parentElement.getBoundingClientRect();
+    const p=Math.min(Math.max(-r.top/innerHeight,0),1);
+    if(i<cards.length-1){
+      c.style.transform=`scale(${1-p*.08}) translateY(${-p*22}px)`;
+      c.style.filter=`brightness(${1-p*.45})`;
+    }
+  });
+}
+let t=false;addEventListener('scroll',()=>{if(t)return;t=true;requestAnimationFrame(()=>{if(!RM)stackScrub();t=false})},{passive:true});
+/* counters */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;const el=e.target,tv=+el.dataset.count,
+   pre=el.dataset.pre||'',post=el.dataset.post||'';
+  if(RM||tv===0){el.textContent=pre+tv+post;io.unobserve(el);return}
+  const st=performance.now();
+  (function f(now){const k=Math.min((now-st)/1000,1);
+    el.textContent=pre+Math.round(tv*(1-Math.pow(1-k,3)))+post;
+    if(k<1)requestAnimationFrame(f)})(st);
+  io.unobserve(el);
+}),{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

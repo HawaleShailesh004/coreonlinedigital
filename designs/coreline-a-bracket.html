@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coreline Digital — Sample A · Bracket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#080A09;
+  --panel:#0E1211;
+  --line:rgba(232,230,221,.13);
+  --line-strong:rgba(232,230,221,.28);
+  --ivory:#E8E6DD;
+  --muted:#868D88;
+  --emerald:#14C98A;
+  --w:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
+body{
+  margin:0;background:var(--ink);color:var(--ivory);
+  font-family:'Archivo',system-ui,sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--emerald);outline-offset:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 28px}
+
+/* ---- the bracket: the whole identity ---- */
+.br{position:relative}
+.br::before,.br::after{
+  content:"";position:absolute;width:16px;height:16px;pointer-events:none;
+  border-color:var(--emerald);border-style:solid;opacity:.9;
+}
+.br::before{top:0;left:0;border-width:1.5px 0 0 1.5px}
+.br::after{bottom:0;right:0;border-width:0 1.5px 1.5px 0}
+.br4::before{top:0;left:0;border-width:1.5px 0 0 1.5px}
+.br4::after{bottom:0;right:0;border-width:0 1.5px 1.5px 0}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(8,10,9,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;font-size:17px}
+.mark{width:20px;height:20px;position:relative;flex:0 0 auto}
+.mark i{position:absolute;width:7px;height:7px;border:1.5px solid var(--emerald)}
+.mark i:nth-child(1){top:0;left:0;border-width:1.5px 0 0 1.5px}
+.mark i:nth-child(2){top:0;right:0;border-width:1.5px 1.5px 0 0}
+.mark i:nth-child(3){bottom:0;left:0;border-width:0 0 1.5px 1.5px}
+.mark i:nth-child(4){bottom:0;right:0;border-width:0 1.5px 1.5px 0}
+.mark b{position:absolute;inset:6px;background:var(--emerald);display:block}
+.nav-links{display:flex;gap:28px;font-size:14.5px;color:var(--muted)}
+.nav-links a:hover{color:var(--ivory)}
+.btn{display:inline-block;padding:11px 20px;font-size:14.5px;font-weight:600;border:1px solid var(--line-strong);color:var(--ivory);transition:background .18s,border-color .18s}
+.btn:hover{background:rgba(20,201,138,.1);border-color:var(--emerald)}
+.btn-solid{background:var(--emerald);color:#04140E;border-color:var(--emerald)}
+.btn-solid:hover{background:#22e29d;color:#04140E}
+@media(max-width:820px){.nav-links{display:none}}
+
+/* hero */
+header{padding:100px 0 84px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:1fr 300px;gap:60px;align-items:end}
+h1{
+  font-size:clamp(42px,7.2vw,90px);line-height:.98;letter-spacing:-.035em;
+  font-weight:800;margin:0 0 26px;max-width:14ch;
+}
+.hero-sub{font-size:18px;color:var(--muted);max-width:46ch;margin:0 0 34px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-side{border-left:1px solid var(--line);padding-left:26px;font-size:14.5px;color:var(--muted)}
+.hero-side dl{margin:0;display:grid;gap:18px}
+.hero-side dt{color:var(--ivory);font-weight:600;font-size:22px;letter-spacing:-.02em}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:44px}.hero-side{border-left:0;border-top:1px solid var(--line);padding:26px 0 0}.hero-side dl{grid-template-columns:1fr 1fr}}
+
+/* proof */
+.proof{border-bottom:1px solid var(--line);padding:22px 0;font-size:14px;color:var(--muted);display:flex;gap:36px;flex-wrap:wrap}
+.proof span{color:var(--ivory)}
+
+/* section shell */
+section{padding:88px 0;border-bottom:1px solid var(--line)}
+.shead{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:44px;flex-wrap:wrap}
+h2{font-size:clamp(28px,3.6vw,42px);line-height:1.06;letter-spacing:-.03em;font-weight:700;margin:0;max-width:20ch}
+.shead p{margin:0;color:var(--muted);max-width:38ch;font-size:15.5px}
+
+/* services */
+.svc{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.svc article{background:var(--ink);padding:28px 24px 30px;min-height:190px;position:relative;transition:background .2s}
+.svc article:hover{background:var(--panel)}
+.svc h3{margin:0 0 10px;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.svc p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.5}
+.svc article .br::before{opacity:0}
+.svc article::after{content:"";position:absolute;right:22px;bottom:22px;width:10px;height:10px;border:1.5px solid var(--line-strong);border-width:0 1.5px 1.5px 0;transition:border-color .2s}
+.svc article:hover::after{border-color:var(--emerald)}
+@media(max-width:1000px){.svc{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.svc{grid-template-columns:1fr}}
+
+/* work index */
+.work a{display:grid;grid-template-columns:1fr auto auto;gap:20px;align-items:center;padding:26px 4px;border-top:1px solid var(--line);transition:padding-left .22s,color .2s}
+.work a:last-child{border-bottom:1px solid var(--line)}
+.work a:hover{padding-left:20px}
+.work .t{font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.03em}
+.work .k{color:var(--muted);font-size:14.5px}
+.work .y{color:var(--muted);font-size:14.5px}
+.work a:hover .t{color:var(--emerald)}
+@media(max-width:620px){.work a{grid-template-columns:1fr}.work .y{display:none}}
+
+/* industries */
+.ind{display:flex;flex-wrap:wrap;gap:10px}
+.ind span{border:1px solid var(--line);padding:9px 16px;font-size:14.5px;color:var(--muted);transition:.18s}
+.ind span:hover{border-color:var(--emerald);color:var(--ivory)}
+
+/* pricing */
+.price{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+.price div{background:var(--ink);padding:34px 28px}
+.price .amt{font-size:38px;font-weight:800;letter-spacing:-.035em;margin:0 0 6px}
+.price h3{margin:0 0 18px;font-size:16px;font-weight:600;color:var(--muted)}
+.price ul{margin:0;padding:0;list-style:none;display:grid;gap:9px;font-size:14.5px;color:var(--muted)}
+.price li{padding-left:18px;position:relative}
+.price li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border:1.5px solid var(--emerald);border-width:0 0 1.5px 1.5px}
+.price .feat{background:var(--panel)}
+@media(max-width:860px){.price{grid-template-columns:1fr}}
+
+/* process */
+.proc{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.proc div{border-top:1.5px solid var(--emerald);padding-top:18px}
+.proc .n{font-size:13px;color:var(--emerald);font-weight:600;margin-bottom:8px}
+.proc h3{margin:0 0 8px;font-size:16.5px;font-weight:600}
+.proc p{margin:0;color:var(--muted);font-size:14.5px}
+@media(max-width:860px){.proc{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.proc{grid-template-columns:1fr}}
+
+/* founder */
+.founder{display:grid;grid-template-columns:1.3fr 1fr;gap:56px;align-items:center}
+.founder p{font-size:19px;line-height:1.6;margin:0 0 18px;max-width:52ch}
+.founder .sig{color:var(--muted);font-size:15px}
+.portrait{aspect-ratio:4/5;background:
+  radial-gradient(120% 90% at 30% 15%,rgba(20,201,138,.22),transparent 60%),var(--panel);
+  border:1px solid var(--line);position:relative;padding:14px}
+@media(max-width:860px){.founder{grid-template-columns:1fr;gap:36px}.portrait{max-width:280px}}
+
+/* faq */
+details{border-top:1px solid var(--line);padding:20px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-size:17px;font-weight:600;letter-spacing:-.01em;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--emerald);font-weight:400;font-size:22px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{color:var(--muted);margin:12px 0 0;max-width:66ch;font-size:15px}
+
+/* cta */
+.endcta{padding:96px 0;text-align:left}
+.endcta h2{max-width:16ch;margin-bottom:24px}
+footer{padding:36px 0 60px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="logo" href="#"><span class="mark"><i></i><i></i><i></i><i></i><b></b></span>coreline.</a>
+    <div class="nav-links">
+      <a href="#services">Services</a><a href="#work">Work</a><a href="#industries">Industries</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+    </div>
+    <a class="btn btn-solid" href="#contact">Book a call</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap hero-grid">
+    <div>
+      <h1 class="br" style="padding:14px 18px;margin-left:-18px">Your whole online setup, built by one person who answers the phone.</h1>
+      <p class="hero-sub">Websites, AI agents, automations and SEO for businesses in Thane and Mumbai. No account managers, no handoffs, no waiting three weeks for a reply.</p>
+      <div class="hero-cta">
+        <a class="btn btn-solid" href="#preview">See your website first</a>
+        <a class="btn" href="#work">Look at the work</a>
+      </div>
+    </div>
+    <div class="hero-side">
+      <dl>
+        <div><dt>₹15,000</dt><dd style="margin:2px 0 0">starting price, published</dd></div>
+        <div><dt>10 days</dt><dd style="margin:2px 0 0">from your content to live</dd></div>
+        <div><dt>1 person</dt><dd style="margin:2px 0 0">designs it, builds it, answers you</dd></div>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="wrap proof">
+  <div>Based in <span>Wagle Estate, Thane</span></div>
+  <div>Serving <span>Thane &amp; Mumbai</span></div>
+  <div>Reply on WhatsApp <span>within the hour</span></div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <div class="shead">
+      <h2>Eight things most businesses buy from five different vendors.</h2>
+      <p>You buy them from one. Which means when the site is slow and the ads are wasting money, there is nobody left to blame but me.</p>
+    </div>
+    <div class="svc">
+      <article><h3>Websites</h3><p>Fast, mobile-first sites that load on a Jio connection and turn visitors into calls.</p></article>
+      <article><h3>AI agents &amp; chatbots</h3><p>Trained on your services and timings. Answers customers at 11pm and books them in.</p></article>
+      <article><h3>Automations</h3><p>WhatsApp confirmations, follow-ups, reminders and invoices that send themselves.</p></article>
+      <article><h3>Search visibility</h3><p>Google Business, local search and the technical work that gets you found nearby.</p></article>
+      <article><h3>Mobile apps</h3><p>Android and iOS builds when a website genuinely is not enough for what you do.</p></article>
+      <article><h3>CRM &amp; custom software</h3><p>Built around how your shop actually runs, not around how software companies think it should.</p></article>
+      <article><h3>Brand &amp; design</h3><p>Logo, colours, signage, cards, packaging. Everything matching, everywhere.</p></article>
+      <article><h3>Social content</h3><p>Monthly graphics and reels for Instagram, handled on a retainer so you stop worrying about it.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="work" class="work">
+  <div class="wrap">
+    <div class="shead">
+      <h2>Work</h2>
+      <p>Live sites you can open right now, on your phone, and judge for yourself.</p>
+    </div>
+    <a href="#"><span class="t">MNK Jewels</span><span class="k">Jewellery e-commerce</span><span class="y">Custom WordPress theme</span></a>
+    <a href="#"><span class="t">KC Physio Care</span><span class="k">Clinic</span><span class="y">10-page site, bookings</span></a>
+    <a href="#"><span class="t">Iron Yard Fitness</span><span class="k">Gym</span><span class="y">Site + AI booking agent</span></a>
+    <a href="#"><span class="t">Sharma &amp; Associates</span><span class="k">Chartered accountant</span><span class="y">Professional profile</span></a>
+    <a href="#"><span class="t">Vista Interiors</span><span class="k">Interior design</span><span class="y">Portfolio + enquiry flow</span></a>
+  </div>
+</section>
+
+<section id="industries">
+  <div class="wrap">
+    <div class="shead">
+      <h2>I already know how your business works.</h2>
+      <p>Every one of these has a demo site built for it. You will see your own trade before you spend a rupee.</p>
+    </div>
+    <div class="ind">
+      <span>Jewellers</span><span>Doctors &amp; clinics</span><span>Gyms</span><span>Real estate</span><span>Schools &amp; classes</span>
+      <span>Chartered accountants</span><span>Interior designers</span><span>Travel agencies</span><span>Traders &amp; wholesalers</span>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="shead">
+      <h2>The price is on the website, because hiding it wastes your time and mine.</h2>
+      <p>One-time build fee, then an optional monthly retainer if you want it kept alive. Cancel the retainer whenever.</p>
+    </div>
+    <div class="price">
+      <div>
+        <h3>Starter site</h3>
+        <p class="amt">₹15,000</p>
+        <ul><li>Up to 5 pages</li><li>Mobile-first, fast</li><li>Google Business setup</li><li>WhatsApp enquiry button</li><li>Live in 10 working days</li></ul>
+      </div>
+      <div class="feat">
+        <h3>Business site</h3>
+        <p class="amt">₹35,000</p>
+        <ul><li>Up to 12 pages</li><li>AI chat agent trained on you</li><li>Booking or enquiry flow</li><li>Local SEO groundwork</li><li>Basic automations</li></ul>
+      </div>
+      <div>
+        <h3>Monthly care</h3>
+        <p class="amt">₹5,000<span style="font-size:16px;font-weight:500;color:var(--muted)">/mo</span></p>
+        <ul><li>Edits and new pages</li><li>Hosting and backups</li><li>Monthly performance report</li><li>Social graphics on request</li><li>Priority on WhatsApp</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="shead"><h2>Ten working days, start to live</h2><p>The clock starts the day you send photos and text. Not the day you enquire.</p></div>
+    <div class="proc">
+      <div><p class="n">Day 1</p><h3>One call</h3><p>Thirty minutes. What you sell, who buys it, what you want the site to do.</p></div>
+      <div><p class="n">Day 2–3</p><h3>You see a design</h3><p>Real layout with your own photos and words, not a template screenshot.</p></div>
+      <div><p class="n">Day 4–8</p><h3>I build it</h3><p>Two rounds of changes included. You watch it come together on a live link.</p></div>
+      <div><p class="n">Day 9–10</p><h3>Live and handed over</h3><p>On your domain, on Google, with a short video showing you how to edit it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="founder">
+  <div class="wrap founder">
+    <div>
+      <h2 style="margin-bottom:22px">There is no team. That is the point.</h2>
+      <p>Agencies sell you a founder and hand you an intern. I do not have that option. The person who takes your call is the person who writes the code, and the person you message at 9pm when something breaks.</p>
+      <p class="sig">Shailesh · Founder, Coreline Digital · Thane</p>
+    </div>
+    <div class="portrait br br4"></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="shead"><h2>Questions people ask before they say yes</h2></div>
+    <details open><summary>Do I have to pay everything upfront?</summary><p>Half to start, half when the site goes live. If you are not happy with the design at day three, you can walk away and keep the deposit as credit.</p></details>
+    <details><summary>What if I do not have photos or content?</summary><p>Most businesses do not. I write the copy from our call and use licensed photography until you have your own. Content is the reason projects run late, so I remove that dependency.</p></details>
+    <details><summary>Who owns the website?</summary><p>You do. Domain, hosting, code, all in your name from day one. If you stop working with me you take everything with you.</p></details>
+    <details><summary>Do you actually build the AI agents yourself?</summary><p>Yes. They run on your own content, not a generic FAQ widget. You can talk to one on this site before you buy.</p></details>
+    <details><summary>Why should I trust one person over an agency?</summary><p>You should not, on faith. Open the work above on your phone, check how fast it loads, and call one of the owners. That is a better test than a team photo.</p></details>
+  </div>
+</section>
+
+<section id="contact" class="endcta">
+  <div class="wrap">
+    <h2>Tell me what your business does. I will show you what it could look like online.</h2>
+    <div class="hero-cta">
+      <a class="btn btn-solid" href="#">Message on WhatsApp</a>
+      <a class="btn" href="#">+91 00000 00000</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><footer>
+  <div>© 2026 Coreline Digital · corelinedigital.in</div>
+  <div>Wagle Estate, Thane, Maharashtra</div>
+</footer></div>
+
+</body>
+</html>

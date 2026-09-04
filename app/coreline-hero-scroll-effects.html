@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline — Hero scroll effects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;800&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#060A08; --surface:#0D1211; --bone:#EFEDE6; --muted:#868D89;
+  --em:#12E68E; --line:rgba(239,237,230,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--bone);font-family:'Inter Tight',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- chrome ---------- */
+.bar{position:fixed;top:0;left:0;right:0;z-index:150;background:rgba(6,10,8,.86);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;align-items:center;overflow-x:auto}
+.bar b{font-family:Archivo;font-weight:800;font-size:13px;letter-spacing:-.02em;margin-right:6px;white-space:nowrap}
+.bar a{color:var(--muted);text-decoration:none;font-size:12.5px;padding:6px 11px;border:1px solid var(--line);
+  border-radius:2px;white-space:nowrap;transition:.18s}
+.bar a:hover{color:var(--em);border-color:var(--em)}
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--em);width:0;z-index:160}
+
+.caption{position:absolute;left:26px;bottom:26px;max-width:34ch;z-index:40}
+.caption h3{font-family:Archivo;font-weight:800;font-size:13px;letter-spacing:.02em;text-transform:uppercase;
+  color:var(--em);margin:0 0 6px}
+.caption p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+.pct{position:absolute;right:26px;bottom:26px;font-size:12px;color:var(--muted);z-index:40;font-variant-numeric:tabular-nums}
+
+/* ---------- shared hero type ---------- */
+.demo{position:relative;height:300vh}
+.stick{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:center}
+.glow{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(55vw 45vh at 50% 45%,rgba(18,230,142,.13),transparent 62%)}
+.block{text-align:center;padding:0 6vw;position:relative;z-index:5;will-change:transform,opacity}
+.ln{font-family:Archivo;font-weight:800;text-transform:uppercase;line-height:.9;letter-spacing:-.04em;
+  font-size:clamp(34px,8.4vw,116px);display:block;will-change:transform,opacity}
+.l3{background:radial-gradient(70% 150% at 30% 40%,#4DFFC0,#12E68E 45%,#0FBE76 100%);
+  background-size:200% 200%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{from{background-position:0% 40%}to{background-position:100% 60%}}
+.sub{color:var(--muted);margin:26px auto 0;max-width:42ch;font-size:16px;will-change:transform,opacity}
+.btns{display:flex;gap:10px;justify-content:center;margin-top:26px;will-change:opacity}
+.b1{background:var(--em);color:#04160E;font-family:Archivo;font-weight:600;font-size:14px;padding:12px 22px;border-radius:100px;text-decoration:none}
+.b2{border:1px solid rgba(239,237,230,.25);color:var(--bone);font-family:Archivo;font-weight:600;font-size:14px;padding:12px 22px;border-radius:100px;text-decoration:none}
+
+/* the section revealed underneath */
+.next{position:relative;min-height:100vh;display:grid;place-items:center;text-align:center;padding:0 8vw;
+  background:var(--ink);border-top:1px solid var(--line);will-change:transform}
+.next h2{font-family:Archivo;font-weight:800;text-transform:uppercase;font-size:clamp(26px,4.6vw,60px);
+  letter-spacing:-.035em;line-height:.95;margin:0 0 16px;max-width:18ch}
+.next p{color:var(--muted);max-width:44ch;margin:0}
+
+/* ===== 1. WORDS LEAVE ===== */
+#d1 .l3{display:inline-block;transform-origin:50% 50%}
+
+/* ===== 2. SCATTER ===== */
+#d2 .l3 span{display:inline-block;will-change:transform,opacity}
+
+/* ===== 3. GRADIENT TAKEOVER ===== */
+#d3 .field{position:absolute;left:50%;top:50%;width:38vw;height:16vh;margin:-8vh 0 0 -19vw;border-radius:50%;
+  background:radial-gradient(circle,#4DFFC0 0%,#12E68E 42%,#0FBE76 72%,rgba(15,190,118,0) 100%);
+  will-change:transform;z-index:3}
+#d3 .block{z-index:5}
+
+/* ===== 4. ROTATE TO HORIZON ===== */
+#d4 .stick{perspective:1100px;perspective-origin:50% 40%}
+#d4 .block{transform-style:preserve-3d;transform-origin:50% 100%}
+#d4 .floor{position:absolute;left:-20%;right:-20%;bottom:0;height:46vh;z-index:2;
+  background:linear-gradient(0deg,rgba(18,230,142,.20),transparent 72%);opacity:0;will-change:opacity}
+
+/* ===== 5. WINDOW ===== */
+#d5 .stick{display:block}
+#d5 .behind{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 8vw;
+  background:radial-gradient(80% 80% at 50% 50%,#0B3D2A,#041410 70%)}
+#d5 .behind h2{font-family:Archivo;font-weight:800;text-transform:uppercase;font-size:clamp(24px,4.4vw,56px);
+  letter-spacing:-.035em;line-height:.95;margin:0 0 14px;max-width:18ch;color:var(--bone)}
+#d5 .behind p{color:#8FB7A6;max-width:42ch;margin:0}
+#d5 svg.cover{position:absolute;inset:0;width:100%;height:100%;z-index:6}
+#d5 .toplines{position:absolute;left:0;right:0;top:calc(50% - 20vh);z-index:7;text-align:center;
+  pointer-events:none;will-change:transform,opacity}
+#d5 .toplines .ln{font-size:clamp(26px,6.4vw,86px)}
+
+/* ===== 6. VANISH LOOPS ===== */
+.lab{padding:110px 6vw 40px;border-top:1px solid var(--line)}
+.lab h2{font-family:Archivo;font-weight:800;text-transform:uppercase;font-size:clamp(24px,3.6vw,44px);
+  letter-spacing:-.035em;margin:0 0 10px}
+.lab .lede{color:var(--muted);max-width:52ch;margin:0 0 50px}
+.variant{padding:52px 0;border-top:1px solid var(--line)}
+.variant .tag{font-family:Archivo;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--em);margin:0 0 6px}
+.variant .note{color:var(--muted);font-size:13.5px;margin:0 0 26px;max-width:56ch}
+.vline{font-family:Archivo;font-weight:800;text-transform:uppercase;line-height:.9;letter-spacing:-.04em;
+  font-size:clamp(30px,6.6vw,84px)}
+.vgrad{background:radial-gradient(70% 150% at 30% 40%,#4DFFC0,#12E68E 45%,#0FBE76 100%);
+  background-size:200% 200%;-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* A — sweep erase */
+.vA{-webkit-mask-image:linear-gradient(100deg,#000 0 35%,transparent 48% 52%,#000 65% 100%);
+    mask-image:linear-gradient(100deg,#000 0 35%,transparent 48% 52%,#000 65% 100%);
+    -webkit-mask-size:300% 100%;mask-size:300% 100%;
+    animation:sweep 7s ease-in-out infinite}
+@keyframes sweep{
+  0%,12%{-webkit-mask-position:140% 0;mask-position:140% 0}
+  50%{-webkit-mask-position:-40% 0;mask-position:-40% 0}
+  88%,100%{-webkit-mask-position:140% 0;mask-position:140% 0}
+}
+
+/* B — dissolve, letter by letter */
+.vB span{display:inline-block;animation:dis 6.5s ease-in-out infinite}
+@keyframes dis{0%,22%{opacity:1;filter:blur(0)}46%,58%{opacity:0;filter:blur(6px)}82%,100%{opacity:1;filter:blur(0)}}
+
+/* C — fade into the background */
+.vC{animation:sink 6s ease-in-out infinite}
+@keyframes sink{0%,20%{opacity:1;transform:scale(1)}
+  48%,58%{opacity:.04;transform:scale(.97)}
+  86%,100%{opacity:1;transform:scale(1)}}
+
+footer{padding:70px 6vw 90px;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line)}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav class="bar">
+  <b>HERO EFFECTS</b>
+  <a href="#d1">1 · Words leave</a>
+  <a href="#d2">2 · Scatter</a>
+  <a href="#d3">3 · Takeover</a>
+  <a href="#d4">4 · Horizon</a>
+  <a href="#d5">5 · Window</a>
+  <a href="#lab">6 · Vanish loops</a>
+</nav>
+
+<!-- ============ 1. WORDS LEAVE ============ -->
+<section class="demo" id="d1">
+  <div class="stick">
+    <div class="glow"></div>
+    <div class="block">
+      <span class="ln l1">We build what</span>
+      <span class="ln l2">your business</span>
+      <span class="ln l3">is missing</span>
+      <div class="btns"><a class="b1" href="#">WhatsApp us</a><a class="b2" href="#">Call us</a></div>
+      <p class="sub">Websites, AI agents, automations and search. One team across Thane and Mumbai.</p>
+    </div>
+    <div class="caption"><h3>1 · The words leave</h3><p>Lines 1 and 2 slide up and out. “Is missing” shrinks and travels to the top-left, where it becomes a permanent label. In the real build it swaps to a fixed element at 100%.</p></div>
+    <div class="pct">0%</div>
+  </div>
+</section>
+<div class="next"><div><h2>Your customers are searching right now.</h2><p>They're typing your service and your area into Google today.</p></div></div>
+
+<!-- ============ 2. SCATTER ============ -->
+<section class="demo" id="d2">
+  <div class="stick">
+    <div class="glow"></div>
+    <div class="block">
+      <span class="ln l1">We build what</span>
+      <span class="ln l2">your business</span>
+      <span class="ln l3" data-split>is missing</span>
+      <div class="btns"><a class="b1" href="#">WhatsApp us</a><a class="b2" href="#">Call us</a></div>
+      <p class="sub">Websites, AI agents, automations and search. One team across Thane and Mumbai.</p>
+    </div>
+    <div class="caption"><h3>2 · Letters scatter</h3><p>Each letter drifts on its own seeded path. The phrase disassembles — the word performs its own meaning. Displacement capped so it never looks like a bug.</p></div>
+    <div class="pct">0%</div>
+  </div>
+</section>
+<div class="next"><div><h2>Nothing gets handed off.</h2><p>The people who design it are the people who ship it and run it.</p></div></div>
+
+<!-- ============ 3. GRADIENT TAKEOVER ============ -->
+<section class="demo" id="d3">
+  <div class="stick">
+    <div class="glow"></div>
+    <div class="field"></div>
+    <div class="block">
+      <span class="ln l1">We build what</span>
+      <span class="ln l2">your business</span>
+      <span class="ln l3">is missing</span>
+      <div class="btns"><a class="b1" href="#">WhatsApp us</a><a class="b2" href="#">Call us</a></div>
+      <p class="sub">Websites, AI agents, automations and search. One team across Thane and Mumbai.</p>
+    </div>
+    <div class="caption"><h3>3 · Gradient takeover</h3><p>The emerald field behind the cut-out grows past the letters until it fills the screen and becomes the next section's background. No separate transition needed.</p></div>
+    <div class="pct">0%</div>
+  </div>
+</section>
+<div class="next"><div><h2>Eight services. One team.</h2><p>Design, code, search and automation under one roof.</p></div></div>
+
+<!-- ============ 4. ROTATE TO HORIZON ============ -->
+<section class="demo" id="d4">
+  <div class="stick">
+    <div class="glow"></div>
+    <div class="floor"></div>
+    <div class="block">
+      <span class="ln l1">We build what</span>
+      <span class="ln l2">your business</span>
+      <span class="ln l3">is missing</span>
+      <div class="btns"><a class="b1" href="#">WhatsApp us</a><a class="b2" href="#">Call us</a></div>
+      <p class="sub">Websites, AI agents, automations and search. One team across Thane and Mumbai.</p>
+    </div>
+    <div class="caption"><h3>4 · Rotate to horizon</h3><p>The block tips away on the X axis toward a vanishing point while emerald light pools at the fold. Cinematic — watch for shimmer on low-end GPUs.</p></div>
+    <div class="pct">0%</div>
+  </div>
+</section>
+<div class="next"><div><h2>We've already built one for your trade.</h2><p>Nine complete demo sites. Find yours and open it on your phone.</p></div></div>
+
+<!-- ============ 5. WINDOW ============ -->
+<section class="demo" id="d5">
+  <div class="stick">
+    <div class="behind"><div><h2>Your customers are searching right now.</h2><p>They're typing your service and your area into Google today. We make sure the result they tap belongs to you.</p></div></div>
+
+    <svg class="cover" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <mask id="hole" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="700">
+          <rect width="1200" height="700" fill="#fff"/>
+          <text id="holeText" x="600" y="430" text-anchor="middle" fill="#000"
+                font-family="Archivo, sans-serif" font-weight="800" font-size="150"
+                letter-spacing="-6" style="text-transform:uppercase">IS MISSING</text>
+        </mask>
+        <radialGradient id="hg" cx="50%" cy="42%" r="60%">
+          <stop offset="0%" stop-color="#0B1512"/><stop offset="100%" stop-color="#060A08"/>
+        </radialGradient>
+      </defs>
+      <rect width="1200" height="700" fill="url(#hg)" mask="url(#hole)"/>
+    </svg>
+
+    <div class="toplines">
+      <span class="ln l1">We build what</span>
+      <span class="ln l2">your business</span>
+    </div>
+
+    <div class="caption"><h3>5 · Cut-out becomes a window</h3><p>The letters are a real hole punched through the dark layer. Scroll and the hole grows until it swallows the screen. Built as an SVG mask so Safari behaves.</p></div>
+    <div class="pct">0%</div>
+  </div>
+</section>
+<div class="next"><div><h2>Let's talk.</h2><p>Tell us what you sell. We'll show you what it should look like.</p></div></div>
+
+<!-- ============ 6. VANISH LOOPS ============ -->
+<section class="lab" id="lab">
+  <h2>The “missing” loop</h2>
+  <p class="lede">Idle animation for the hero. The words disappear into the background, then come back. The page performs the sentence while nobody is scrolling. Three ways to do it — pick one.</p>
+
+  <div class="variant">
+    <p class="tag">A · Sweep erase</p>
+    <p class="note">A soft band travels across and wipes the words away, then reveals them again on the return. Uses a moving mask gradient. Cheapest and the most deliberate-looking.</p>
+    <div class="vline vgrad vA">Is missing</div>
+  </div>
+
+  <div class="variant">
+    <p class="tag">B · Dissolve, letter by letter</p>
+    <p class="note">Each letter fades and blurs on its own offset, so the phrase comes apart and reassembles. Most literal reading of “missing”. Blur is the expensive part — cap it at 6px.</p>
+    <div class="vline vgrad vB" data-split>Is missing</div>
+  </div>
+
+  <div class="variant">
+    <p class="tag">C · Sink into the background</p>
+    <p class="note">The whole phrase fades almost to nothing and shrinks very slightly, as if it dropped behind the page, then returns. Quietest of the three, and the safest on slow phones.</p>
+    <div class="vline vgrad vC">Is missing</div>
+  </div>
+</section>
+
+<footer>
+  Prototype only — timings and easing are indicative. Every effect here is transform and opacity, except B which uses a capped blur. All disabled under prefers-reduced-motion.
+</footer>
+
+<script>
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* split letters where asked */
+document.querySelectorAll('[data-split]').forEach(el=>{
+  const t=el.textContent;
+  el.innerHTML=[...t].map((c,i)=>
+    c===' ' ? '<span style="width:.28em">&nbsp;</span>'
+            : `<span style="animation-delay:${(i*0.11).toFixed(2)}s">${c}</span>`).join('');
+});
+
+/* seeded scatter vectors for demo 2 */
+const d2letters=[...document.querySelectorAll('#d2 [data-split] span')];
+let seed=7;
+const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff};
+const vec=d2letters.map(()=>({x:(rnd()-.5)*2,y:(rnd()-.5)*2,r:(rnd()-.5)*2}));
+
+const prog=document.getElementById('prog');
+const clamp=(v,a=0,b=1)=>Math.min(Math.max(v,a),b);
+const map=(p,a,b)=>clamp((p-a)/(b-a));
+
+function progressOf(sec){
+  const r=sec.getBoundingClientRect();
+  const h=sec.offsetHeight-window.innerHeight;
+  return clamp(-r.top/h);
+}
+function showPct(sec,p){
+  const el=sec.querySelector('.pct');
+  if(el) el.textContent=Math.round(p*100)+'%';
+}
+
+const d1=document.getElementById('d1'), d2=document.getElementById('d2'),
+      d3=document.getElementById('d3'), d4=document.getElementById('d4'),
+      d5=document.getElementById('d5');
+const holeText=document.getElementById('holeText');
+
+function frame(){
+  prog.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%';
+
+  /* ---- 1. words leave ---- */
+  {
+    const p=progressOf(d1); showPct(d1,p);
+    const out=map(p,0,.45);
+    d1.querySelector('.l1').style.transform=`translateY(${-out*140}%)`;
+    d1.querySelector('.l1').style.opacity=1-out;
+    d1.querySelector('.l2').style.transform=`translateY(${-out*160}%)`;
+    d1.querySelector('.l2').style.opacity=1-out;
+    const fade=map(p,0,.25);
+    d1.querySelector('.sub').style.opacity=1-fade;
+    d1.querySelector('.btns').style.opacity=1-fade;
+    const l3=d1.querySelector('.l3');
+    const s=1+(0.14-1)*p;
+    l3.style.transform=`translate(${-p*36}vw, ${-p*34}vh) scale(${s})`;
+  }
+
+  /* ---- 2. scatter ---- */
+  {
+    const p=progressOf(d2); showPct(d2,p);
+    const out=map(p,0,.4);
+    d2.querySelector('.l1').style.transform=`translateY(${-out*140}%)`;
+    d2.querySelector('.l1').style.opacity=1-out;
+    d2.querySelector('.l2').style.transform=`translateY(${-out*160}%)`;
+    d2.querySelector('.l2').style.opacity=1-out;
+    const f=map(p,0,.25);
+    d2.querySelector('.sub').style.opacity=1-f;
+    d2.querySelector('.btns').style.opacity=1-f;
+    const sc=map(p,.15,1);
+    d2letters.forEach((el,i)=>{
+      const v=vec[i];
+      el.style.transform=`translate(${v.x*sc*26}vw, ${v.y*sc*30}vh) rotate(${v.r*sc*24}deg)`;
+      el.style.opacity=1-map(sc,.55,1);
+    });
+  }
+
+  /* ---- 3. gradient takeover ---- */
+  {
+    const p=progressOf(d3); showPct(d3,p);
+    const f=d3.querySelector('.field');
+    f.style.transform=`scale(${1+p*p*17})`;
+    f.style.opacity=(.85+p*.15).toFixed(2);
+    const fade=map(p,.1,.5);
+    d3.querySelector('.block').style.opacity=1-fade;
+    d3.querySelector('.block').style.transform=`scale(${1-fade*.06})`;
+  }
+
+  /* ---- 4. rotate to horizon ---- */
+  {
+    const p=progressOf(d4); showPct(d4,p);
+    const b=d4.querySelector('.block');
+    b.style.transform=`rotateX(${p*72}deg) translateZ(${-p*260}px) translateY(${-p*6}vh)`;
+    b.style.opacity=1-map(p,.55,1);
+    d4.querySelector('.floor').style.opacity=map(p,.1,.75);
+  }
+
+  /* ---- 5. window ---- */
+  {
+    const p=progressOf(d5); showPct(d5,p);
+    const s=1+p*p*13;
+    holeText.setAttribute('transform',`translate(600 430) scale(${s.toFixed(3)}) translate(-600 -430)`);
+    const tl=d5.querySelector('.toplines');
+    const out=map(p,0,.35);
+    tl.style.transform=`translateY(${-out*150}%)`;
+    tl.style.opacity=1-out;
+    d5.querySelector('svg.cover').style.opacity=1-map(p,.82,1);
+  }
+}
+
+if(!RM){
+  let ticking=false;
+  const loop=()=>{frame();requestAnimationFrame(loop)};
+  loop();
+}else{
+  document.querySelectorAll('.pct').forEach(e=>e.textContent='motion off');
+}
+</script>
+</body>
+</html>

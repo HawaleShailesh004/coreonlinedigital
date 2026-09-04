@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 1200px;
+      height: 900px;
+      overflow: hidden;
+      font-family: "Segoe UI", Inter, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .canvas {
+      position: relative;
+      width: 1200px;
+      height: 900px;
+      background: var(--bg-gradient);
+    }
+
+    /* Soft accent glow behind devices */
+    .canvas::before {
+      content: "";
+      position: absolute;
+      width: 680px;
+      height: 680px;
+      top: 50%;
+      left: 42%;
+      transform: translate(-50%, -55%);
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .devices {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 72px;
+    }
+
+    /* --- Laptop ----------------------------------------------------------- */
+    .laptop {
+      position: relative;
+      width: 780px;
+      filter: drop-shadow(0 28px 56px rgba(0, 0, 0, 0.45));
+      transform: perspective(1400px) rotateY(-6deg) rotateX(2deg);
+      z-index: 1;
+    }
+
+    .laptop-screen {
+      background: #1a1a1a;
+      border-radius: 14px 14px 0 0;
+      padding: 10px 10px 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .laptop-bezel {
+      background: #0d0d0d;
+      border-radius: 6px;
+      overflow: hidden;
+      aspect-ratio: 16 / 10;
+      position: relative;
+    }
+
+    .laptop-bezel img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .laptop-chin {
+      height: 14px;
+      background: linear-gradient(180deg, #2a2a2a, #1e1e1e);
+      border-radius: 0 0 4px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .laptop-chin::after {
+      content: "";
+      width: 52px;
+      height: 4px;
+      background: #111;
+      border-radius: 2px;
+    }
+
+    .laptop-base {
+      height: 14px;
+      background: linear-gradient(180deg, #3a3a3a 0%, #222 40%, #1a1a1a 100%);
+      border-radius: 0 0 12px 12px;
+      margin: 0 24px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    /* --- Phone ------------------------------------------------------------ */
+    .phone {
+      position: absolute;
+      right: 108px;
+      bottom: 148px;
+      width: 198px;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+      transform: perspective(900px) rotateY(-10deg);
+      z-index: 2;
+    }
+
+    .phone-frame {
+      background: #111;
+      border-radius: 28px;
+      padding: 8px;
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .phone-screen {
+      border-radius: 22px;
+      overflow: hidden;
+      aspect-ratio: 390 / 844;
+      background: #000;
+      position: relative;
+    }
+
+    .phone-screen img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 22px;
+      background: #111;
+      border-radius: 0 0 14px 14px;
+      z-index: 1;
+    }
+
+    /* --- Footer bar ------------------------------------------------------- */
+    .footer-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .footer-bar.light {
+      background: rgba(255, 255, 255, 0.55);
+      border-top-color: rgba(12, 18, 16, 0.08);
+    }
+
+    .meta-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .industry {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    .business {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .meta-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      opacity: 0.55;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas" id="canvas">
+    <div class="devices">
+      <div class="laptop">
+        <div class="laptop-screen">
+          <div class="laptop-bezel">
+            <img id="desktop-img" alt="" />
+          </div>
+          <div class="laptop-chin"></div>
+        </div>
+        <div class="laptop-base"></div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <img id="mobile-img" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar" id="footer">
+      <div class="meta-left">
+        <span class="industry" id="industry"></span>
+        <span class="business" id="business"></span>
+      </div>
+      <div class="meta-right">
+        <span class="brand">coreline digital</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

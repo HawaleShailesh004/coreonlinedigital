@@ -1,0 +1,1558 @@
+/* ---------------------------------------------------------------------------
+   2026 dark rebuild - design tokens, base styles and motion primitives.
+   Source: designs/coreline-rebuild-brief.md §3-4.
+
+   Everything here is nested under `.v3` (applied once, to the (site) layout
+   wrapper) and every class is `v3-` prefixed. `/samples`, `/admin`, `/v2` and
+   `/lab` keep the existing light "Emerald & Ink" theme in `app/globals.css`
+   untouched - this file only ever applies inside the new tree.
+   Wrapped in `@layer components` (the same layer name `@import "tailwindcss"`
+   declares) so Tailwind utility classes - `sm:hidden`, `!` modifiers, etc. -
+   keep winning when combined with these classes on the same element.
+   Un-layered CSS always beats layered CSS regardless of source order, so
+   without this a plain `.v3-sticky-cta { display: grid }` here silently
+   beat `sm:hidden` on the same element at every breakpoint.
+   --------------------------------------------------------------------------- */
+
+@layer components {
+
+.v3 {
+  --ink: #060a08;
+  --surface: #0d1211;
+  --raised: #141a18;
+  --line: rgba(239, 237, 230, 0.12);
+
+  --bone: #efede6;
+  --muted: #868d89;
+
+  --emerald: #12e68e;
+  --emerald-glow: rgba(18, 230, 142, 0.16);
+  --emerald-ink: #04140d;
+
+  --forest: #07281c;
+  --bone-panel: #efede6;
+
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-hero: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  --v3-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --v3-max: 1240px;
+  --v3-gutter: 30px;
+  --v3-nav-h: 5rem;
+  --v3-stack-gap: 14px;
+
+  --hero-min-height: 100svh;
+  --hero-size: clamp(40px, 8.5vw, 120px);
+  --hero-weight: 800;
+  --hero-tracking: -0.04em;
+  --hero-leading: 0.9;
+  --hero-line-gap: 0.02em;
+  --hero-sub-size: 1rem;
+  --hero-gap-title-cta: 40px;
+  --hero-gap-cta-sub: 32px;
+  --hero-pad-y: clamp(1.25rem, 3.5vh, 2.25rem);
+
+  --weight-display: 800;
+  --weight-ui: 600;
+  --weight-body: 400;
+  --weight-medium: 500;
+
+  background-color: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
+  line-height: 1.6;
+  scroll-padding-top: calc(var(--v3-nav-h) + 0.75rem);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 640px) {
+  .v3 {
+    --v3-gutter: 24px;
+  }
+}
+
+/*
+ * Narrow phones. The hero clamp is width-driven with a 40px floor, so below
+ * roughly 400px the floor wins and the longest headline line ("WE BUILD
+ * WHAT") runs wider than the content box and soft-wraps - turning a
+ * deliberate three-line headline into four or five ragged rows. Measured:
+ * fits at 414px, wraps at 390px, which is the single most common phone width
+ * there is. The line needs about font-size x 8.1 of width, so 10vw keeps it
+ * on one line down to ~320px while staying as large as it can be.
+ */
+@media (max-width: 400px) {
+  .v3 {
+    --hero-size: clamp(1.75rem, 10vw, 2.5rem);
+  }
+}
+
+/*
+ * Short viewports - landscape phones, mostly. Here width is plentiful and
+ * height is not, and a width-driven hero size ignores that completely: at
+ * 812x375 the hero rendered 729px tall inside a 375px viewport and pushed
+ * both CTAs off-screen with no cue that anything was below. Size off height
+ * instead and drop the full-height minimum so the hero fits one screen.
+ */
+@media (max-height: 520px) and (orientation: landscape) {
+  .v3 {
+    --hero-min-height: auto;
+    --hero-size: clamp(1.5rem, 7.5vh, 2.75rem);
+    --hero-pad-y: 1rem;
+    --hero-gap-title-cta: 1.25rem;
+    --hero-gap-cta-sub: 1rem;
+  }
+}
+
+.v3 * {
+  border-color: var(--line);
+}
+
+.v3 ::selection {
+  background-color: var(--emerald);
+  color: var(--emerald-ink);
+}
+
+.v3 :focus-visible {
+  outline: 2px solid var(--emerald);
+  outline-offset: 3px;
+}
+
+.v3 h1,
+.v3 h2,
+.v3 h3,
+.v3 h4 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  letter-spacing: -0.035em;
+  font-variation-settings: "wdth" 100, "wght" 800;
+  /* No colour here: it must inherit from whichever panel it sits in (ink,
+     forest, bone or emerald all set their own text colour). A fixed bone
+     here beat that inheritance and put bone text on the bone and emerald
+     panels too - the two places it fails AA contrast (brief §11). */
+}
+
+.v3-display {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  letter-spacing: -0.02em;
+  font-variation-settings: "wdth" 100, "wght" 800;
+}
+
+/* Layout ------------------------------------------------------------------ */
+
+.v3-container {
+  max-width: var(--v3-max);
+  margin-inline: auto;
+  padding-inline: var(--v3-gutter);
+}
+
+.v3-hairline-t {
+  border-top: 1px solid var(--line);
+}
+
+.v3-hairline-b {
+  border-bottom: 1px solid var(--line);
+}
+
+/* Panels -------------------------------------------------------------------
+   Sheet treatment: rounded top + lift shadow, with a gap so corners read.
+   Do NOT use position:sticky on tall homepage sections — sticky siblings
+   pin for the rest of <main> and bury everything below (services, demos,
+   team). Sticky stacking is reserved for contained spots (services cards). */
+
+.v3-panel {
+  position: relative;
+  isolation: isolate;
+}
+
+.v3-panel--sticky {
+  /* "stack" prop: sheet offset, not CSS sticky */
+  margin-top: var(--v3-stack-gap);
+}
+
+.v3-panel--rounded {
+  border-radius: 26px 26px 0 0;
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.4);
+}
+
+.v3-panel--ink {
+  background-color: var(--ink);
+  color: var(--bone);
+}
+
+.v3-panel--forest {
+  background-color: var(--forest);
+  color: var(--bone);
+}
+
+.v3-panel--bone {
+  background-color: var(--bone-panel);
+  color: var(--ink);
+}
+
+.v3-panel--emerald {
+  background-color: var(--emerald);
+  color: var(--emerald-ink);
+}
+
+.v3-panel--bone .v3-muted {
+  color: #5a5f5a;
+}
+
+/* Buttons ------------------------------------------------------------------ */
+
+.v3-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 100px;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: var(--weight-ui);
+  letter-spacing: -0.01em;
+  font-variation-settings: "wdth" 100, "wght" 600;
+  white-space: nowrap;
+  transition:
+    transform 0.2s var(--v3-ease),
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.v3-pill--primary {
+  background-color: var(--emerald);
+  color: var(--emerald-ink);
+  border: 1px solid var(--emerald);
+}
+
+.v3-pill--primary:hover {
+  transform: translateY(-1px);
+}
+
+.v3-pill--outline {
+  background-color: transparent;
+  color: inherit;
+  border: 1px solid var(--line);
+}
+
+.v3-pill--outline:hover {
+  border-color: currentColor;
+}
+
+.v3-pill--on-emerald {
+  background-color: var(--emerald-ink);
+  color: var(--emerald);
+  border: 1px solid var(--emerald-ink);
+}
+
+/* Nav ------------------------------------------------------------------ */
+
+.v3-nav {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 60;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+/*
+ * Brief §6.1 calls for `mix-blend-mode: difference` so the nav inverts
+ * against whatever panel sits behind it automatically. In practice that
+ * blend didn't composite correctly against normal-flow content behind a
+ * `position: fixed` element in this build's renderer (verified it wasn't a
+ * fixed-vs-absolute layering issue - same failure either way), so the mark
+ * + link labels get an explicit light/dark colour instead, driven by
+ * Nav.tsx sampling the actual background luminance behind the bar on
+ * scroll. Same visual result, but it doesn't depend on blend-mode
+ * compositing working in every browser.
+ */
+.v3-nav-invert {
+  transition: color 0.15s ease-out;
+}
+
+/* Reading highlight ---------------------------------------------------------
+   Word-by-word scroll-driven highlight. JS toggles data-lit on each .v3-rhw
+   span as the paragraph crosses the read band; CSS just handles the
+   transition and the reduced-motion static fallback (all words pre-lit). */
+
+.v3-rhw {
+  color: #26251f;
+  transition: color 0.25s ease-out;
+}
+
+.v3-rhw[data-lit="true"] {
+  color: var(--bone);
+}
+
+.v3-rhw[data-lit="true"][data-key="true"] {
+  color: var(--emerald);
+}
+
+/* Aperture reveal ------------------------------------------------------------
+   Circular clip-path mask driven by a JS-set --r (px radius) as the sticky
+   section's scroll progress advances. */
+
+.v3-aperture-mask {
+  /* mask-mode for a <gradient> source resolves to alpha, not luminance: the
+     transparent stop punches the hole, the opaque stop keeps the cover
+     layer solid. Get the stop order backwards and the whole effect inverts. */
+  -webkit-mask-image: radial-gradient(circle var(--v3-r, 0px) at 50% 50%, transparent 99%, #000 100%);
+  mask-image: radial-gradient(circle var(--v3-r, 0px) at 50% 50%, transparent 99%, #000 100%);
+}
+
+.v3-aperture-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(18, 230, 142, 0.85);
+  pointer-events: none;
+  width: calc(var(--v3-r, 0px) * 2);
+  height: calc(var(--v3-r, 0px) * 2);
+  transform: translate(-50%, -50%);
+  /* Ambient emerald light on the ring edge — Deep Field, not a flat stroke */
+  box-shadow:
+    0 0 12px 1px rgba(18, 230, 142, 0.55),
+    0 0 36px 4px rgba(18, 230, 142, 0.28),
+    0 0 80px 12px rgba(18, 230, 142, 0.12),
+    inset 0 0 24px rgba(18, 230, 142, 0.08);
+}
+
+.v3-aperture-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  pointer-events: none;
+  width: calc(var(--v3-r, 0px) * 2);
+  height: calc(var(--v3-r, 0px) * 2);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle closest-side,
+    transparent 72%,
+    rgba(18, 230, 142, 0.1) 88%,
+    rgba(18, 230, 142, 0.22) 100%
+  );
+  filter: blur(2px);
+}
+
+/* Ticker ---------------------------------------------------------------------
+   Velocity is applied via inline transform from rAF (component-level), so
+   this only needs the track shell + duplication behaviour. */
+
+.v3-ticker-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+/* Hero ---------------------------------------------------------------------
+   Full-viewport ink field, ambient emerald wash (Deep Field), grain, load
+   reveal, and the line-3 cut-out (transparent glyphs over a drifting field).
+   Scroll moment: 200vh wrapper + sticky 100vh pane. Progress drives only
+   transform/opacity on `.v3-hero-lockup` / `.v3-hero-chrome`. */
+
+.v3-hero-wrap {
+  position: relative;
+  height: 200vh;
+}
+
+.v3-hero-wrap--static {
+  height: auto;
+}
+
+.v3-hero {
+  position: sticky;
+  top: 0;
+  isolation: isolate;
+  height: 100vh;
+  height: 100svh;
+  min-height: var(--hero-min-height);
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  background-color: var(--ink);
+  padding-top: var(--v3-nav-h);
+  padding-bottom: var(--hero-pad-y);
+}
+
+.v3-hero-wrap--static .v3-hero {
+  position: relative;
+  overflow: visible;
+}
+
+.v3-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(55vw 45vh at 50% 42%, rgba(18, 230, 142, 0.12), transparent 62%);
+}
+
+.v3-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+}
+
+.v3-hero-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--hero-pad-y);
+  padding-bottom: calc(var(--hero-pad-y) + 6vh);
+  padding-inline: 6vw;
+  text-align: center;
+}
+
+.v3 h1.v3-hero-title {
+  font-family: var(--font-hero);
+  font-size: var(--hero-size);
+  font-weight: var(--hero-weight);
+  line-height: var(--hero-leading);
+  letter-spacing: var(--hero-tracking);
+  font-variation-settings: "wdth" 100, "wght" 800;
+  text-transform: uppercase;
+  color: var(--bone);
+  width: 100%;
+}
+
+.v3-hero-whisper {
+  font-weight: 800;
+  letter-spacing: var(--hero-tracking);
+  font-variation-settings: "wdth" 100, "wght" 800;
+}
+
+.v3 h1.v3-hero-title .v3-cutout {
+  font-weight: 800;
+  letter-spacing: var(--hero-tracking);
+  font-variation-settings: "wdth" 100, "wght" 800;
+}
+
+.v3 h1.v3-hero-title .v3-mask-line + .v3-mask-line {
+  margin-top: var(--hero-line-gap);
+}
+
+.v3-hero-lockup {
+  transform-origin: 50% 92%;
+}
+
+.v3-hero-line {
+  display: block;
+}
+
+.v3-hero-missing {
+  transform-origin: 50% 50%;
+  display: block;
+}
+
+.v3-hero-pin {
+  position: fixed;
+  top: max(0.75rem, calc(50vh - 38vh));
+  left: max(1.25rem, calc(50vw - 38vw));
+  z-index: 50;
+  margin: 0;
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: calc(var(--hero-size) * 0.13);
+  line-height: var(--hero-leading);
+  letter-spacing: var(--hero-tracking);
+  font-variation-settings: "wdth" 100, "wght" 800;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.v3-hero-incoming {
+  transform-origin: 50% 0%;
+}
+
+.v3-hero-chrome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.v3-hero-cta {
+  margin-top: var(--hero-gap-title-cta);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.v3-hero-sub {
+  margin-top: var(--hero-gap-cta-sub);
+  max-width: 34rem;
+  font-size: var(--hero-sub-size);
+  line-height: 1.65;
+  color: #b8bdb9;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+.v3-hero-sub span + span {
+  margin-top: 0.15em;
+}
+
+/* Let's talk — sticky sheet on every page -------------------------------- */
+
+.v3-contact-stack {
+  position: relative;
+  /* Extra scroll room so the pin holds while the footer approaches */
+  min-height: calc(100svh + 12vh);
+}
+
+.v3-contact-pin {
+  position: sticky;
+  top: var(--v3-stack-gap);
+  z-index: 4;
+}
+
+/* How we work — scroll-driven steps -------------------------------------- */
+
+.v3-process-rail {
+  position: relative;
+  width: 2px;
+  flex: 1;
+  min-height: 220px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.v3-process-rail i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--emerald);
+  transform-origin: top center;
+  transform: scaleY(0);
+  transition: transform 0.35s var(--v3-ease);
+}
+
+.v3-process-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  padding: 1.35rem 0;
+  border-top: 1px solid var(--line);
+  transition:
+    opacity 0.45s var(--v3-ease),
+    transform 0.45s var(--v3-ease),
+    filter 0.45s ease;
+}
+
+.v3-process-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.v3-process-row--idle {
+  opacity: 0.28;
+  transform: translateY(10px);
+  filter: blur(0.4px);
+}
+
+.v3-process-row--active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: none;
+}
+
+.v3-process-row--done {
+  opacity: 0.55;
+  transform: translateY(0);
+  filter: none;
+}
+
+.v3-process-row__num {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  font-variation-settings: "wdth" 100, "wght" 400;
+  color: var(--muted);
+  padding-top: 0.35rem;
+}
+
+.v3-process-row--active .v3-process-row__num {
+  color: var(--emerald);
+}
+
+.v3-process-row__body {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.4s ease,
+    max-height 0.45s var(--v3-ease);
+}
+
+.v3-process-row--active .v3-process-row__body,
+.v3-process-row--done .v3-process-row__body {
+  opacity: 0.75;
+  max-height: 6rem;
+}
+
+.v3-process-row--done .v3-process-row__body {
+  opacity: 0.5;
+}
+
+/* Founder spotlight (solo team section) -----------------------------------
+   Points light as they reach reading position and stay lit. The generous
+   row spacing is what gives the sticky portrait something to hold still
+   against - without it the column is too short to read as scrollytelling
+   at all. */
+
+.v3-founder-points {
+  display: flex;
+  flex-direction: column;
+}
+
+.v3-founder-point {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  padding: 2.25rem 0;
+  border-top: 1px solid var(--line);
+  opacity: 0.3;
+  transform: translateY(10px);
+  transition:
+    opacity 0.5s var(--v3-ease),
+    transform 0.5s var(--v3-ease);
+}
+
+.v3-founder-point:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.v3-founder-point[data-lit="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.v3-founder-point__num {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  font-variation-settings: "wdth" 100, "wght" 400;
+  color: var(--muted);
+  padding-top: 0.35rem;
+  transition: color 0.5s var(--v3-ease);
+}
+
+.v3-founder-point[data-lit="true"] .v3-founder-point__num {
+  color: var(--emerald);
+}
+
+@media (min-width: 1024px) {
+  /* Taller rows on desktop so the portrait stays pinned for a beat. */
+  .v3-founder-point {
+    padding: 3.25rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-founder-point {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Founder portrait "coming into focus" - one-time entrance -----------------
+   The image starts soft and slightly wide, as though the frame hasn't quite
+   settled on him yet; the corner marks start pulled in tight. Both resolve
+   together once, the moment the section arrives - after that it holds still,
+   there's nothing continuous or looping here. */
+
+.v3-founder-portrait__img {
+  opacity: 0;
+  transform: scale(1.08);
+  filter: saturate(0.35) contrast(0.95);
+  transition:
+    opacity 1s var(--v3-ease),
+    transform 1.3s var(--v3-ease),
+    filter 1.3s var(--v3-ease);
+}
+
+.v3-founder-portrait[data-in="true"] .v3-founder-portrait__img {
+  opacity: 1;
+  transform: scale(1);
+  filter: saturate(1) contrast(1);
+}
+
+.v3-founder-portrait::before,
+.v3-founder-portrait::after {
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 0.5s var(--v3-ease) 0.5s,
+    transform 0.5s var(--v3-ease) 0.5s;
+}
+
+.v3-founder-portrait::before {
+  transform-origin: top left;
+}
+
+.v3-founder-portrait::after {
+  transform-origin: bottom right;
+}
+
+.v3-founder-portrait[data-in="true"]::before,
+.v3-founder-portrait[data-in="true"]::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-founder-portrait__img {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .v3-founder-portrait::before,
+  .v3-founder-portrait::after {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Service detail sticky cards (services hub) ------------------------------ */
+
+.v3-service-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: calc(100svh - var(--v3-nav-h) - 2rem);
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+  padding: 2.25rem 1.75rem 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .v3-service-card {
+    position: sticky;
+    top: calc(var(--v3-nav-h) + var(--v3-stack-gap));
+    padding: 3rem 2.75rem 3.25rem;
+  }
+}
+
+.v3-service-card__icon {
+  position: absolute;
+  right: -4%;
+  bottom: -8%;
+  width: min(52%, 280px);
+  height: auto;
+  opacity: 0.07;
+  color: var(--emerald);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.v3-service-card__body {
+  position: relative;
+  z-index: 1;
+  max-width: 34rem;
+}
+
+/*
+ * Line 3 cut-out: glyphs are transparent; a field several times larger than
+ * the text box shows through them and keeps moving. Every colour stop stays
+ * at or above #0FBE76 so no edge of the word reads as a fade-out.
+ */
+@keyframes v3-drift {
+  0% {
+    background-position: 12% 28%;
+  }
+  50% {
+    background-position: 88% 72%;
+  }
+  100% {
+    background-position: 12% 28%;
+  }
+}
+
+.v3-cutout {
+  display: block;
+  background-image: radial-gradient(
+    90% 90% at 50% 50%,
+    #4dffc0 0%,
+    #12e68e 42%,
+    #0fbe76 78%,
+    #12e68e 100%
+  );
+  background-size: 340% 340%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /*
+   * "Going missing": a soft wipe, not a flat opacity tween. The mask is a
+   * gradient 3x the element's width with two flat zones (fully visible,
+   * 60%-invisible) and one soft transition between them - moving that whole
+   * strip via mask-position, rather than animating opacity directly, is
+   * what makes the fade itself travel across the word instead of dimming
+   * everywhere at once.
+   *
+   * mask-position 0% shows the strip's fully-visible zone; 100% shows the
+   * faded zone. Checked against the actual background-position formula
+   * (position = (container - image) * pct, image = 3x container): at 50%
+   * of the animation the container is reading the strip's middle third -
+   * left edge still in the visible zone, right edge already in the faded
+   * one - so the fade visibly starts at the right of the word and spreads
+   * left as it plays, and mirrors back the same way on the way out.
+   */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 40%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 40%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0% 0%;
+  mask-position: 0% 0%;
+  animation:
+    v3-drift 16s linear infinite,
+    v3-going-missing 14s ease-in-out infinite;
+  will-change: background-position, mask-position;
+}
+
+/* 0% → 50% (7s): fades to 60% invisible, right edge first. 50% → 100%
+   (the next 7s): the same wipe in reverse, word fully back by 14s. */
+@keyframes v3-going-missing {
+  0%,
+  100% {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+  50% {
+    -webkit-mask-position: 100% 0%;
+    mask-position: 100% 0%;
+  }
+}
+
+/* Mask reveal (lines 1–2) ------------------------------------------------ */
+
+@keyframes v3-mask-up {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.v3-mask-line {
+  overflow: hidden;
+  display: block;
+}
+
+.v3-mask-line > * {
+  display: block;
+  will-change: transform;
+  animation: v3-mask-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--v3-delay, 0ms);
+}
+
+@keyframes v3-hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.v3-hero-enter {
+  opacity: 0;
+  animation: v3-hero-fade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--v3-delay, 0ms);
+}
+
+/* Scroll cue -------------------------------------------------------------- */
+
+/* Stat/progress bars (industries + about, if used) ------------------------ */
+
+.v3-bar {
+  position: relative;
+  height: 3px;
+  background-color: var(--line);
+  overflow: hidden;
+}
+
+.v3-bar > i {
+  display: block;
+  height: 100%;
+  background-color: var(--emerald);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.1s var(--v3-ease);
+}
+
+.v3-bar[data-in="true"] > i {
+  transform: scaleX(var(--v3-bar-value, 1));
+}
+
+/* Corner bracket device (from coreline-a-bracket.html) --------------------- */
+
+.v3-bracket {
+  position: relative;
+}
+
+.v3-bracket::before,
+.v3-bracket::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.v3-bracket::before {
+  top: 0;
+  left: 0;
+  border-top: 1.5px solid var(--emerald);
+  border-left: 1.5px solid var(--emerald);
+}
+
+.v3-bracket::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1.5px solid var(--emerald);
+  border-right: 1.5px solid var(--emerald);
+}
+
+/* Entrance fade (simple, non-motion-budget helper for basic reveals) ------ */
+
+.v3-fade {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: var(--v3-delay, 0ms);
+}
+
+.v3-fade[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Sticky mobile CTA bar ---------------------------------------------------- */
+
+.v3-sticky-cta {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: var(--surface);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+  transform: translateY(100%);
+  transition: transform 0.3s var(--v3-ease);
+}
+
+.v3-sticky-cta[data-visible="true"] {
+  transform: translateY(0);
+}
+
+/* Floating desktop bubbles -------------------------------------------------- */
+
+.v3-bubbles {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.v3-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 100px;
+  background-color: var(--emerald);
+  color: var(--emerald-ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s var(--v3-ease);
+}
+
+.v3-bubble:hover {
+  transform: translateY(-2px);
+}
+
+.v3-bubble--outline {
+  background-color: var(--surface);
+  color: var(--bone);
+  border: 1px solid var(--line);
+}
+
+/* Chat widget --------------------------------------------------------------- */
+
+.v3-chat-launcher {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--emerald);
+  color: #04160e;
+  cursor: pointer;
+  box-shadow: 0 6px 30px rgba(18, 230, 142, 0.28);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.v3-chat-launcher:hover {
+  transform: translateY(-2px);
+}
+
+.v3-chat-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--bone);
+  border: 2px solid var(--ink);
+}
+
+@media (max-width: 560px) {
+  .v3-chat-launcher {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+.v3-chat-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 70;
+  width: 380px;
+  height: min(560px, calc(100vh - 48px));
+  max-height: 560px;
+  background-color: #0d1211;
+  border: 1px solid rgba(239, 237, 230, 0.12);
+  border-radius: 2px;
+  box-shadow: none;
+  color: var(--bone);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: v3-chat-panel-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes v3-chat-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .v3-chat-panel {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 88dvh;
+    max-height: none;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid var(--line);
+    border-bottom: none;
+    animation: v3-chat-sheet 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+@keyframes v3-chat-sheet {
+  from {
+    transform: translateY(100%);
+    opacity: 0.85;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.v3-chat-head {
+  flex: 0 0 auto;
+  padding: 1rem 1rem 0.875rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.v3-chat-head-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.v3-chat-title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.96875rem;
+  letter-spacing: -0.02em;
+  font-variation-settings: "wdth" 100, "wght" 700;
+}
+
+.v3-chat-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 100px;
+  background: var(--emerald);
+  animation: v3-chat-blip 2s ease-in-out infinite;
+}
+
+@keyframes v3-chat-blip {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.v3-chat-head-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.v3-chat-head-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: 1px solid rgba(239, 237, 230, 0.22);
+  border-radius: 2px;
+  padding: 7px 12px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78125rem;
+  white-space: nowrap;
+  color: var(--bone);
+  cursor: pointer;
+  transition: 0.18s;
+  font-variation-settings: "wdth" 100, "wght" 600;
+}
+
+.v3-chat-head-wa:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+}
+
+.v3-chat-close {
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  padding: 6px;
+  line-height: 0;
+  border-radius: 2px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.v3-chat-close:hover {
+  color: var(--bone);
+}
+
+.v3-chat-sub {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.78125rem;
+  line-height: 1.45;
+}
+
+.v3-chat-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.125rem 1rem 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18, 230, 142, 0.45) transparent;
+}
+
+.v3-chat-log::-webkit-scrollbar {
+  width: 2px;
+}
+
+.v3-chat-log::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.v3-chat-log::-webkit-scrollbar-thumb {
+  background: rgba(18, 230, 142, 0.45);
+}
+
+.v3-chat-user,
+.v3-chat-bot {
+  animation: v3-chat-rise 0.3s ease-out;
+}
+
+@keyframes v3-chat-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.v3-chat-user {
+  align-self: flex-end;
+  max-width: 80%;
+  padding: 9px 13px;
+  background-color: #12e68e;
+  color: #04160e;
+  border-radius: 2px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.v3-chat-bot {
+  align-self: flex-start;
+  max-width: 92%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #efede6;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.v3-chat-link {
+  color: var(--emerald);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(18, 230, 142, 0.4);
+}
+
+.v3-chat-link:hover {
+  border-bottom-color: var(--emerald);
+}
+
+.v3-chat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0.4rem 1rem 0.875rem;
+  flex: 0 0 auto;
+}
+
+.v3-chat-chip {
+  flex: 0 0 auto;
+  background: none;
+  border: 1px solid rgba(239, 237, 230, 0.22);
+  border-radius: 2px;
+  padding: 8px 13px;
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-size: 0.84375rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.18s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.v3-chat-chip:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+}
+
+.v3-chat-chip::selection {
+  background: transparent;
+  color: inherit;
+}
+
+.v3-chat-composer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem 1rem;
+  border-top: 1px solid var(--line);
+  flex: 0 0 auto;
+}
+
+.v3-chat-composer input {
+  flex: 1;
+  min-width: 0;
+  background: #060a08;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 12px 13px;
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: 0.90625rem;
+  outline: none;
+}
+
+.v3-chat-composer input::placeholder {
+  color: #5c625e;
+}
+
+.v3-chat-composer input:focus {
+  outline: none;
+  border-color: var(--emerald);
+}
+
+.v3-chat-send {
+  border: 0;
+  border-radius: 100px;
+  padding: 0 18px;
+  background-color: var(--emerald);
+  color: #04160e;
+  font-family: var(--font-display);
+  font-size: 0.84375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.18s;
+  font-variation-settings: "wdth" 100, "wght" 700;
+}
+
+.v3-chat-send:hover:not(:disabled) {
+  background: #3ff5a8;
+}
+
+.v3-chat-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.v3-chat-typing {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0.25rem 0;
+}
+
+.v3-chat-typing span {
+  width: 5px;
+  height: 5px;
+  border-radius: 100px;
+  background: var(--muted);
+  animation: v3-chat-dot 1.1s ease-in-out infinite;
+}
+
+.v3-chat-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.v3-chat-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes v3-chat-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: none;
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-hero-wrap {
+    height: auto;
+  }
+
+  .v3-hero {
+    position: relative;
+    overflow: visible;
+  }
+
+  .v3-hero-lockup,
+  .v3-hero-chrome,
+  .v3-hero-line,
+  .v3-hero-missing,
+  .v3-hero-incoming {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .v3-hero-pin {
+    display: none !important;
+  }
+
+  .v3 *:not(.v3-cutout) {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  /* Hero is the one motion moment — keep mask reveal and the drifting field. */
+  .v3 .v3-hero *,
+  .v3 .v3-hero .v3-mask-line > *,
+  .v3 .v3-hero .v3-hero-enter {
+    animation-duration: revert !important;
+    animation-iteration-count: revert !important;
+    transition-duration: revert !important;
+  }
+
+  .v3 .v3-cutout {
+    /* Drift (a slow internal colour shift) stays, matching the rest of this
+       block's policy for the hero. The missing-wipe is a much bigger swing
+       - the word actually reads as fading by 60% - so unlike drift it's
+       switched off here and held fully visible instead of mid-fade. */
+    animation: v3-drift 16s linear infinite !important;
+    animation-duration: 16s !important;
+    animation-iteration-count: infinite !important;
+    -webkit-mask-position: 0% 0% !important;
+    mask-position: 0% 0% !important;
+  }
+
+  .v3-fade {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .v3-rhw {
+    color: var(--bone) !important;
+  }
+
+  .v3-rhw[data-key="true"] {
+    color: var(--emerald) !important;
+  }
+
+  .v3-aperture-mask {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+
+  .v3-aperture-ring {
+    display: none !important;
+  }
+
+  .v3-aperture-glow {
+    display: none !important;
+  }
+
+  .v3-process-row--idle,
+  .v3-process-row--done,
+  .v3-process-row--active {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .v3-process-row__body {
+    opacity: 0.75 !important;
+    max-height: none !important;
+  }
+
+  .v3-ticker-track {
+    transform: none !important;
+  }
+
+  .v3-bar > i {
+    transform: scaleX(var(--v3-bar-value, 1)) !important;
+  }
+}
+
+} /* @layer components */
+
+/*
+ * Force Archivo outside @layer so root Space Grotesk cannot win on display type.
+ * Weights match coreline-hero-scroll-effects.html: display 800, UI 600.
+ * Body stays Inter Tight 400 / 500.
+ */
+.v3 .v3-display,
+.v3 h1,
+.v3 h2,
+.v3 h3,
+.v3 h4,
+.v3 .v3-pill,
+.v3 .v3-nav-invert {
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+.v3 .v3-display,
+.v3 h1,
+.v3 h2,
+.v3 h3,
+.v3 h4 {
+  font-weight: 800;
+  font-variation-settings: "wdth" 100, "wght" 800;
+}
+
+.v3 .v3-pill,
+.v3 .v3-display.font-semibold,
+.v3 .font-semibold.v3-display {
+  font-weight: 600;
+  font-variation-settings: "wdth" 100, "wght" 600;
+}
+
+.v3 {
+  font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+}
+

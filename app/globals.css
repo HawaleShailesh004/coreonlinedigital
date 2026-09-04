@@ -82,6 +82,22 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /*
+   * Paper grain - fixed, non-interactive, very low contrast. Stops large paper
+   * fields from reading as a flat slide while staying inside the locked palette.
+   */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+  }
+
   /* Sharp corners are a brand rule, not an oversight. */
   button,
   input,
@@ -256,6 +272,66 @@
 .line-hover:hover::after,
 .line-hover:focus-within::after {
   transform: scaleX(1);
+}
+
+/* Soft emerald atmosphere behind the homepage hero - not a second palette. */
+.hero-wash {
+  position: absolute;
+  inset: -10% -5% auto;
+  height: min(36rem, 70vh);
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 50% at 50% 0%, rgba(31, 92, 75, 0.09), transparent 70%),
+    radial-gradient(ellipse 40% 45% at 85% 30%, rgba(44, 122, 99, 0.05), transparent 65%),
+    radial-gradient(ellipse 35% 40% at 12% 40%, rgba(31, 92, 75, 0.04), transparent 60%);
+}
+
+/* Work card media: wipe in with the brand clip motif when revealed.
+   Outside a Reveal parent the image stays fully visible (Work page grid). */
+.reveal .work-media-wipe {
+  clip-path: inset(0 100% 0 0);
+}
+
+.reveal[data-visible="true"] .work-media-wipe {
+  animation: cl-wipe-x 0.75s var(--ease-line) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Magnetic CTA shell - spring-back when the pointer leaves. */
+.magnetic {
+  transition: transform 0.35s var(--ease-line);
+}
+
+/* Ink CTA band spotlight - emerald pool follows the cursor. */
+.cta-spotlight {
+  --spot-x: 78%;
+  --spot-y: 50%;
+  position: relative;
+  isolation: isolate;
+}
+
+.cta-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  transition: opacity 0.35s ease-out;
+  background: radial-gradient(
+    420px circle at var(--spot-x) var(--spot-y),
+    rgba(44, 122, 99, 0.28),
+    transparent 60%
+  );
+}
+
+.cta-spotlight[data-active="true"]::before {
+  opacity: 1;
+}
+
+.cta-spotlight > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ---------------------------------------------------------------------------
@@ -433,6 +509,27 @@
   .logo-reveal {
     animation: none !important;
     clip-path: none !important;
+  }
+
+  .work-media-wipe,
+  .reveal .work-media-wipe,
+  .reveal[data-visible="true"] .work-media-wipe {
+    animation: none !important;
+    clip-path: none !important;
+  }
+
+  .magnetic {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .cta-spotlight::before {
+    opacity: 0.4 !important;
+    background: radial-gradient(
+      380px circle at 78% 50%,
+      rgba(44, 122, 99, 0.22),
+      transparent 60%
+    ) !important;
   }
 
   .marquee-track {

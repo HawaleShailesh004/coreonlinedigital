@@ -5,57 +5,44 @@
   <meta charset="UTF-8">
   <title>Coreline - Business Card</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo:opsz,wdth,wght@8..36,100,400;8..36,100,500;8..36,100,600;8..36,100,700&family=Inter+Tight:wght@400;500&display=swap"
     rel="stylesheet">
 
   <!--
     PRINT SPEC
-      Trim size    90 x 54 mm (Indian standard)
-      Bleed        3 mm all round, so the artboard here is 96 x 60 mm
-      Safe area    5 mm inside trim - nothing important crosses it
-      Stock        350gsm minimum
-      Finish       MATTE lamination, not gloss. Gloss reads cheap and shows
-                   every fingerprint on an ink-heavy back like this one.
+      Trim: 89 × 54 mm · Bleed: 3 mm all sides · Artboard: 95 × 60 mm
+      Safe: nothing important within 4 mm of trim
+      Margins from trim: 7 mm L/R, 6 mm T/B
 
-    BEFORE A BULK RUN
-      1. Print 100 as a test.
-      2. Scan the QR off the PRINTED card, at arm's length, in normal indoor
-         light - not off the screen. An unscannable QR makes the whole back
-         useless, and it is the one thing that cannot be checked digitally.
-      3. Confirm qr.jpeg encodes https://corelinedigital.in/work - the label
-         next to it promises sample websites, so it has to land there and not
-         on the home page.
+    COLOUR
+      Bone #EFEDE6 (match site). Emerald #12E68E is out of CMYK gamut -
+      proof first, or ask printer for Pantone 3395 C / 802 C on the mark.
 
-    WHAT CHANGED, AND WHY
-      Front: "Founder, Coreline Digital" is gone. A one-person business calling
-      itself Founder invites "founder of what, how many people?", and the old
-      card never said what it sells anywhere on the front. It now does.
-
-      Back: the three mono columns are gone. They were abstract category names
-      set in all-caps mono at 5.8pt on a dark ground - hard to read and saying
-      nothing. A card back has one job: give one reason to act and one way to
-      act. The price and terms are on it because the owner puts the card in a
-      drawer, finds it three weeks later, and it still answers his only two
-      questions: how much, how long. No competitor's card does that.
+    PROOF BEFORE BULK
+      Print + laminate one card. Scan QR on three cheap Androids at arm's length.
   -->
 
   <style>
     :root {
-      --ink: #0C1210;
-      --paper: #F6F7F5;
+      --ink: #060A08;
+      --bone: #EFEDE6;
+      --emerald: #12E68E;
       --accent: #1F5C4B;
-      /* Sage, not the dark emerald: #1F5C4B fails contrast on the ink ground. */
-      --sage: #8FBFA8;
-      --grey: #6E7A75;
+      --muted: rgba(6, 10, 8, 0.55);
+      --hair: rgba(0, 0, 0, 0.12);
 
-      --trim-w: 90mm;
-      --trim-h: 54mm;
       --bleed: 3mm;
-      /* Artboard = trim + bleed on all four sides. */
-      --card-w: 96mm;
+      --trim-w: 89mm;
+      --trim-h: 54mm;
+      --card-w: 95mm;
       --card-h: 60mm;
-      /* Bleed + 5mm safe area. */
-      --pad: 8mm;
+
+      /* Content inset from artboard edge (= bleed + margin) */
+      --m-x: 10mm; /* 3 + 7 */
+      --m-y: 9mm;  /* 3 + 6 */
+      --content-w: 75mm; /* 89 - 14 */
+
+      --qr-size: 22mm;
     }
 
     * {
@@ -66,7 +53,7 @@
 
     body {
       background: #DADAD6;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter Tight', sans-serif;
       display: flex;
       flex-wrap: wrap;
       gap: 40px;
@@ -78,146 +65,303 @@
       height: var(--card-h);
       position: relative;
       overflow: hidden;
-      padding: var(--pad);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    /* On-screen trim guide, so the bleed is visible while proofing. */
+    /* Screen-only trim guide */
     .card::after {
       content: "";
       position: absolute;
       inset: var(--bleed);
-      border: 0.3mm dashed rgba(127, 127, 127, 0.55);
+      border: 0.2pt dashed rgba(0, 0, 0, 0.18);
       pointer-events: none;
+      z-index: 20;
+    }
+
+    .back::after {
+      border-color: rgba(239, 237, 230, 0.22);
     }
 
     /* ---------- FRONT ---------- */
     .front {
-      background: var(--paper);
+      background: var(--bone);
       color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      padding: var(--m-y) var(--m-x);
     }
 
-    .logo-row {
+    .front .logo-row {
       display: flex;
       align-items: center;
       gap: 2mm;
+      height: 7.5mm;
+      flex-shrink: 0;
     }
 
-    .icon {
-      width: 8mm;
-      height: 8mm;
+    .front .logo-row .icon {
+      width: 7.5mm;
+      height: 7.5mm;
+      flex-shrink: 0;
     }
 
-    .icon svg {
+    .front .logo-row .icon svg {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    .wordmark {
-      font-family: 'Space Grotesk', sans-serif;
+    .front .wordmark {
+      font-family: 'Archivo', sans-serif;
       font-weight: 600;
-      font-size: 17pt;
-      letter-spacing: -0.01em;
+      font-size: 16pt;
+      letter-spacing: -0.02em;
+      line-height: 1;
     }
 
-    .wordmark .dot {
+    .front .offer {
+      margin-top: 6mm;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 9.5pt;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      max-width: 100%;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .front .offer .free {
+      display: block;
       color: var(--accent);
+      font-size: 15pt;
+      line-height: 1.05;
+      margin-top: 1.2mm;
+      white-space: normal;
     }
 
-    .name {
-      font-family: 'Space Grotesk', sans-serif;
+    .front .front-bottom {
+      margin-top: auto;
+      padding-top: 4mm;
+      flex-shrink: 0;
+    }
+
+    .front .divider {
+      width: 100%;
+      height: 0.3pt;
+      background: var(--hair);
+      margin-bottom: 3.5mm;
+    }
+
+    .front .contact-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 4mm;
+    }
+
+    .front .contact-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .front .name {
+      font-family: 'Archivo', sans-serif;
       font-weight: 600;
-      font-size: 12pt;
+      font-size: 8.5pt;
+      letter-spacing: -0.015em;
+      line-height: 1.15;
     }
 
-    /* Says what he sells. That is what a card is for. */
-    .role {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 7pt;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-top: 1mm;
-    }
-
-    .contact-block {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 7.5pt;
-      color: var(--grey);
-      line-height: 1.6;
-    }
-
-    .contact-block strong {
-      color: var(--ink);
+    .front .meta {
+      font-family: 'Inter Tight', sans-serif;
       font-weight: 500;
+      font-size: 6pt;
+      color: var(--muted);
+      margin-top: 1.2mm;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .front .contact-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .front .phone {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 600;
+      font-size: 9.5pt;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    .front .phone-sub {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 500;
+      font-size: 6.5pt;
+      color: var(--muted);
+      margin-top: 1.2mm;
+      line-height: 1.25;
+      white-space: nowrap;
     }
 
     /* ---------- BACK ---------- */
     .back {
       background: var(--ink);
-      color: var(--paper);
+      color: var(--bone);
     }
 
-    .offer {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 600;
-      font-size: 13pt;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-      max-width: 60mm;
-    }
-
-    .terms {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 7.2pt;
-      line-height: 1.75;
-      color: var(--sage);
-      letter-spacing: 0.01em;
-      margin-top: 3mm;
-    }
-
-    .scan-row {
+    .back-brand {
+      position: absolute;
+      top: var(--m-y);
+      left: var(--m-x);
       display: flex;
       align-items: center;
-      gap: 3.5mm;
+      gap: 1.6mm;
+      z-index: 1;
+    }
+
+    .back-brand .icon {
+      width: 4.5mm;
+      height: 4.5mm;
+    }
+
+    .back-brand .icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      fill: var(--emerald);
+    }
+
+    .back-wordmark {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 600;
+      font-size: 8pt;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .back-phone {
+      position: absolute;
+      top: var(--m-y);
+      right: var(--m-x);
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 600;
+      font-size: 7pt;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      color: var(--bone);
+      opacity: 0.85;
+      z-index: 1;
+    }
+
+    .back-main {
+      position: absolute;
+      top: 18mm;
+      left: var(--m-x);
+      right: var(--m-x);
+      bottom: 14mm;
+      display: flex;
+      align-items: center;
+      gap: 4mm;
+      z-index: 1;
+    }
+
+    .scan-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .scan-headline {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 11pt;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      max-width: 40mm;
+    }
+
+    .scan-sub {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 400;
+      font-size: 6.2pt;
+      line-height: 1.4;
+      color: rgba(239, 237, 230, 0.7);
+      margin-top: 2mm;
+      max-width: 40mm;
+    }
+
+    .qr-wrap {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2mm;
     }
 
     .qr-box {
-      width: 16mm;
-      height: 16mm;
-      background: var(--paper);
-      padding: 0.8mm;
-      flex-shrink: 0;
+      width: var(--qr-size);
+      height: var(--qr-size);
+      background: var(--bone);
+      padding: 1.6mm;
+      line-height: 0;
     }
 
     .qr-box img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
     }
 
-    /* An unlabelled QR is never scanned. This one gives a reason. */
-    .scan-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 7pt;
-      line-height: 1.55;
-      color: var(--paper);
+    .qr-site {
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 500;
+      font-size: 5.8pt;
+      letter-spacing: 0.01em;
+      color: var(--emerald);
+      text-align: center;
     }
 
-    .scan-label .url {
-      color: var(--sage);
+    .back-foot {
+      position: absolute;
+      left: var(--m-x);
+      right: var(--m-x);
+      bottom: var(--m-y);
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 400;
+      font-size: 6pt;
+      line-height: 1.3;
+      color: rgba(239, 237, 230, 0.5);
+      z-index: 1;
+    }
+
+    .back-mark {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 40mm;
+      height: 40mm;
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .back-mark svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      fill: var(--bone);
     }
 
     /* ---------- PRINT ---------- */
     @page {
-      size: 96mm 60mm;
+      size: 95mm 60mm;
       margin: 0;
     }
 
@@ -240,11 +384,8 @@
         box-shadow: none;
         page-break-after: always;
         break-after: page;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
       }
 
-      /* Guides are a proofing aid, never part of the artwork. */
       .card::after {
         display: none;
       }
@@ -262,46 +403,72 @@
   <div class="card front">
     <div class="logo-row">
       <div class="icon">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M30 20 H15 V40 M15 60 V80 H30" stroke="#1F5C4B" stroke-width="8" fill="none" />
-          <rect x="42" y="42" width="16" height="16" fill="#1F5C4B" />
-          <path d="M70 20 H85 V40 M85 60 V80 H70" stroke="#1F5C4B" stroke-width="8" fill="none" />
+        <svg viewBox="0 0 508 506" xmlns="http://www.w3.org/2000/svg" fill="#1F5C4B">
+          <path d="M0 0h194v44H44v418h150v44H0z" />
+          <path d="M508 0H314v44h150v418H314v44h194z" />
+          <rect x="194" y="193" width="119" height="119" />
         </svg>
       </div>
-      <div class="wordmark">coreline<span class="dot">.</span></div>
+      <div class="wordmark">coreline</div>
     </div>
 
-    <div>
-      <div class="name">Shailesh Hawale</div>
-      <div class="role">Website Design &amp; Development</div>
+    <div class="offer">
+      We&rsquo;ll build a demo of your website.
+      <span class="free">Free.</span>
     </div>
 
-    <div class="contact-block">
-      <strong>Phone / WhatsApp:</strong> +91 90823 08732<br>
-      <strong>Email:</strong> contact@corelinedigital.in<br>
-      <strong>Web:</strong> corelinedigital.in
+    <div class="front-bottom">
+      <div class="divider" aria-hidden="true"></div>
+      <div class="contact-row">
+        <div class="contact-left">
+          <div class="name">Shailesh Hawale</div>
+          <div class="meta">Design &amp; Development · Thane, Mumbai</div>
+        </div>
+        <div class="contact-right">
+          <div class="phone">+91 90823 08732</div>
+          <div class="phone-sub">Call or WhatsApp</div>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="card back">
-    <div>
-      <div class="offer">A website that brings you customers.</div>
-      <div class="terms">
-        From ₹15,000 &nbsp;·&nbsp; Ready in 10 working days<br>
-        Half paid only when it&rsquo;s live
+    <div class="back-mark" aria-hidden="true">
+      <svg viewBox="0 0 508 506" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0h194v44H44v418h150v44H0z" />
+        <path d="M508 0H314v44h150v418H314v44h194z" />
+        <rect x="194" y="193" width="119" height="119" />
+      </svg>
+    </div>
+
+    <div class="back-brand">
+      <div class="icon">
+        <svg viewBox="0 0 508 506" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h194v44H44v418h150v44H0z" />
+          <path d="M508 0H314v44h150v418H314v44h194z" />
+          <rect x="194" y="193" width="119" height="119" />
+        </svg>
+      </div>
+      <div class="back-wordmark">coreline</div>
+    </div>
+    <div class="back-phone">+91 90823 08732</div>
+
+    <div class="back-main">
+      <div class="scan-copy">
+        <div class="scan-headline">Scan to message us on WhatsApp.</div>
+        <div class="scan-sub">
+          Tell us what your business does - we&rsquo;ll send a real demo page in a 1 day.
+        </div>
+      </div>
+      <div class="qr-wrap">
+        <div class="qr-box">
+          <img src="qr.png" alt="QR code - WhatsApp Coreline" width="640" height="640">
+        </div>
+        <div class="qr-site">corelinedigital.in</div>
       </div>
     </div>
 
-    <div class="scan-row">
-      <div class="qr-box">
-        <img src="qr.jpeg" alt="QR code - corelinedigital.in/work" width="150" height="150">
-      </div>
-      <div class="scan-label">
-        Scan to see<br>
-        sample websites<br>
-        <span class="url">corelinedigital.in/work</span>
-      </div>
-    </div>
+    <div class="back-foot">Websites &amp; online setup for small businesses</div>
   </div>
 
 </body>

@@ -45,7 +45,12 @@ export type Conversation = {
   problem: string;
   frequency: string;
   website: string;
-  intent: string;
+  /** "consult" | "quick" - which self-select path this visitor chose. */
+  path: string;
+  goal: string;
+  obstacle: string;
+  /** "yes" | "questions" | "no" - the consult-path agreement outcome. */
+  fit: string;
   /** "Them: …" / "Bot: …" lines, newline-joined - the full transcript. */
   transcript: string;
 };
@@ -128,7 +133,10 @@ export async function upsertConversation(
       problem: patch.problem || existing?.problem || "",
       frequency: patch.frequency || existing?.frequency || "",
       website: patch.website || existing?.website || "",
-      intent: patch.intent || existing?.intent || "",
+      path: patch.path || existing?.path || "",
+      goal: patch.goal || existing?.goal || "",
+      obstacle: patch.obstacle || existing?.obstacle || "",
+      fit: patch.fit || existing?.fit || "",
       transcript:
         (patch.transcript?.length ?? 0) >= (existing?.transcript?.length ?? 0)
           ? (patch.transcript ?? "")

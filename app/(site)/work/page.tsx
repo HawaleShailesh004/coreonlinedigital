@@ -1,73 +1,100 @@
-import Link from "next/link";
-import { FinalCta } from "@/components/FinalCta";
-import { Section } from "@/components/ui/Section";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { WorkGrid } from "@/components/work/WorkGrid";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { verticalIndex, verticalPages, workPage } from "@/lib/content";
-import { breadcrumbJsonLd, pageMetadata, webPageJsonLd } from "@/lib/seo";
+import { Panel } from "@/components/v3/Panel";
+import { DemoCard } from "@/components/v3/DemoCard";
+import { Reveal } from "@/components/v3/Reveal";
+import { StepRow } from "@/components/v3/StepRow";
+import { ContactPanel } from "@/components/v3/ContactPanel";
+import { pageMetadata, webPageJsonLd } from "@/lib/seo";
+import { demos, workPageCopy } from "@/lib/site-content";
 
-const title = "Sample Websites for Thane Businesses";
-const description =
-  "Ten sample websites - clinic, school, gym, jeweller, trader, coaching class. Not client sites. Click into any of them and use it.";
+const TITLE = "Work - Sites for Thane & Mumbai Businesses";
+const DESCRIPTION =
+  "Nine complete builds, one per trade - jewellers, clinics, gyms, real estate, schools, CAs, interior designers, travel agencies and traders. Open one on your phone.";
 
-export const metadata = pageMetadata({ title, description, path: "/work" });
-
-const crumbs = breadcrumbJsonLd([{ name: "Sample Websites", path: "/work" }]);
+export const metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/work" });
 
 export default function WorkPage() {
   return (
     <>
-      <JsonLd
-        data={[
-          // CollectionPage rather than WebPage: this page exists to index the
-          // ten sample builds, not to be read on its own.
-          webPageJsonLd({
-            title,
-            description,
-            path: "/work",
-            type: "CollectionPage",
-            breadcrumbId: crumbs["@id"],
-          }),
-          crumbs,
-        ]}
-      />
-      <PageHeader
-        eyebrow={workPage.eyebrow}
-        heading={workPage.heading}
-        sub={workPage.sub}
-      />
+      <JsonLd data={webPageJsonLd({ title: TITLE, description: DESCRIPTION, path: "/work", type: "CollectionPage" })} />
 
-      <Section size="tight">
-        <div className="mb-16 border-b border-hairline pb-16">
-          <p className="font-mono text-label uppercase text-grey">
-            {verticalIndex.eyebrow}
-          </p>
-          <h2 className="mt-5 max-w-3xl font-display text-h2 font-semibold">
-            {verticalIndex.heading}
-          </h2>
-          <p className="mt-5 max-w-2xl text-small text-body">{verticalIndex.sub}</p>
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2">
-            {verticalPages.map((page) => (
-              <li key={page.slug}>
-                <Link
-                  href={page.path}
-                  className="group inline-flex items-center gap-2 font-display text-base font-medium"
-                >
-                  {page.title}
-                  <span className="inline-block h-px w-6 origin-left bg-accent transition-transform duration-200 ease-out group-hover:scale-x-150" />
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <Panel variant="bone" className="flex min-h-[55vh] flex-col justify-center pt-28 pb-20 sm:pt-36">
+        <div className="v3-container max-w-3xl">
+          <h1 className="v3-display text-[clamp(1.85rem,5vw,3rem)] leading-[1.02] tracking-[-0.03em]">
+            {workPageCopy.hero.lines[0]}
+            <br />
+            {workPageCopy.hero.lines[1]}
+          </h1>
+          <p className="mt-6 max-w-xl text-[15px] opacity-70">{workPageCopy.hero.sub}</p>
         </div>
-        <WorkGrid />
-        <p className="mt-10 font-mono text-label uppercase text-grey">
-          {workPage.note}
-        </p>
-      </Section>
+      </Panel>
 
-      <FinalCta heading={workPage.bottomHeading} body={workPage.bottomBody} />
+      <div style={{ backgroundColor: "var(--bone-panel)", color: "var(--ink)" }} className="pb-16">
+        <div className="v3-container max-w-3xl border-t pt-8 text-sm opacity-70" style={{ borderColor: "rgba(6,10,8,.12)" }}>
+          {workPageCopy.honesty}
+        </div>
+      </div>
+
+      <Panel variant="bone" className="py-24 sm:py-32">
+        <div className="v3-container">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {demos.map((demo, i) => (
+              <Reveal key={demo.slug} delay={(i % 3) * 90}>
+                <DemoCard demo={demo} />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </Panel>
+
+      <section className="py-24 sm:py-32">
+        <div className="v3-container flex flex-col gap-16">
+          {demos.map((demo) => (
+            <div key={demo.slug} className="v3-hairline-t grid gap-4 pt-10 lg:grid-cols-[220px_1fr] lg:gap-12">
+              <div>
+                <p className="text-xs uppercase tracking-[0.1em] opacity-50">{demo.trade}</p>
+                <p className="v3-display mt-1 text-xl">{demo.business}</p>
+                <span
+                  className="mt-2 inline-block px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]"
+                  style={
+                    demo.status === "Live"
+                      ? { backgroundColor: "var(--emerald)", color: "var(--emerald-ink)" }
+                      : { backgroundColor: "var(--raised)", color: "var(--bone)" }
+                  }
+                >
+                  {demo.status}
+                </span>
+              </div>
+              <div>
+                <p className="max-w-2xl text-[15px] leading-[1.7] opacity-80">{demo.caseDetail}</p>
+                {demo.demoHref && (
+                  <a
+                    href={demo.demoHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="v3-display mt-4 inline-flex items-center gap-2 text-sm font-semibold underline underline-offset-4"
+                  >
+                    Open the build →
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Panel variant="ink" className="py-24 sm:py-32">
+        <div className="v3-container">
+          <h2 className="v3-display text-[clamp(1.5rem,3.5vw,2rem)]">{workPageCopy.buildForYou.heading}</h2>
+          <div className="mt-8 max-w-xl">
+            {workPageCopy.buildForYou.steps.map((step, i) => (
+              <StepRow key={step} index={i} title={step} body="" />
+            ))}
+          </div>
+        </div>
+      </Panel>
+
+      <ContactPanel />
     </>
   );
 }

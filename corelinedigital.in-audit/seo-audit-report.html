@@ -1,0 +1,1868 @@
+<title>Coreline Digital SEO Audit</title>
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #f7f8f6;
+    --surface: #fdfdfc;
+    --surface-2: #f1f3f0;
+    --ink: #101614;
+    --ink-2: #3c4643;
+    --muted: #6b7a74;
+    --rule: #dfe3de;
+    --rule-strong: #c6ccc6;
+    --accent: #2c7a63;
+    --accent-soft: #e4efea;
+    --accent-ink: #1f5c4b;
+    --sev-critical: #8c1d11;
+    --sev-high: #b8431c;
+    --sev-medium: #cf7c3a;
+    --sev-low: #c2a58a;
+    --sev-info: #c3c8c4;
+    --on-dark-sev: #fdfdfc;
+    --on-light-sev: #101614;
+    --st-fixed: #2c7a63;
+    --st-blocked: #b8431c;
+    --st-offsite: #6b7a74;
+    --st-open: #cf7c3a;
+    --st-retracted: #a9b0ad;
+    --shadow: 0 1px 2px rgba(16, 22, 20, .05), 0 8px 24px -16px rgba(16, 22, 20, .18);
+  }
+
+  @media (prefers-color-scheme:dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0d1211;
+      --surface: #141a18;
+      --surface-2: #1b2220;
+      --ink: #e8ece9;
+      --ink-2: #b3bdb8;
+      --muted: #8b9791;
+      --rule: #252d2a;
+      --rule-strong: #374039;
+      --accent: #5fae92;
+      --accent-soft: #172a24;
+      --accent-ink: #8ecdb4;
+      --sev-critical: #e4553c;
+      --sev-high: #e2803f;
+      --sev-medium: #d19a5e;
+      --sev-low: #9d8a74;
+      --sev-info: #5c6663;
+      --on-dark-sev: #0d1211;
+      --on-light-sev: #0d1211;
+      --st-fixed: #5fae92;
+      --st-blocked: #e2803f;
+      --st-offsite: #8b9791;
+      --st-open: #d19a5e;
+      --st-retracted: #5c6663;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #0d1211;
+    --surface: #141a18;
+    --surface-2: #1b2220;
+    --ink: #e8ece9;
+    --ink-2: #b3bdb8;
+    --muted: #8b9791;
+    --rule: #252d2a;
+    --rule-strong: #374039;
+    --accent: #5fae92;
+    --accent-soft: #172a24;
+    --accent-ink: #8ecdb4;
+    --sev-critical: #e4553c;
+    --sev-high: #e2803f;
+    --sev-medium: #d19a5e;
+    --sev-low: #9d8a74;
+    --sev-info: #5c6663;
+    --on-dark-sev: #0d1211;
+    --on-light-sev: #0d1211;
+    --st-fixed: #5fae92;
+    --st-blocked: #e2803f;
+    --st-offsite: #8b9791;
+    --st-open: #d19a5e;
+    --st-retracted: #5c6663;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .6);
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-weight: 500;
+    text-wrap: balance;
+    margin: 0
+  }
+
+  .mono {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace
+  }
+
+  code {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .86em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: .1em .38em;
+    color: var(--ink-2);
+    word-break: break-word
+  }
+
+  a {
+    color: var(--accent-ink)
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    font-family: "Archivo", sans-serif
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface)
+  }
+
+  .masthead .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px
+  }
+
+  .brandline {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap
+  }
+
+  .brandline .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    align-self: center;
+    flex: none
+  }
+
+  .brandline strong {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: 18px
+  }
+
+  .masthead .meta {
+    font-size: 12px;
+    color: var(--muted)
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    padding: 56px 0 44px;
+    border-bottom: 1px solid var(--rule)
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 40px;
+    align-items: start
+  }
+
+  .hero h1 {
+    font-size: clamp(30px, 4.4vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -.015em;
+    margin: 14px 0 0
+  }
+
+  .hero .lede {
+    max-width: 62ch;
+    margin-top: 18px;
+    font-size: 16.5px;
+    color: var(--ink-2)
+  }
+
+  .hero .lede strong {
+    color: var(--ink);
+    font-weight: 600
+  }
+
+  .scorecard {
+    border: 1px solid var(--rule-strong);
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 20px 24px 18px;
+    text-align: center;
+    min-width: 190px;
+    box-shadow: var(--shadow)
+  }
+
+  .scorecard .num {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 66px;
+    line-height: .95;
+    font-weight: 500;
+    letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums;
+    display: block
+  }
+
+  .scorecard .den {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px
+  }
+
+  .scorecard .band {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--sev-high)
+  }
+
+  .scorecard .band.ok {
+    color: var(--st-fixed)
+  }
+
+  /* The prior score, struck through above the new one - the delta is the story. */
+  .scorecard .was-num {
+    display: block;
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 2px
+  }
+
+  /* ---------- severity chips ---------- */
+  .sevrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px
+  }
+
+  .sevchip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    border-radius: 7px;
+    padding: 7px 13px 7px 10px
+  }
+
+  .sevchip .sw {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex: none
+  }
+
+  .sevchip .n {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    font-size: 14px
+  }
+
+  .sevchip .lbl {
+    font-size: 12.5px;
+    color: var(--muted)
+  }
+
+  .sw-critical {
+    background: var(--sev-critical)
+  }
+
+  .sw-high {
+    background: var(--sev-high)
+  }
+
+  .sw-medium {
+    background: var(--sev-medium)
+  }
+
+  .sw-low {
+    background: var(--sev-low)
+  }
+
+  .sw-info {
+    background: var(--sev-info)
+  }
+
+  .sw-fixed {
+    background: var(--st-fixed)
+  }
+
+  .sw-blocked {
+    background: var(--st-blocked)
+  }
+
+  .sw-offsite {
+    background: var(--st-offsite)
+  }
+
+  .sw-open {
+    background: var(--st-open)
+  }
+
+  .sw-retracted {
+    background: var(--st-retracted)
+  }
+
+  /* ---------- sections ---------- */
+  section {
+    padding: 52px 0;
+    border-bottom: 1px solid var(--rule)
+  }
+
+  section:last-of-type {
+    border-bottom: 0
+  }
+
+  .sec-head {
+    margin-bottom: 26px
+  }
+
+  .sec-head h2 {
+    font-size: 26px;
+    letter-spacing: -.01em;
+    margin-top: 6px
+  }
+
+  .sec-head p {
+    color: var(--muted);
+    max-width: 64ch;
+    margin: 8px 0 0;
+    font-size: 14.5px
+  }
+
+  /* ---------- thesis callout ---------- */
+  .thesis {
+    --th-ground: #141c19;
+    --th-text: #eef2ef;
+    --th-body: #b9c4bf;
+    --th-rule: rgba(255, 255, 255, .13);
+    --th-rule-strong: rgba(255, 255, 255, .22);
+    --th-accent: #6fbf9f;
+    --th-was: #d79a8a;
+    --th-now: #8ecdb4;
+    background: var(--th-ground);
+    color: var(--th-text);
+    border-radius: 12px;
+    padding: 34px 36px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--th-rule);
+  }
+
+  .thesis .eyebrow {
+    color: var(--th-accent)
+  }
+
+  .thesis h2 {
+    color: var(--th-text);
+    font-size: clamp(22px, 2.8vw, 30px);
+    line-height: 1.22;
+    margin: 12px 0 0;
+    max-width: 26ch
+  }
+
+  .thesis p {
+    color: var(--th-body);
+    max-width: 66ch;
+    margin: 16px 0 0;
+    font-size: 15px
+  }
+
+  .thesis strong {
+    color: var(--th-text);
+    font-weight: 600
+  }
+
+  .thesis code {
+    background: rgba(255, 255, 255, .09);
+    border-color: var(--th-rule-strong);
+    color: #dfe6e2
+  }
+
+  .difftable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 26px;
+    font-size: 13.5px
+  }
+
+  .difftable th {
+    text-align: left;
+    font-family: "Archivo", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #95a29c;
+    padding: 0 14px 9px 0;
+    border-bottom: 1px solid var(--th-rule-strong)
+  }
+
+  .difftable td {
+    padding: 11px 14px 11px 0;
+    border-bottom: 1px solid var(--th-rule);
+    vertical-align: top;
+    color: var(--th-body)
+  }
+
+  .difftable td:first-child {
+    color: var(--th-text);
+    font-weight: 500;
+    white-space: nowrap
+  }
+
+  .difftable .was {
+    color: var(--th-was)
+  }
+
+  .difftable .now {
+    color: var(--th-now)
+  }
+
+  .tblscroll {
+    overflow-x: auto
+  }
+
+  /* ---------- score meters ---------- */
+  .meters {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--rule)
+  }
+
+  .meter {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    background: var(--surface);
+    padding: 15px 20px
+  }
+
+  .meter-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px
+  }
+
+  .meter-name {
+    font-weight: 500;
+    font-size: 14.5px
+  }
+
+  .meter-name .wt {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 12px;
+    margin-left: 8px
+  }
+
+  .meter-val {
+    font-family: "JetBrains Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    font-weight: 500
+  }
+
+  .track {
+    position: relative;
+    height: 7px;
+    background: var(--surface-2);
+    border-radius: 4px
+  }
+
+  .fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--accent);
+    border-radius: 4px
+  }
+
+  /* Where the score was before the fixes. A reference mark, not a second series -
+   so it is a hairline in ink, never a competing colour. */
+  .was-tick {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    width: 1.5px;
+    background: var(--ink-2);
+    opacity: .5
+  }
+
+  .meter-val .was {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+    font-weight: 400;
+    margin-right: 7px
+  }
+
+  .meter-note {
+    font-size: 12.5px;
+    color: var(--muted)
+  }
+
+  /* ---------- findings ---------- */
+  .cat {
+    margin-top: 34px
+  }
+
+  .cat:first-of-type {
+    margin-top: 0
+  }
+
+  .cat-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding-bottom: 11px;
+    border-bottom: 1px solid var(--rule-strong);
+    margin-bottom: 2px
+  }
+
+  .cat-head h3 {
+    font-size: 20px
+  }
+
+  .cat-head .score {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums
+  }
+
+  .works {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 13px 16px;
+    margin: 14px 0 18px;
+    font-size: 13.5px;
+    color: var(--ink-2)
+  }
+
+  .works b {
+    color: var(--accent-ink);
+    font-family: "Archivo", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 5px
+  }
+
+  .works ul {
+    margin: 0;
+    padding-left: 18px
+  }
+
+  .works li {
+    margin: 2px 0
+  }
+
+  .finding {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0 16px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--rule)
+  }
+
+  .finding:last-child {
+    border-bottom: 0
+  }
+
+  .stripe {
+    width: 3px;
+    border-radius: 2px;
+    grid-row: 1/span 3
+  }
+
+  .st-Critical {
+    background: var(--sev-critical)
+  }
+
+  .st-High {
+    background: var(--sev-high)
+  }
+
+  .st-Medium {
+    background: var(--sev-medium)
+  }
+
+  .st-Low {
+    background: var(--sev-low)
+  }
+
+  .st-Info {
+    background: var(--sev-info)
+  }
+
+  .f-top {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-wrap: wrap
+  }
+
+  .f-title {
+    font-weight: 600;
+    font-size: 14.5px
+  }
+
+  .badge {
+    font-size: 10px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 2.5px 7px;
+    border-radius: 4px;
+    font-family: "Archivo", sans-serif;
+    flex: none
+  }
+
+  .bd-Critical {
+    background: var(--sev-critical);
+    color: var(--on-dark-sev)
+  }
+
+  .bd-High {
+    background: var(--sev-high);
+    color: var(--on-dark-sev)
+  }
+
+  .bd-Medium {
+    background: var(--sev-medium);
+    color: var(--on-light-sev)
+  }
+
+  .bd-Low {
+    background: var(--sev-low);
+    color: var(--on-light-sev)
+  }
+
+  .bd-Info {
+    background: var(--sev-info);
+    color: var(--on-light-sev)
+  }
+
+  .status {
+    font-size: 10px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 2.5px 7px;
+    border-radius: 4px;
+    font-family: "Archivo", sans-serif;
+    flex: none;
+    border: 1px solid currentColor
+  }
+
+  .stx-fixed {
+    color: var(--st-fixed)
+  }
+
+  .stx-blocked {
+    color: var(--st-blocked)
+  }
+
+  .stx-offsite {
+    color: var(--st-offsite)
+  }
+
+  .stx-open {
+    color: var(--st-open)
+  }
+
+  .stx-retracted {
+    color: var(--st-retracted)
+  }
+
+  .finding.done .f-title {
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--rule-strong);
+    color: var(--ink-2)
+  }
+
+  .f-desc {
+    color: var(--ink-2);
+    font-size: 14px;
+    margin-top: 6px;
+    max-width: 74ch
+  }
+
+  .f-fix {
+    font-size: 13.5px;
+    margin-top: 7px;
+    color: var(--ink-2);
+    max-width: 74ch;
+    padding-left: 13px;
+    border-left: 2px solid var(--accent)
+  }
+
+  .f-fix b {
+    color: var(--accent-ink);
+    font-weight: 600
+  }
+
+  .f-did {
+    font-size: 13.5px;
+    margin-top: 7px;
+    color: var(--ink-2);
+    max-width: 74ch;
+    padding-left: 13px;
+    border-left: 2px solid var(--st-fixed)
+  }
+
+  .f-did b {
+    color: var(--st-fixed);
+    font-weight: 600
+  }
+
+  /* ---------- phases ---------- */
+  .phases {
+    display: flex;
+    flex-direction: column;
+    gap: 14px
+  }
+
+  .phase {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0 20px
+  }
+
+  .pnum {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    grid-row: 1/span 2;
+    padding-top: 2px
+  }
+
+  .phase h3 {
+    font-size: 17px
+  }
+
+  .phase .when {
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-top: 3px
+  }
+
+  .phase ul {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    font-size: 14px;
+    color: var(--ink-2)
+  }
+
+  .phase li {
+    margin: 5px 0
+  }
+
+  .phase.p0 {
+    border-color: var(--accent);
+    border-width: 1.5px
+  }
+
+  /* ---------- limits ---------- */
+  .limits {
+    border: 1px dashed var(--rule-strong);
+    border-radius: 10px;
+    padding: 22px 26px;
+    background: var(--surface)
+  }
+
+  .limits ul {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    font-size: 14px;
+    color: var(--ink-2)
+  }
+
+  .limits li {
+    margin: 6px 0
+  }
+
+  .limits li b {
+    color: var(--ink)
+  }
+
+  footer {
+    padding: 34px 0 52px;
+    color: var(--muted);
+    font-size: 12.5px
+  }
+
+  footer p {
+    margin: 4px 0;
+    max-width: 70ch
+  }
+
+  @media (max-width:760px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 26px
+    }
+
+    .scorecard {
+      justify-self: start;
+      min-width: 170px
+    }
+
+    .wrap {
+      padding: 0 20px
+    }
+
+    .phase {
+      grid-template-columns: 1fr;
+      gap: 6px
+    }
+
+    .pnum {
+      grid-row: auto
+    }
+
+    .thesis {
+      padding: 26px 22px
+    }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    * {
+      animation: none !important;
+      transition: none !important
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px
+  }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandline">
+      <span class="dot" aria-hidden="true"></span>
+      <strong>SEO Audit</strong>
+      <span class="mono" style="font-size:13px;color:var(--muted)">corelinedigital.in</span>
+    </div>
+    <div class="meta">4 September 2026 · fourth pass · audited, remediated, confirmed live and
+      re-checked
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Audit &amp; remediation</span>
+      <h1>The site was well built. It just didn't say anything Google could match.</h1>
+      <p class="lede">
+        The site launched saying nothing Google could match to a search &mdash; no
+        commercial keywords in any title, ~1,450 words total. Titles, schema and copy
+        were rewritten; five new vertical landing pages shipped with real local
+        photography and a fully-identified founder; site content reached ~7,047 words.
+        Google API credentials configured along the way added something the earliest
+        passes didn't have: <strong>real data</strong> &mdash; actual Lighthouse scores,
+        live indexation status, real organic traffic, not estimates.
+      </p>
+      <p class="lede">
+        Two days ago this report found the deploy live but two pages invisible to
+        Google. <strong>The sitemap has since been resubmitted, and indexation
+          jumped from 2 of 4 pages to 9 of 11</strong> &mdash; confirmed via Search
+        Console's URL Inspection on every URL, not inferred. <code>/services</code> and
+        <code>/privacy</code> have moved from "unknown to Google" to "discovered,
+        not yet indexed" &mdash; a normal queue state, worth nudging with a manual
+        Request Indexing rather than waiting out.
+      </p>
+      <p class="lede">
+        A second thing improved but didn't resolve: the mobile LCP regression flagged
+        last pass moved from 3.3s to 3.1s &mdash; better, still past the 2.5s "good"
+        line. A new diagnostic appeared this time: <strong>forced reflow</strong>,
+        alongside the same ~1s of render-blocking requests as before.
+      </p>
+      <div class="sevrow">
+        <span class="sevchip"><span class="sw sw-fixed"></span><span class="n">36</span><span
+            class="lbl">Fixed</span></span>
+        <span class="sevchip"><span class="sw sw-blocked"></span><span class="n">1</span><span class="lbl">Blocked on
+            your input</span></span>
+        <span class="sevchip"><span class="sw sw-offsite"></span><span class="n">2</span><span class="lbl">Off-site,
+            yours to do</span></span>
+        <span class="sevchip"><span class="sw sw-open"></span><span class="n">6</span><span class="lbl">Still
+            open</span></span>
+        <span class="sevchip"><span class="sw sw-retracted"></span><span class="n">1</span><span
+            class="lbl">Retracted</span></span>
+      </div>
+    </div>
+    <div class="scorecard">
+      <span class="eyebrow">Health score</span>
+      <span class="was-num">86</span>
+      <span class="num">88</span>
+      <div class="den">out of 100 &middot; 56 at first audit</div>
+      <div class="band ok">Live in production</div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <section>
+    <div class="wrap">
+      <div class="thesis">
+        <span class="eyebrow">What the audit found, and what happened next</span>
+        <h2>A build's worth of SEO work was sitting undeployed. It's live now.</h2>
+        <p>
+          Production was running commit <code>738d638</code> from 31 August while the
+          working tree held 542 lines of uncommitted SEO changes. That work was finished,
+          committed across five commits, and &mdash; confirmed live on
+          <code>www.corelinedigital.in</code> as of this pass &mdash;
+          <strong>pushed and deployed.</strong> Every item in the table below was checked
+          against production, not a local build.
+        </p>
+        <div class="tblscroll">
+          <table class="difftable">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Was live</th>
+                <th>Now committed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Homepage title</td>
+                <td class="was">Digital Infrastructure | coreline.</td>
+                <td class="now">Websites for Thane Businesses | Coreline Digital</td>
+              </tr>
+              <tr>
+                <td>Services title</td>
+                <td class="was">Digital Storefronts &amp; Systems | coreline.</td>
+                <td class="now">Website Design in Thane | Coreline Digital</td>
+              </tr>
+              <tr>
+                <td>Contact title</td>
+                <td class="was">Book a Strategy Call | coreline.</td>
+                <td class="now">Talk to Me in Thane | Coreline Digital</td>
+              </tr>
+              <tr>
+                <td>Meta description</td>
+                <td class="was">&ldquo;bespoke web architecture&hellip; AI triage&rdquo;</td>
+                <td class="now">&ldquo;&hellip;From &#8377;15,000, live in 10 working days&rdquo;</td>
+              </tr>
+              <tr>
+                <td><code>og:image</code></td>
+                <td class="was">absent &mdash; links previewed blank</td>
+                <td class="now">generated 1200&times;630 card</td>
+              </tr>
+              <tr>
+                <td><code>twitter:card</code></td>
+                <td class="was">summary</td>
+                <td class="now">summary_large_image</td>
+              </tr>
+              <tr>
+                <td>Person schema</td>
+                <td class="was">absent</td>
+                <td class="now">founder entity, wired</td>
+              </tr>
+              <tr>
+                <td>FAQPage schema</td>
+                <td class="was">absent</td>
+                <td class="now">10 questions</td>
+              </tr>
+              <tr>
+                <td>Per-page schema</td>
+                <td class="was">same org graph on every page</td>
+                <td class="now">WebPage / ContactPage / AboutPage / CollectionPage + breadcrumbs</td>
+              </tr>
+              <tr>
+                <td>Opening hours</td>
+                <td class="was">absent</td>
+                <td class="now">Mon&ndash;Sat 09:00&ndash;18:00</td>
+              </tr>
+              <tr>
+                <td>Published pricing</td>
+                <td class="was">absent</td>
+                <td class="now">&#8377;15,000 + priceSpecification</td>
+              </tr>
+              <tr>
+                <td><code>/about</code>, <code>/privacy</code></td>
+                <td class="was">404, but listed in sitemap</td>
+                <td class="now">live, 226 and 193 words</td>
+              </tr>
+              <tr>
+                <td>Sitewide word count</td>
+                <td class="was">~1,450</td>
+                <td class="now">~7,047 across 11 pages</td>
+              </tr>
+              <tr>
+                <td>Vertical landing pages</td>
+                <td class="was">none</td>
+                <td class="now">5, each with unique Service + FAQPage schema</td>
+              </tr>
+              <tr>
+                <td>Founder identity</td>
+                <td class="was">"Shailesh" &mdash; first name only</td>
+                <td class="now">Shailesh Hawale, job title, 521-word About page</td>
+              </tr>
+              <tr>
+                <td><code>/samples/</code> crawl</td>
+                <td class="was">Disallowed <em>and</em> noindex &mdash; neither worked</td>
+                <td class="now">crawlable, noindex, follow</td>
+              </tr>
+              <tr>
+                <td><code>sameAs</code></td>
+                <td class="was">absent</td>
+                <td class="now">GBP, LinkedIn, Instagram &mdash; all verified live</td>
+              </tr>
+              <tr>
+                <td><code>/llms.txt</code></td>
+                <td class="was">404</td>
+                <td class="now">generated from the same content the site uses</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>Confirmed live in production during this pass:</strong> every row above
+          checked against <code>https://www.corelinedigital.in</code> directly, not a
+          local build. The <code>/admin</code> dashboard another session was building
+          stayed out of this deploy, as intended.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="thesis">
+        <span class="eyebrow">This pass: real data, not estimates</span>
+        <h2>Google API credentials landed this session. The numbers below are real.</h2>
+        <p>
+          Every prior mention of Core Web Vitals, indexation, or traffic in this report
+          was an acknowledged gap &mdash; no API key, no way to measure. That changed
+          mid-session, and the site was measured twice: once mid-deploy, once against the
+          confirmed-current production build. The second reading is the one below.
+        </p>
+        <div class="tblscroll">
+          <table class="difftable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Source</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Lighthouse performance</td>
+                <td>PageSpeed Insights, production</td>
+                <td class="was">88 mobile &middot; SEO, A11y, Best Practices all 100</td>
+              </tr>
+              <tr>
+                <td>Lighthouse performance</td>
+                <td>PageSpeed Insights, production</td>
+                <td class="now">100 desktop, across all four categories</td>
+              </tr>
+              <tr>
+                <td>Mobile LCP</td>
+                <td>PageSpeed Insights, production</td>
+                <td class="was">3.3s &mdash; now past the 2.5s "good" line</td>
+              </tr>
+              <tr>
+                <td>CrUX field data</td>
+                <td>Chrome UX Report</td>
+                <td class="was">none &mdash; traffic too low for eligibility yet</td>
+              </tr>
+              <tr>
+                <td><code>/</code> indexation</td>
+                <td>Search Console URL Inspection</td>
+                <td class="now">indexed, canonical matches</td>
+              </tr>
+              <tr>
+                <td><code>/contact</code> indexation</td>
+                <td>Search Console URL Inspection</td>
+                <td class="now">indexed &mdash; cached canonical is stale (pre-www-fix crawl)</td>
+              </tr>
+              <tr>
+                <td><code>/services</code> indexation</td>
+                <td>Search Console URL Inspection</td>
+                <td class="was">"URL is unknown to Google" &mdash; not indexed</td>
+              </tr>
+              <tr>
+                <td><code>/work</code> indexation</td>
+                <td>Search Console URL Inspection</td>
+                <td class="was">"URL is unknown to Google" &mdash; not indexed</td>
+              </tr>
+              <tr>
+                <td>Organic sessions, 30 days</td>
+                <td>GA4</td>
+                <td class="was">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Two real findings came out of this, one good and one to watch. First: the
+          sitemap Search Console has on file was last submitted 28 August with the old 4
+          URLs. <strong>Two of your four previously-live pages were invisible to Google,
+            which is the actual reason organic traffic reads zero</strong> &mdash; not a
+          ranking problem. Resubmitting the now-11-URL sitemap and requesting indexing on
+          <code>/services</code> and <code>/work</code> directly is the single highest-
+          leverage action available right now.
+        </p>
+        <p>
+          Second: mobile Lighthouse performance moved from 95 to 88 between the two
+          readings taken this session, and LCP crossed from 2.6s to 3.3s &mdash; past the
+          "good" threshold. Desktop stayed perfect throughout. This tracks with how much
+          the site grew this session (five new pages, more schema, a chat widget, more
+          fonts) and is worth a look before it compounds further. See the Performance
+          section below for PageSpeed's own diagnosis.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Category scores</span>
+        <h2>Where the score moved</h2>
+        <p>Bar length is the score after the fixes; the hairline marks where it was before. The weight in grey is how
+          much each category moves the overall number.</p>
+      </div>
+      <div class="meters" id="meters"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Detailed findings</span>
+        <h2>46 findings, and what became of each</h2>
+        <p>Severity is what the finding costs you. The status beside it is what actually happened: fixed in code,
+          waiting on information only you have, off-site work, or still open. One was retracted &mdash; it turned out
+          not to be a defect.</p>
+      </div>
+      <div id="cats"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">What is left</span>
+        <h2>What still needs doing</h2>
+        <p>The code is clean and nothing here blocks the push. What remains is the deploy
+          itself, a same-day sitemap resubmission, some cosmetic trims, and the off-site
+          work that no amount of markup substitutes for.</p>
+      </div>
+      <div class="phases" id="phases"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Audit coverage</span>
+        <h2>What this audit could not measure</h2>
+        <p>All five gaps below are missing credentials, not site defects. None of them are counted against the score.
+        </p>
+      </div>
+      <div class="limits">
+        <ul>
+          <li><b>Core Web Vitals (LCP, INP, CLS)</b> - the PageSpeed Insights API returned HTTP 429
+            (daily quota exhausted, no key configured) and the Claude SEO runtime is not set up, so no
+            CrUX field data was available. The performance score reflects direct transfer
+            measurements only.</li>
+          <li><b>Indexation status</b> - no Search Console access; the true indexed page count is unknown.</li>
+          <li><b>Backlink profile</b> - no Moz, Bing or DataForSEO credentials; referring domains were not assessed.
+          </li>
+          <li><b>Keyword rankings and search volume</b> - no rank-tracking data source available.</li>
+          <li><b>Real-device mobile rendering</b> - the Playwright MCP server failed to connect this session, so no
+            screenshots were captured.</li>
+        </ul>
+        <p style="margin:14px 0 0;font-size:13.5px;color:var(--muted)">
+          Run <code>/seo setup</code> and configure a PageSpeed Insights API key to close these on the next pass.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Audited 2 September 2026 against <span class="mono">https://www.corelinedigital.in</span> - canonical host, 4
+      live pages plus one sample page, verified over the wire.</p>
+    <p>Full markdown findings, raw HTML captures and the structured data envelope are in
+      <code>corelinedigital.in-audit/</code>.</p>
+  </div>
+</footer>
+
+<script>
+  const CATS = [
+ {
+  name: "Technical SEO",
+  score: 95,
+  was: 95,
+  weight: 22,
+  note: "Sitemap resubmission confirmed; indexation jumped from 2/4 to 9/11 pages",
+  works: [
+   "HTTPS enforced with 308 on apex and www",
+   "Canonical host consolidated on www",
+   "Valid robots.txt with Host and Sitemap directives",
+   "Self-referencing absolute canonicals on all pages",
+   "True 404 status, trailing-slash normalisation",
+   "Statically prerendered, edge cache HIT, 88 ms TTFB",
+   "Verified this session: 21/21 unique internal link targets resolve to 200; no duplicate titles or descriptions across all 11 pages; tsc/build/lint all clean"
+  ],
+  findings: [
+   {
+    t: "robots.txt Disallow makes the noindex on /samples/ unenforceable",
+    st: "fixed",
+    did: "Removed the Disallow so the noindex is readable. /api/ and /admin/ stay blocked. Verified in the built output.",
+    s: "Critical",
+    d: "/samples/ is Disallowed in robots.txt while every sample page also serves noindex, nofollow, nocache. Google cannot read a meta tag on a page it may not fetch, so the noindex never takes effect and the URLs stay eligible for URL-only indexing.",
+    f: "Pick one mechanism: remove Disallow: /samples/ and let the noindex work, or keep the Disallow and drop the meta tag."
+   },
+   {
+    t: "13 internal links point into a crawler-blocked directory",
+    st: "fixed",
+    did: "Samples are crawlable now, and follow:false became follow:true, so /work's ten links no longer dead-end.",
+    s: "High",
+    d: "The homepage links to 3 sample pages and /work links to all 10. Of /work's 12 outbound links, 10 terminate at blocked URLs, making the portfolio page a near dead-end for crawlers.",
+    f: "Resolve the robots conflict so the samples become crawlable, or stop linking to them from indexable pages."
+   },
+   {
+    t: "Sitemap lists 4 URLs while local sitemap.ts declares 6",
+    st: "fixed",
+    did: "/about and /privacy now exist and return 200; the sitemap serves all six URLs.",
+    s: "High",
+    d: "app/sitemap.ts already includes /about and /privacy; both return 404 in production because the routes are not deployed.",
+    f: "Deploy the working tree, verify both return 200, then resubmit the sitemap."
+   },
+   {
+    t: "Security headers largely absent",
+    st: "fixed",
+    did: "nosniff, Referrer-Policy, X-Frame-Options and Permissions-Policy ship, and HSTS gained includeSubDomains and preload.",
+    s: "Medium",
+    d: "Only Strict-Transport-Security is present. Missing X-Content-Type-Options, Referrer-Policy, X-Frame-Options / CSP frame-ancestors, and Permissions-Policy. HSTS also lacks includeSubDomains and preload.",
+    f: "Add the headers block to next.config.ts."
+   },
+   {
+    t: "Two-hop redirect from apex over HTTP",
+    st: "offsite",
+    did: "Vercel domain configuration, not application code. Collapse the apex redirect in the Vercel dashboard.",
+    s: "Low",
+    d: "http://corelinedigital.in redirects to https://corelinedigital.in and then again to https://www.corelinedigital.in.",
+    f: "Collapse to a single hop to the final HTTPS + www target."
+   },
+   {
+    t: "/favicon.ico returns 404",
+    st: "fixed",
+    did: "Generated from the logo mark at 16/32/48px. Returns 200.",
+    s: "Low",
+    d: "Icons are served via /icon.svg and /apple-icon.png. Some legacy crawlers and link-preview bots still request /favicon.ico at the root.",
+    f: "Add a root favicon.ico fallback."
+   },
+   {
+    t: "Sitemap not resubmitted since 28 Aug - two live pages are unindexed",
+    st: "fixed",
+    did: "Confirmed via Search Console: sitemap resubmitted 2 Sep with all 11 URLs. Indexation jumped from 2 of 4 pages to 9 of 11, verified via URL Inspection on every page. /services and /privacy have progressed from \"unknown to Google\" to \"discovered, not yet indexed\" - a normal queue state, not a defect. /services being the money page, a manual Request Indexing in the Search Console UI is worth doing rather than waiting out the crawl queue.",
+    s: "High",
+    d: "GSC sitemap API shows last_submitted 2026-08-28, 4 URLs, predating every fix in this branch. GA4 confirms zero organic sessions in the last 30 days - a direct consequence of the indexation gap, not a ranking problem.",
+    f: "After deploying, resubmit the sitemap (now 11 URLs) in Search Console and request indexing on /services and /work directly - don't wait for a passive recrawl."
+   }
+  ]
+ },
+ {
+  name: "Content Quality",
+  score: 78,
+  was: 62,
+  weight: 23,
+  note: "5 new vertical pages, ~7,047 words sitewide, full E-E-A-T closed",
+  works: [
+   "Copy is specific, confident and free of generic agency filler",
+   "Clear positioning (systems vs templates) sustained across pages",
+   "Service descriptions name real mechanisms, not vague capabilities",
+   "Distinctive quotable lines well suited to AI citation",
+   "Five new indexed vertical landing pages (clinic/jewellery/gym/coaching/real-estate), each passing a genuine swap test with vertical-specific facts",
+   "Full founder identity now live: Shailesh Hawale, job title, 521-word About page"
+  ],
+  findings: [
+   {
+    t: "No content engine at all",
+    st: "open",
+    did: "The largest remaining gap. Nothing here substitutes for publishing.",
+    s: "Critical",
+    d: "Four pages, no blog, no guides, no case studies. Nothing targets informational or long-tail queries; every page is bottom-of-funnel. Total indexable body copy is roughly 1,450 words.",
+    f: "Launch a blog at two posts a month and publish three case studies with real outcome numbers."
+   },
+   {
+    t: "Zero geo or commercial keyword presence in body copy",
+    st: "fixed",
+    did: "Titles, descriptions and body copy rewritten around the terms buyers search, carrying the price and the delivery date.",
+    s: "Critical",
+    d: "“Thane” appears in live body text only in the footer address. The site never describes itself using the words buyers search - website design, web developer, website company - paired with Thane, Wagle Estate or Mumbai.",
+    f: "Rewrite homepage and services copy around the 15 terms already identified in the local seoKeywords list."
+   },
+   {
+    t: "E-E-A-T signals are minimal",
+    st: "fixed",
+    did: "About page now carries full name (Shailesh Hawale), job title, and 521 words of real biography. Person schema matches.",
+    s: "High",
+    d: "The founder is “Shailesh” - first name only, with no surname, bio, photo, credentials or LinkedIn. No sameAs, no named clients, no testimonials, no reviews, no live pricing, and the About page 404s.",
+    f: "Deploy the About page and expand it with a full bio, photo, experience and social profiles."
+   },
+   {
+    t: "Portfolio is samples, but the homepage implies client work",
+    st: "fixed",
+    did: "The homepage teaser now reads 'A few sample sites', matching /work, and an FAQ answers the question directly.",
+    s: "High",
+    d: "The homepage section reads “Recent builds / A few systems we've built” while /work describes the same items as “Ten industry sample builds”. A prospect reading both will notice.",
+    f: "Deploy the FAQ that already answers this honestly, and align the homepage heading with /work's framing."
+   },
+   {
+    t: "/services is critically thin",
+    st: "fixed",
+    did: "370 to 1,079 words, plus five new FAQs.",
+    s: "High",
+    d: "370 words covering three distinct service lines, on the primary money page.",
+    f: "Expand to 900+ words with an H3 per “Includes” item."
+   },
+   {
+    t: "Contact page has no subheadings",
+    st: "fixed",
+    did: "Two heading landmarks added, for the contact details and the callback form.",
+    s: "Medium",
+    d: "/contact carries an H1 and no H2 or H3 at all, across 97 words.",
+    f: "Add Visit / Call / WhatsApp / What happens next subheadings."
+   }
+  ]
+ },
+ {
+  name: "On-Page SEO",
+  score: 95,
+  was: 88,
+  weight: 20,
+  note: "All description-length issues fixed; price removed from titles; search icon fixed",
+  works: [
+   "One unique descriptive H1 per page",
+   "Self-referencing canonicals correct sitewide",
+   "Meta descriptions present on every page",
+   "No duplicate titles or descriptions",
+   "Correct index, follow directives on public pages",
+   "Price removed from SERP titles (commit 04fdb98) - the floor still lives in the copy and in schema's priceSpecification, just not duplicated into every title"
+  ],
+  findings: [
+   {
+    t: "No title contains a commercial or geographic keyword",
+    st: "fixed",
+    did: "Now: Websites for Thane Businesses, Website Design in Thane, Talk to Me in Thane.",
+    s: "Critical",
+    d: "Not one title says website, web design, Thane or Mumbai. Titles use internal positioning vocabulary - “Digital Infrastructure”, “Digital Storefronts & Systems” - that carries effectively no search volume.",
+    f: "Deploy the working tree, whose titles are already geo-targeted."
+   },
+   {
+    t: "Full brand name absent from every title",
+    st: "fixed",
+    did: "The suffix is now the registered name. The lowercase wordmark is unchanged everywhere it is drawn.",
+    s: "High",
+    d: "Titles suffix with “coreline.” but the registered name is Coreline Digital, so brand searches match against a string the titles never contain.",
+    f: "Use “| Coreline Digital” as the title suffix."
+   },
+   {
+    t: "og:image missing sitewide",
+    st: "fixed",
+    did: "A generated 1200x630 card ships on every page, with summary_large_image.",
+    s: "High",
+    d: "No og:image on any page, and twitter:card is summary rather than summary_large_image, so every WhatsApp, LinkedIn and Slack share renders as a bare text link. The code names WhatsApp sharing as the primary distribution channel.",
+    f: "Deploy app/opengraph-image.tsx, which already generates a 1200×630 card."
+   },
+   {
+    t: "Open Graph tags incomplete",
+    st: "fixed",
+    did: "og:type, og:locale and og:site_name all present.",
+    s: "Medium",
+    d: "og:type, og:locale and og:site_name are all absent in production. All three are present in the working tree.",
+    f: "Deploy the working tree."
+   },
+   {
+    t: "Titles under-length",
+    st: "fixed",
+    did: "Rewritten titles use the available budget with service and location terms.",
+    s: "Medium",
+    d: "Titles run 32–41 characters against a ~60 character budget, leaving roughly 20 characters of keyword space unused on every page.",
+    f: "Extend titles with service and location terms."
+   },
+   {
+    t: "Two meta descriptions under-length",
+    st: "fixed",
+    did: "Both rewritten; /contact now carries the callback promise.",
+    s: "Low",
+    d: "/work is 119 characters and /contact 95, against a ~155 budget. /contact omits the phone number and the same-day callback hook.",
+    f: "Expand both toward 150 characters."
+   },
+   {
+    t: "Flat heading structure on key pages",
+    st: "fixed",
+    did: "The contact page gained landmarks; /work carries ten h3s under its h2.",
+    s: "Low",
+    d: "/services uses four H2s and zero H3s for its “Includes” feature lists; /contact has no subheadings at all.",
+    f: "Introduce H3s to improve passage-level extraction."
+   },
+   {
+    t: "No BreadcrumbList",
+    st: "fixed",
+    did: "On every subpage, linked to the WebPage entity by @id.",
+    s: "Low",
+    d: "No breadcrumb markup. Low impact on a flat four-page site.",
+    f: "Add once /about and /privacy ship."
+   },
+   {
+    t: "Four meta descriptions exceed the ~155-char budget",
+    st: "fixed",
+    did: "All four trimmed and verified live: /services 157->143, /jewellery-website-thane 171->151, /coaching-class-website-thane 161->147, /real-estate-website-thane 164->150. Every description on the site is now under 155 characters.",
+    s: "Low",
+    d: "Introduced by this pass's new vertical landing pages and the expanded /services description.",
+    f: "Trim toward 150-155 characters, keeping the price where it survives truncation."
+   },
+   {
+    t: "Search results showed a generic globe icon",
+    st: "fixed",
+    did: "A new 192x192 opaque icon-192.png now backs manifest.webmanifest and the icon link set, alongside the existing SVG and favicon.ico. Verified live and cross-referenced correctly.",
+    s: "Low",
+    d: "Google Search was falling back to a generic globe icon next to search results because no icon in the set was suitable for that display context.",
+    f: "Provide an opaque PNG icon of at least 192x192 alongside the SVG favicon."
+   }
+  ]
+ },
+ {
+  name: "Schema / Structured Data",
+  score: 92,
+  was: 90,
+  weight: 10,
+  note: "Google's own Rich Results check now confirms Breadcrumbs on multiple pages",
+  works: [
+   "Valid JSON-LD, parses cleanly, no syntax errors",
+   "Stable @id anchoring with correct publisher cross-reference",
+   "Complete PostalAddress including postalCode, plus GeoCoordinates",
+   "areaServed covers Thane, Thane West, Mumbai and Maharashtra",
+   "ContactPoint with availableLanguage English, Hindi, Marathi",
+   "hasOfferCatalog with five typed Service offers",
+   "Search Console's Rich Results check independently confirms Breadcrumbs detected on /work, /about and /clinic-website-thane - not just valid JSON-LD, but Google actually parsing and using it"
+  ],
+  findings: [
+   {
+    t: "No sameAs property",
+    st: "fixed",
+    did: "site.profiles now carries the real GBP, LinkedIn and Instagram URLs, all verified to resolve before committing. organizationJsonLd() emits sameAs for all three.",
+    s: "High",
+    d: "No social or third-party profile links in the schema or anywhere on the page. This is the primary mechanism by which Google reconciles a business into its Knowledge Graph.",
+    f: "Add Google Business Profile, LinkedIn, Instagram and directory URLs to sameAs and the footer."
+   },
+   {
+    t: "No founder or Person entity live",
+    st: "fixed",
+    did: "The Person entity ships sitewide, linked to the organization by @id.",
+    s: "High",
+    d: "The homepage devotes a section to Shailesh, but no Person entity exists in the markup. personJsonLd() is written and wired in the working tree, unshipped.",
+    f: "Deploy the working tree."
+   },
+   {
+    t: "No openingHoursSpecification",
+    st: "fixed",
+    did: "Mon-Sat 09:00-18:00, matching the same-day-before-6pm promise.",
+    s: "Medium",
+    d: "LocalBusiness subtypes are eligible for hours display, and the contact page already promises a same-day reply before 6pm.",
+    f: "Encode business hours in the schema."
+   },
+   {
+    t: "No aggregateRating or review markup",
+    st: "offsite",
+    did: "Depends on reviews existing. Collect them first.",
+    s: "Medium",
+    d: "No review markup, because no reviews exist yet.",
+    f: "Collect Google reviews first, then mark them up."
+   },
+   {
+    t: "Identical schema on all four pages",
+    st: "fixed",
+    did: "WebPage, ContactPage, AboutPage and CollectionPage per URL, plus FAQPage and breadcrumbs.",
+    s: "Medium",
+    d: "Every page emits the same organization graph and nothing page-specific. Missing WebPage per URL, ContactPage, FAQPage, BreadcrumbList and ItemList for the /work grid.",
+    f: "Deploy faqJsonLd(), already wired into the services page, and add per-page WebPage types."
+   },
+   {
+    t: "priceRange “$$” is uninformative",
+    st: "fixed",
+    did: "Replaced with an INR priceSpecification of 15,000 to 35,000.",
+    s: "Low",
+    d: "A US-dollar band on an Indian INR business.",
+    f: "Deploy the working tree's priceSpecification of ₹15,000–35,000."
+   }
+  ]
+ },
+ {
+  name: "Performance",
+  score: 85,
+  was: 83,
+  weight: 10,
+  note: "Mobile LCP improved but hasn't crossed back to \"good\"; a new forced-reflow issue appeared",
+  works: [
+   "Desktop: 100/100/100/100 across Performance, Accessibility, Best Practices and SEO",
+   "CLS 0 and TBT 30ms on mobile - layout stability and interactivity are excellent",
+   "Images served as AVIF with correct srcset and sizes",
+   "Explicit width/height or fill on every image, so CLS risk is low",
+   "Fonts preloaded with crossorigin and immutable hashed URLs",
+   "Below-fold images correctly lazy-loaded"
+  ],
+  findings: [
+   {
+    t: "Core Web Vitals could not be measured",
+    st: "fixed",
+    did: "Measured via PageSpeed Insights against the live, deployed production site (Google API credentials configured this session): desktop scores 100/100/100/100. Real-user CrUX field data unavailable - traffic too low for eligibility, expected this early.",
+    s: "Info",
+    d: "The PageSpeed Insights API returned HTTP 429 (quota exhausted, no key configured) and the Claude SEO runtime is not set up, so no CrUX field data was available. No LCP, INP or CLS values were obtained; this score reflects direct transfer measurements only.",
+    f: "Configure a PSI API key or run Lighthouse locally, then re-score this category."
+   },
+   {
+    t: "Mobile LCP has regressed past the \"good\" threshold",
+    st: "open",
+    did: "Re-measured two days later: mobile Performance improved 88->92, LCP improved 3.3s->3.1s, Speed Index improved 4.9s->3.5s. Trending the right way but LCP is still past the 2.5s \"good\" line. Render-blocking requests are essentially unchanged (~1,010ms estimated savings, was ~1,000ms). A new failed audit appeared this pass: \"Forced reflow\", suggesting some script is causing synchronous layout recalculation - worth investigating alongside the render-blocking issue.",
+    s: "Medium",
+    d: "The site has grown substantially this session - five new pages, more schema, a chat widget, more fonts and components. That growth has a real, measured mobile cost: LCP moved from comfortably \"good\" to just past it.",
+    f: "Investigate what's newly render-blocking on mobile - the chat widget's script and any newly added font weights are the most likely candidates. Re-run PageSpeed Insights after any change to confirm."
+   },
+   {
+    t: "Four font files across three families",
+    st: "open",
+    did: "Untouched. Subsetting is a follow-up.",
+    s: "Medium",
+    d: "Space Grotesk, Inter and IBM Plex Mono total roughly 90 KB, with 48 KB in a single face, all preloaded and competing for early bandwidth.",
+    f: "Subset to the Latin range and consider reducing three families to two."
+   },
+   {
+    t: "All photography hotlinked from Unsplash",
+    st: "open",
+    did: "Untouched, and tied to replacing stock with real screenshots.",
+    s: "Medium",
+    d: "Every photo proxies images.unsplash.com through the Vercel optimizer, adding a third-party dependency on the critical path for /work.",
+    f: "Self-host imagery, ideally replacing stock with real build screenshots."
+   },
+   {
+    t: "47 KB of RSC flight payload inline in the HTML",
+    st: "open",
+    did: "Normal for the App Router; not worth restructuring for.",
+    s: "Low",
+    d: "self.__next_f.push(...) accounts for 47 KB of the 88 KB uncompressed document - more than half the HTML is hydration data rather than content.",
+    f: "Normal for the App Router; reduce client component boundaries where practical."
+   },
+   {
+    t: "src fallback resolves to the 3840px variant",
+    st: "fixed",
+    did: "deviceSizes capped at 2048.",
+    s: "Low",
+    d: "Next.js sets the largest srcset entry as the src fallback, so any client ignoring srcset pulls 663 KB of 4K imagery on /work.",
+    f: "Cap the configured deviceSizes to a realistic maximum."
+   }
+  ]
+ },
+ {
+  name: "AI Search Readiness",
+  score: 85,
+  was: 82,
+  weight: 10,
+  note: "9 of 11 pages now indexed and crawlable by everything, not just the 7 AI crawlers already verified",
+  works: [
+   "Every AI crawler verified reachable: GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, bingbot, Googlebot all return 200",
+   "No user-agent-specific blocks in robots.txt",
+   "Server-rendered, so non-JS crawlers see the full text",
+   "Organization schema provides a structured entity anchor",
+   "Distinctive quotable phrasing well suited to extraction",
+   "llms.txt regenerated to include all 5 new vertical pages automatically, since it's built from lib/content.ts rather than hand-maintained",
+   "Each vertical page carries its own FAQPage (2 questions) plus a dedicated Service entity - citable, page-specific facts rather than one shared block",
+   "9 of 11 pages now confirmed indexed via Search Console URL Inspection, up from 2 of 4 - directly improves what any crawler, AI or otherwise, can find and cite"
+  ],
+  findings: [
+   {
+    t: "Not enough content to cite",
+    st: "fixed",
+    did: "1,450 to 2,867 words, with ten FAQs and concrete numbers now extractable.",
+    s: "Critical",
+    d: "AI answer engines cite passages. With roughly 1,450 words sitewide and no question-shaped content, there is almost nothing to extract. This is the binding constraint on AI visibility.",
+    f: "Expand content depth as set out under Content Quality."
+   },
+   {
+    t: "No FAQ or Q&A content live",
+    st: "fixed",
+    did: "Ten questions ship, all in FAQPage schema.",
+    s: "High",
+    d: "Question-and-answer blocks are the highest-yield format for AI search. Five written FAQs and faqJsonLd() exist in the working tree, unshipped.",
+    f: "Deploy the working tree."
+   },
+   {
+    t: "No author or expertise entity",
+    st: "blocked",
+    did: "The Person entity ships; the biographical detail behind it is yours to supply.",
+    s: "High",
+    d: "No Person schema, author byline, bio or sameAs. LLMs weight identifiable expertise heavily when selecting citations.",
+    f: "Deploy personJsonLd() and expand the About page."
+   },
+   {
+    t: "Portfolio invisible to AI crawlers",
+    st: "fixed",
+    did: "Samples are crawlable. They stay noindex by design, since the businesses are fictional.",
+    s: "High",
+    d: "All 10 sample builds sit under the Disallow: /samples/ path, so the most substantive content on the site cannot be read by any AI crawler.",
+    f: "Resolve the robots conflict."
+   },
+   {
+    t: "No citable facts, figures or definitions",
+    st: "fixed",
+    did: "Price floor, ceiling, delivery date and payment terms now appear in copy and in schema.",
+    s: "Medium",
+    d: "No statistics, live pricing, timelines or comparison tables. The single comparison block is two short lines.",
+    f: "Deploy the concrete numbers already written: ₹15,000 and 10 working days."
+   },
+   {
+    t: "No off-site brand corroboration",
+    st: "fixed",
+    did: "The GBP link you supplied resolves to a real Maps listing, so it's already claimed - and it's now linked from the schema along with LinkedIn and Instagram. Whether the listing itself is fully optimised (category, hours, photos) wasn't checked.",
+    s: "Medium",
+    d: "No reviews, directory listings or social profiles exist to corroborate the business to an LLM.",
+    f: "Claim Google Business Profile and build citations."
+   },
+   {
+    t: "No llms.txt",
+    st: "fixed",
+    did: "Added as a Route Handler generated from lib/content.ts, so it can't drift from the price or the pages it lists.",
+    s: "Low",
+    d: "/llms.txt returns 404. Optional and ignored by Google, though some AI tools consume it.",
+    f: "Add if convenient; low expected return."
+   }
+  ]
+ },
+ {
+  name: "Images",
+  score: 80,
+  was: 72,
+  weight: 5,
+  note: "5 vertical pages now use real local AVIF; /work and one homepage card still stock",
+  works: [
+   "AVIF delivery via the Next.js optimizer",
+   "Correct srcset and sizes on content imagery",
+   "Dimensions or fill on every image, so no layout shift",
+   "Below-fold images lazy-loaded",
+   "Content photography carries genuinely descriptive alt text",
+   "All five vertical landing pages use real local photography (/verticals/*.jpg), delivered as AVIF at 56-64 KB per hero - no longer hotlinked"
+  ],
+  findings: [
+   {
+    t: "No Open Graph or social share image",
+    st: "fixed",
+    did: "A generated 1200x630 card ships sitewide.",
+    s: "High",
+    d: "Nothing to preview when a link is shared. app/opengraph-image.tsx generates a 1200×630 card in the working tree and is unshipped.",
+    f: "Deploy the working tree."
+   },
+   {
+    t: "All imagery is Unsplash stock",
+    st: "open",
+    did: "Partially resolved: the five vertical pages (the highest-value indexed real estate) now use real local photography. The ten /work sample cards and one homepage feature card are still Unsplash hotlinks.",
+    s: "Medium",
+    d: "Every photograph is stock. On a homepage section headed “Recent builds / A few systems we've built”, stock interiors of clinics and showrooms are a credibility risk.",
+    f: "Replace with screenshots of the actual sample builds, which also carry keyword-relevant alt text."
+   },
+   {
+    t: "Nav logo has an empty alt attribute",
+    st: "retracted",
+    did: "Not a defect. The wrapping link already carries aria-label=\"Coreline Digital - home\", which is the correct decorative pattern. No change was made.",
+    s: "Low",
+    d: "The nav logo is wrapped in the home link, so screen readers announce a link with no accessible name.",
+    f: "Set alt=\"Coreline Digital\" on the nav instance; the footer instance may stay decorative."
+   },
+   {
+    t: "/favicon.ico returns 404",
+    st: "fixed",
+    did: "Generated from the logo mark at 16/32/48px. Returns 200.",
+    s: "Low",
+    d: "Also recorded under Technical SEO.",
+    f: "Add a root favicon.ico fallback."
+   }
+  ]
+ }
+];
+
+const PHASES = [
+ {
+  n: "1",
+  name: "Today",
+  when: "Now",
+  "p0": true,
+  items: [
+   "Manually request indexing on /services via the Search Console UI - it's the primary money page and shouldn't wait out a passive crawl queue",
+   "Investigate the \"Forced reflow\" and render-blocking findings on mobile - LCP (3.1s) is close to the 2.5s \"good\" line but hasn't crossed back",
+   "Let /contact's stale canonical self-correct on its next natural crawl, or force it with a manual re-inspect request if it's still wrong in a week"
+  ]
+ },
+ {
+  n: "2",
+  name: "This week",
+  when: "This week",
+  items: [
+   "Replace the remaining Unsplash hotlinks on /work's ten sample cards and the one homepage feature card with real or licensed photography",
+   "Decide whether the /admin dashboard should ship in a future deploy; it has been deliberately kept out of every deploy so far",
+   "Review the large, uncommitted redesign/full-rebuild branch deliberately before committing any of it - the same way this SEO work was reviewed rather than shipped blind"
+  ]
+ },
+ {
+  n: "3",
+  name: "Off-site, which no markup replaces",
+  when: "Weeks 1-4",
+  items: [
+   "Confirm the Google Business Profile is fully optimised - category, hours matching the site, photos",
+   "Start collecting Google reviews; you sell review automation and display none",
+   "Build citations on JustDial, Sulekha and IndiaMART with identical NAP",
+   "Watch GA4 organic sessions now that 9 of 11 pages are indexed - still zero as of this pass, expected this soon after reindexing"
+  ]
+ },
+ {
+  n: "4",
+  name: "The content gap",
+  when: "Month 2 onward",
+  items: [
+   "Launch a blog - the vertical pages cover commercial intent well, but there's still nothing for informational or long-tail queries",
+   "Write three real case studies with outcome numbers as client work ships",
+   "Consider a vertical page for the remaining verticals (CA, school, interior, trader, travel) - five exist, five don't yet"
+  ]
+ }
+];
+
+  const STATUS_LABEL = {
+    fixed: "Fixed", blocked: "Needs your input", offsite: "Off-site",
+    open: "Still open", retracted: "Retracted"
+  };
+
+  const esc = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+  document.getElementById("meters").innerHTML = CATS.map(c => `
+  <div class="meter">
+    <div class="meter-top">
+      <span class="meter-name">${esc(c.name)}<span class="wt">${c.weight}% weight</span></span>
+      <span class="meter-val"><span class="was">${c.was}</span>${c.score}<span style="color:var(--muted);font-weight:400">/100</span></span>
+    </div>
+    <div class="track">
+      <div class="fill" style="width:${c.score}%"></div>
+      <div class="was-tick" style="left:${c.was}%" title="Score before the fixes: ${c.was}"></div>
+    </div>
+    <div class="meter-note">${esc(c.note)}</div>
+  </div>`).join("");
+
+  document.getElementById("cats").innerHTML = CATS.map(c => `
+  <div class="cat">
+    <div class="cat-head">
+      <h3>${esc(c.name)}</h3>
+      <span class="score">${c.was} &rarr; ${c.score}/100 · ${c.findings.filter(f => f.st === "fixed").length} of ${c.findings.length} fixed</span>
+    </div>
+    <div class="works"><b>What already works</b><ul>${c.works.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>
+    ${c.findings.map(f => {
+    const settled = f.st === "fixed" || f.st === "retracted";
+    const outcome = settled
+      ? `<p class="f-did"><b>${f.st === "retracted" ? "Retracted:" : "Done:"}</b> ${esc(f.did)}</p>`
+      : `<p class="f-fix"><b>Fix:</b> ${esc(f.f)}</p>
+           <p class="f-did stx-${f.st}" style="border-left-color:currentColor">
+             <b>Status:</b> <span style="color:var(--ink-2)">${esc(f.did)}</span>
+           </p>`;
+    return `
+      <div class="finding${settled ? " done" : ""}">
+        <div class="stripe st-${f.s}"></div>
+        <div>
+          <div class="f-top">
+            <span class="badge bd-${f.s}">${f.s}</span>
+            <span class="status stx-${f.st}">${STATUS_LABEL[f.st]}</span>
+            <span class="f-title">${esc(f.t)}</span>
+          </div>
+          <p class="f-desc">${esc(f.d)}</p>
+          ${outcome}
+        </div>
+      </div>`;
+  }).join("")}
+  </div>`).join("");
+
+  document.getElementById("phases").innerHTML = PHASES.map(p => `
+  <div class="phase${p.p0 ? " p0" : ""}">
+    <span class="pnum">${p.n}</span>
+    <div>
+      <h3>${esc(p.name)}</h3>
+      <div class="when">${esc(p.when)}</div>
+    </div>
+    <div style="grid-column:2">
+      <ul>${p.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
+    </div>
+  </div>`).join("");
+</script>

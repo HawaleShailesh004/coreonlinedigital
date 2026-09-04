@@ -20,7 +20,7 @@ export const titleSuffix = site.legalName;
  * stays on the page, not in the SERP snippet.
  */
 export const defaultDescription =
-  "Websites for Thane and Mumbai businesses that bring you customers. Live in 10 working days, half paid only when it goes live.";
+  "Websites, AI agents, automations and local search for Thane and Mumbai businesses - one team, no handoffs.";
 
 export const seoKeywords = [
   "Coreline Digital",
@@ -187,13 +187,6 @@ export function organizationJsonLd() {
       itemListElement: [
         {
           "@type": "Offer",
-          // The one published number, so rich results can carry it too.
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            priceCurrency: "INR",
-            minPrice: 15000,
-            maxPrice: 35000,
-          },
           itemOffered: {
             "@type": "Service",
             name: "Business website design and development",
@@ -276,12 +269,6 @@ export function serviceJsonLd({
     offers: {
       "@type": "Offer",
       url: `${siteUrl}${path}`,
-      priceSpecification: {
-        "@type": "PriceSpecification",
-        priceCurrency: "INR",
-        minPrice: 15000,
-        maxPrice: 35000,
-      },
     },
   };
 }

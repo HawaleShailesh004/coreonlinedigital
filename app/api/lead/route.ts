@@ -74,6 +74,10 @@ export async function POST(request: Request) {
       business: field(input.business),
       websiteState: field(input.websiteState, 60),
       problem: field(input.problem),
+      path: field(input.path, 20),
+      goal: field(input.goal, 60),
+      obstacle: field(input.obstacle, 60),
+      fit: field(input.fit, 20),
       transcript: field(input.transcript, LIMITS.maxTranscriptChars),
     });
   } catch (error) {
@@ -94,6 +98,10 @@ export async function POST(request: Request) {
       business: field(input.business),
       website: field(input.websiteState, 60),
       problem: field(input.problem),
+      path: field(input.path, 20),
+      goal: field(input.goal, 60),
+      obstacle: field(input.obstacle, 60),
+      fit: field(input.fit, 20),
       transcript: field(input.transcript, LIMITS.maxTranscriptChars),
     });
   }

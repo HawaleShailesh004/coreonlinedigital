@@ -1,4 +1,7 @@
+"use client";
+
 import { LineNode } from "@/components/LineNode";
+import { Magnetic } from "@/components/effects/Magnetic";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { hero, pageWhatsappHref } from "@/lib/content";
@@ -20,8 +23,10 @@ function step(delay: number) {
 
 export function Hero() {
   return (
-    <section className="pt-16 pb-20 md:pt-28 md:pb-28">
-      <Container className="flex flex-col items-center text-center">
+    <section className="relative overflow-hidden pt-16 pb-20 md:pt-28 md:pb-28">
+      <div className="hero-wash" aria-hidden="true" />
+
+      <Container className="relative flex flex-col items-center text-center">
         <div className="mb-10 w-32">
           <LineNode animate tone="accent" />
         </div>
@@ -57,19 +62,30 @@ export function Hero() {
         </ul>
 
         <div
-          className="hero-step mt-12 flex w-full flex-col gap-4 sm:w-auto sm:flex-row"
+          className="hero-step mt-12 flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center"
           style={step(STEP.ctas)}
         >
-          {hero.ctas.map((cta) => (
-            <Button
-              key={cta.href}
-              href={"external" in cta && cta.external ? pageWhatsappHref("/") : cta.href}
-              variant={cta.variant}
-              external={"external" in cta ? cta.external : undefined}
-            >
-              {cta.label}
-            </Button>
-          ))}
+          {hero.ctas.map((cta) => {
+            const href =
+              "external" in cta && cta.external ? pageWhatsappHref("/") : cta.href;
+            const button = (
+              <Button
+                href={href}
+                variant={cta.variant}
+                external={"external" in cta ? cta.external : undefined}
+              >
+                {cta.label}
+              </Button>
+            );
+
+            // Magnetic pull only on the primary WhatsApp CTA - one moment of
+            // presence, not every control chasing the cursor.
+            if (cta.variant === "primary") {
+              return <Magnetic key={cta.href}>{button}</Magnetic>;
+            }
+
+            return <span key={cta.href}>{button}</span>;
+          })}
         </div>
         <button
           type="button"

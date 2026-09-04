@@ -1,26 +1,27 @@
 import { ImageResponse } from "next/og";
-import { site } from "@/lib/content";
+import { site } from "@/lib/site-content";
 
 /**
- * The preview card for every link Shailesh sends.
+ * The preview card for every link shared from the site - primarily WhatsApp,
+ * so this is what most visitors see before the page even opens.
  *
- * This matters more here than on most sites: the primary distribution channel
- * is a WhatsApp message with a link in it, and until now that link previewed as
- * nothing at all. The card carries the same three facts as the hero trust line,
- * so the price and the date land before the page even opens.
+ * Matches the homepage hero lockup (brief §12: "the homepage OG uses the
+ * cut-out hero lockup") - same three lines, "IS MISSING" in solid emerald as
+ * a static stand-in for the live page's drifting cut-out gradient, which
+ * obviously can't animate in a still PNG.
  *
- * Drawn rather than served as a static file so it can never drift from the
- * numbers in lib/content.ts.
+ * Drawn rather than served as a static file so it never drifts from the
+ * live headline in lib/site-content.ts.
  */
 
-export const alt = `${site.legalName} - ${site.tagline}`;
+export const alt = `${site.name} - websites, AI agents, automations and search for Thane and Mumbai businesses`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const INK = "#0c1210";
-const PAPER = "#f6f7f5";
-const ACCENT = "#2c7a63";
-const GREY = "#8b9691";
+const INK = "#060a08";
+const BONE = "#efede6";
+const EMERALD = "#12e68e";
+const MUTED = "#868d89";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -33,33 +34,31 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           background: INK,
-          color: PAPER,
+          color: BONE,
           padding: 72,
           // System sans rather than a fetched webfont: the OG route runs on
-          // every social crawl, and a font fetch is a failure mode that turns
-          // the whole card blank.
+          // every social crawl, and a font fetch is a failure mode that
+          // turns the whole card blank.
           fontFamily: "sans-serif",
         }}
       >
-        {/* The line-and-node mark, drawn with divs - the OG renderer supports
-            only a subset of CSS, and this motif needs nothing more. */}
+        {/* Bracket mark, drawn with borders - the OG renderer supports only
+            a subset of CSS, and the mark needs nothing more. */}
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ display: "flex", width: 88, height: 8, alignItems: "center" }}>
-            <div style={{ width: 10, height: 10, borderRadius: 10, background: ACCENT }} />
-            <div style={{ width: 60, height: 1, background: "rgba(246,247,245,0.35)" }} />
-            <div style={{ width: 14, height: 14, borderRadius: 14, background: ACCENT }} />
-          </div>
-          {/* display:flex is required, not cosmetic: the OG renderer refuses
-              any element with more than one child that does not declare it. */}
           <div
             style={{
               display: "flex",
-              fontSize: 34,
-              fontWeight: 700,
-              letterSpacing: -0.5,
+              width: 40,
+              height: 40,
+              border: `2px solid ${EMERALD}`,
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            coreline<span style={{ color: ACCENT }}>.</span>
+            <div style={{ width: 12, height: 12, background: EMERALD }} />
+          </div>
+          <div style={{ display: "flex", fontSize: 34, fontWeight: 700, letterSpacing: -0.5 }}>
+            {site.name}
           </div>
         </div>
 
@@ -68,30 +67,18 @@ export default function OpengraphImage() {
             style={{
               display: "flex",
               flexDirection: "column",
-              fontSize: 74,
-              fontWeight: 700,
-              lineHeight: 1.08,
+              fontSize: 72,
+              fontWeight: 800,
+              lineHeight: 1.02,
               letterSpacing: -2,
             }}
           >
-            <span>You&apos;re losing customers</span>
-            <span>you never even see.</span>
+            <span>WE BUILD WHAT</span>
+            <span>YOUR BUSINESS</span>
+            <span style={{ color: EMERALD }}>IS MISSING</span>
           </div>
-          <div style={{ marginTop: 28, fontSize: 27, color: GREY, maxWidth: 760 }}>
-            Websites for Thane businesses that bring you customers.
-          </div>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ width: "100%", height: 1, background: "rgba(246,247,245,0.16)" }} />
-          <div style={{ display: "flex", gap: 64, marginTop: 26, fontSize: 22 }}>
-            {[`From ${site.priceFrom}`, site.deliveryShort, site.paymentShort].map(
-              (fact) => (
-                <div key={fact} style={{ display: "flex", color: PAPER }}>
-                  {fact}
-                </div>
-              ),
-            )}
+          <div style={{ marginTop: 28, fontSize: 26, color: MUTED, maxWidth: 760 }}>
+            Websites, AI agents, automations and search - one team for Thane and Mumbai.
           </div>
         </div>
       </div>

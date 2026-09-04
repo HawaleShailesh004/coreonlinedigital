@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline Digital — Sample G · Aperture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0C0D0F;--sur:#141619;--bone:#EFEDE7;--dim:#878B92;--em:#0FCF86;--line:rgba(239,237,231,.12);--w:1220px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--bone);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.62;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--em);outline-offset:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 30px}
+.fr{font-family:Fraunces,Georgia,serif;font-weight:300;letter-spacing:-.02em}
+
+nav{position:fixed;inset:0 0 auto;z-index:90;padding:20px 0;background:linear-gradient(180deg,rgba(12,13,15,.92),transparent)}
+.nav-in{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:Fraunces;font-weight:500;font-size:21px;letter-spacing:-.03em;display:flex;gap:10px;align-items:center}
+.mk{width:16px;height:16px;border:1.5px solid var(--em);position:relative}.mk::after{content:"";position:absolute;inset:4px;background:var(--em)}
+.nl{display:flex;gap:26px;font-size:14px;color:var(--dim)}.nl a:hover{color:var(--bone)}
+@media(max-width:900px){.nl{display:none}}
+.btn{padding:11px 22px;font-size:14px;border:1px solid var(--line);border-radius:100px;transition:.2s}
+.btn:hover{border-color:var(--bone)}
+.btn-p{background:var(--em);color:#04170E;border-color:var(--em);font-weight:500}
+.btn-p:hover{background:#2ae79c;border-color:#2ae79c}
+
+/* HERO: opposing columns */
+.hero{height:100vh;position:relative;overflow:hidden;display:grid;place-items:center}
+.cols{position:absolute;inset:-12% 0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 16px;opacity:.30}
+.col{display:grid;gap:16px;will-change:transform}
+.tile{aspect-ratio:3/4;border-radius:4px;border:1px solid rgba(239,237,231,.08)}
+.hero .mid{position:relative;z-index:4;text-align:center;padding:0 30px}
+.hero::after{content:"";position:absolute;inset:0;z-index:2;background:radial-gradient(60% 55% at 50% 50%,rgba(12,13,15,.94) 30%,rgba(12,13,15,.55) 70%,rgba(12,13,15,.9))}
+h1{font-family:Fraunces;font-weight:300;font-size:clamp(40px,6.8vw,86px);line-height:1.02;letter-spacing:-.035em;margin:0 auto 22px;max-width:16ch}
+h1 em{font-style:italic;color:var(--em)}
+.sub{color:var(--dim);font-size:18px;max-width:46ch;margin:0 auto 32px}
+.hb{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+@media(max-width:820px){.cols{grid-template-columns:repeat(2,1fr)}}
+
+/* APERTURE reveal */
+.aperture{height:260vh;position:relative}
+.apsticky{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:center}
+.apmask{position:absolute;inset:0;background:var(--bg);z-index:3;
+ -webkit-mask-image:radial-gradient(circle var(--r,0px) at 50% 50%,transparent 99%,#000 100%);
+ mask-image:radial-gradient(circle var(--r,0px) at 50% 50%,transparent 99%,#000 100%)}
+.apinner{position:absolute;inset:0;display:grid;place-items:center;
+ background:radial-gradient(70% 70% at 50% 45%,rgba(15,207,134,.16),transparent 62%),#080A0B}
+.apinner .t{text-align:center;padding:0 30px;max-width:22ch}
+.apinner h2{font-family:Fraunces;font-weight:300;font-size:clamp(30px,5.2vw,64px);line-height:1.04;letter-spacing:-.035em;margin:0 0 16px}
+.apinner p{color:var(--dim);margin:0}
+.aplabel{position:absolute;bottom:38px;left:0;right:0;text-align:center;z-index:4;font-size:13px;color:var(--dim)}
+.ring{position:absolute;width:min(78vmin,620px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(239,237,231,.14);z-index:4;pointer-events:none}
+
+/* SERVICES: two-column opposing scroll */
+.duo{padding:120px 0;border-top:1px solid var(--line)}
+h2.sec{font-family:Fraunces;font-weight:300;font-size:clamp(30px,4.8vw,58px);letter-spacing:-.035em;margin:0 0 14px}
+.lead{color:var(--dim);max-width:44ch;margin:0 0 56px;font-size:17px}
+.duogrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.duocol{display:grid;gap:20px;will-change:transform}
+.scard{border:1px solid var(--line);border-radius:4px;padding:30px 26px;background:var(--sur);transition:.3s}
+.scard:hover{border-color:var(--em);background:#171A1D}
+.scard h3{font-family:Fraunces;font-weight:500;font-size:24px;margin:0 0 10px;letter-spacing:-.02em}
+.scard p{margin:0;color:var(--dim);font-size:15px}
+.scard .ic{width:34px;height:34px;border:1.5px solid var(--em);margin-bottom:18px;position:relative}
+.scard .ic::after{content:"";position:absolute;inset:8px;background:var(--em);opacity:.7}
+@media(max-width:820px){.duogrid{grid-template-columns:1fr}.duocol{transform:none!important}}
+
+/* PULL QUOTE full bleed */
+.pull{padding:130px 0;text-align:center;background:linear-gradient(180deg,transparent,rgba(15,207,134,.06),transparent)}
+.pull p{font-family:Fraunces;font-weight:300;font-style:italic;font-size:clamp(24px,4.2vw,50px);line-height:1.22;letter-spacing:-.03em;max-width:20ch;margin:0 auto}
+
+/* WORK: line-by-line with hover preview */
+.work{padding:110px 0;border-top:1px solid var(--line);position:relative}
+.wrow{display:grid;grid-template-columns:1fr auto;gap:24px;padding:34px 0;border-bottom:1px solid var(--line);align-items:center;transition:padding .3s}
+.wrow:first-of-type{border-top:1px solid var(--line)}
+.wrow:hover{padding-left:20px}
+.wrow h3{font-family:Fraunces;font-weight:500;font-size:clamp(24px,3.6vw,42px);margin:0;letter-spacing:-.03em;transition:color .25s}
+.wrow:hover h3{color:var(--em)}
+.wrow span{color:var(--dim);font-size:14.5px}
+#peek{position:fixed;width:250px;aspect-ratio:4/3;border-radius:5px;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.9);transition:opacity .25s,transform .25s;z-index:70;border:1px solid var(--line)}
+#peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+.end{padding:150px 0;text-align:center;border-top:1px solid var(--line)}
+.end h2{font-family:Fraunces;font-weight:300;font-size:clamp(34px,6vw,76px);letter-spacing:-.04em;line-height:1.02;margin:0 auto 28px;max-width:15ch}
+footer{padding:30px 0 60px;color:var(--dim);font-size:13.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.apmask{-webkit-mask-image:none;mask-image:none;display:none}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="#"><span class="mk"></span>Coreline</a>
+  <div class="nl"><a href="#services">Services</a><a href="#work">Work</a><a href="#contact">Contact</a></div>
+  <a class="btn btn-p" href="#contact">Book a call</a>
+</div></nav>
+
+<section class="hero">
+  <div class="cols" id="cols">
+    <div class="col" data-dir="1"></div><div class="col" data-dir="-1"></div>
+    <div class="col" data-dir="1"></div><div class="col" data-dir="-1"></div>
+  </div>
+  <div class="mid">
+    <h1 class="fr">We build the part of your business that <em>works while you sleep</em>.</h1>
+    <p class="sub">Websites, AI agents, automations and search for businesses across Thane and Mumbai. One team, every part of it.</p>
+    <div class="hb"><a class="btn btn-p" href="#contact">Book a call</a><a class="btn" href="#contact">WhatsApp</a></div>
+  </div>
+</section>
+
+<section class="aperture">
+  <div class="apsticky">
+    <div class="apinner"><div class="t">
+      <h2 class="fr">Your customers are searching right now.</h2>
+      <p>They are typing your service and your area into Google today. We make sure the result they tap belongs to you.</p>
+    </div></div>
+    <div class="apmask" id="apmask"></div>
+    <div class="ring"></div>
+    <p class="aplabel">Keep scrolling</p>
+  </div>
+</section>
+
+<section class="duo" id="services"><div class="wrap">
+  <h2 class="sec fr">Everything under one roof</h2>
+  <p class="lead">Eight services. The same team designs it, ships it, ranks it and runs it. No handoffs.</p>
+  <div class="duogrid">
+    <div class="duocol" data-dir="-1">
+      <article class="scard"><span class="ic"></span><h3 class="fr">Websites</h3><p>Hand-built and fast on mobile data. Made to turn visitors into calls.</p></article>
+      <article class="scard"><span class="ic"></span><h3 class="fr">Automations</h3><p>Confirmations, reminders and review requests that send themselves.</p></article>
+      <article class="scard"><span class="ic"></span><h3 class="fr">Mobile apps</h3><p>Android and iOS, for when a website genuinely is not enough.</p></article>
+      <article class="scard"><span class="ic"></span><h3 class="fr">Branding</h3><p>Logo, palette, cards, signage. One consistent face everywhere.</p></article>
+    </div>
+    <div class="duocol" data-dir="1">
+      <article class="scard"><span class="ic"></span><h3 class="fr">AI agents</h3><p>Trained on your services and timings. Answers and books while you sleep.</p></article>
+      <article class="scard"><span class="ic"></span><h3 class="fr">Local search</h3><p>Get found by the people already looking for what you sell nearby.</p></article>
+      <article class="scard"><span class="ic"></span><h3 class="fr">CRM &amp; software</h3><p>Custom tools shaped around your business, not the other way around.</p></article>
+      <article class="scard"><span class="ic"></span><h3 class="fr">Social content</h3><p>Monthly graphics and reels, handled on retainer.</p></article>
+    </div>
+  </div>
+</div></section>
+
+<section class="pull"><div class="wrap">
+  <p class="fr">“Three agencies sent a deck. They sent a working preview of our shop.”</p>
+</div></section>
+
+<section class="work" id="work"><div class="wrap">
+  <h2 class="sec fr">Recent work</h2>
+  <p class="lead">Open them on your phone. That is the only review that counts.</p>
+  <a class="wrow" data-bg="radial-gradient(80% 90% at 30% 25%,rgba(201,162,39,.6),transparent 62%),linear-gradient(160deg,#221E14,#0B0A07)"><h3 class="fr">MNK Jewels</h3><span>Jewellery · online store</span></a>
+  <a class="wrow" data-bg="radial-gradient(80% 90% at 65% 25%,rgba(15,207,134,.5),transparent 62%),linear-gradient(160deg,#0D1A16,#070B0A)"><h3 class="fr">KC Physio Care</h3><span>Clinic · appointments</span></a>
+  <a class="wrow" data-bg="radial-gradient(80% 90% at 35% 70%,rgba(232,255,58,.4),transparent 62%),linear-gradient(160deg,#1A1D10,#0A0B07)"><h3 class="fr">Iron Yard Fitness</h3><span>Gym · AI agent</span></a>
+  <a class="wrow" data-bg="radial-gradient(80% 90% at 70% 60%,rgba(76,141,255,.45),transparent 62%),linear-gradient(160deg,#0D1119,#08090D)"><h3 class="fr">Sharma &amp; Associates</h3><span>Chartered accountants</span></a>
+  <a class="wrow" data-bg="radial-gradient(80% 90% at 40% 35%,rgba(217,132,82,.5),transparent 62%),linear-gradient(160deg,#1A1310,#0B0807)"><h3 class="fr">Vista Interiors</h3><span>Interiors · portfolio</span></a>
+</div></section>
+
+<section class="end" id="contact"><div class="wrap">
+  <h2 class="fr">Tell us what you sell. We'll show you what it should look like.</h2>
+  <div class="hb"><a class="btn btn-p" href="#">Book a call</a><a class="btn" href="#">WhatsApp</a></div>
+</div></section>
+
+<div class="wrap"><footer><div>© 2026 Coreline Digital</div><div>Wagle Estate, Thane · Maharashtra</div></footer></div>
+<div id="peek"></div>
+
+<script>
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* build hero tiles */
+const grads=['linear-gradient(160deg,#1D2A25,#0B0F0E)','linear-gradient(160deg,#222018,#0D0C09)','linear-gradient(160deg,#161C26,#090B0F)','linear-gradient(160deg,#241A18,#0E0A09)','linear-gradient(160deg,#13241D,#080D0B)','linear-gradient(160deg,#1E1B26,#0A090D)'];
+document.querySelectorAll('#cols .col').forEach((c,ci)=>{
+  for(let i=0;i<6;i++){const d=document.createElement('span');d.className='tile';
+    d.style.background=grads[(i+ci*2)%grads.length];c.appendChild(d)}
+});
+/* opposing parallax */
+const cols=[...document.querySelectorAll('#cols .col')],duo=[...document.querySelectorAll('.duocol')],
+ ap=document.querySelector('.aperture'),mask=document.getElementById('apmask');
+function frame(){
+  const y=scrollY;
+  if(!RM){
+    cols.forEach((c,i)=>c.style.transform=`translateY(${y*0.16*(+c.dataset.dir)}px)`);
+    if(innerWidth>820)duo.forEach(c=>{
+      const r=c.getBoundingClientRect();
+      const p=(innerHeight/2-r.top-r.height/2)/innerHeight;
+      c.style.transform=`translateY(${p*54*(+c.dataset.dir)}px)`;
+    });
+    const r=ap.getBoundingClientRect(),h=ap.offsetHeight-innerHeight;
+    let p=Math.min(Math.max(-r.top/h,0),1);
+    const max=Math.hypot(innerWidth,innerHeight)*.62;
+    mask.style.setProperty('--r',(p*max)+'px');
+  }
+}
+let t=false;addEventListener('scroll',()=>{if(t)return;t=true;requestAnimationFrame(()=>{frame();t=false})},{passive:true});
+addEventListener('resize',frame);frame();
+/* hover preview */
+const peek=document.getElementById('peek');
+document.querySelectorAll('.wrow').forEach(r=>{
+  r.addEventListener('mouseenter',()=>{peek.style.background=r.dataset.bg;peek.classList.add('on')});
+  r.addEventListener('mouseleave',()=>peek.classList.remove('on'));
+});
+addEventListener('mousemove',e=>{peek.style.left=e.clientX+'px';peek.style.top=e.clientY+'px'});
+</script>
+</body>
+</html>

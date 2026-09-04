@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coreline Digital — Sample E · Signal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04070D;--sur:#080D16;--bone:#E9EEF4;--dim:#7A8698;--em:#3DF5A8;--vi:#6C7BFF;--line:rgba(233,238,244,.10);--w:1180px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--bone);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.62;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--em);outline-offset:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 28px}
+.bg{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.035em}
+#field{position:fixed;inset:0;z-index:0;pointer-events:none}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(70vw 60vh at 50% 0%,rgba(108,123,255,.14),transparent 60%),radial-gradient(50vw 50vh at 85% 70%,rgba(61,245,168,.09),transparent 62%)}
+main,nav,footer{position:relative;z-index:2}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:80;padding:18px 0;backdrop-filter:blur(14px);background:rgba(4,7,13,.55);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;letter-spacing:-.04em}
+.node{width:16px;height:16px;border-radius:50%;background:var(--em);box-shadow:0 0 18px 4px rgba(61,245,168,.5)}
+.nl{display:flex;gap:26px;font-size:14px;color:var(--dim)}.nl a:hover{color:var(--bone)}
+@media(max-width:880px){.nl{display:none}}
+.btn{padding:10px 20px;border-radius:100px;font-size:14px;font-weight:500;border:1px solid var(--line);transition:.2s}
+.btn:hover{border-color:var(--bone)}
+.btn-p{background:linear-gradient(100deg,var(--em),#7CFFD0);color:#03140C;border:0;font-weight:600}
+.btn-p:hover{filter:brightness(1.1)}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:110px 0 60px}
+h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(42px,7.4vw,92px);line-height:.98;letter-spacing:-.045em;margin:0 0 24px;max-width:15ch}
+.grad{background:linear-gradient(96deg,var(--em),var(--vi) 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:19px;max-width:48ch;margin:0 0 34px}
+.hb{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:flex;gap:44px;margin-top:70px;flex-wrap:wrap;padding-top:26px;border-top:1px solid var(--line)}
+.stats div b{display:block;font-family:'Bricolage Grotesque';font-weight:700;font-size:30px;letter-spacing:-.03em}
+.stats div span{color:var(--dim);font-size:14px}
+
+/* SCROLLYTELLING: sticky visual, stepped copy */
+.story{position:relative;padding:60px 0 0}
+.storygrid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+.viz{position:sticky;top:0;height:100vh;display:flex;align-items:center}
+.vizbox{width:100%;aspect-ratio:1;border-radius:20px;border:1px solid var(--line);position:relative;overflow:hidden;
+ background:linear-gradient(150deg,rgba(108,123,255,.10),rgba(4,7,13,.6));backdrop-filter:blur(4px)}
+.scene{position:absolute;inset:0;opacity:0;transform:scale(.96);transition:opacity .55s,transform .55s;display:grid;place-items:center}
+.scene.on{opacity:1;transform:none}
+.orbit{width:66%;aspect-ratio:1;border-radius:50%;border:1px dashed rgba(233,238,244,.2);position:relative;animation:spin 26s linear infinite}
+.orbit i{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--em);top:-6px;left:50%;box-shadow:0 0 18px 4px rgba(61,245,168,.5)}
+.orbit i:nth-child(2){top:auto;bottom:-6px;background:var(--vi);box-shadow:0 0 18px 4px rgba(108,123,255,.5)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.barsviz{display:flex;gap:10px;align-items:flex-end;height:52%;width:66%}
+.barsviz span{flex:1;background:linear-gradient(0deg,var(--vi),var(--em));border-radius:4px 4px 0 0;animation:grow 1.6s ease-out}
+@keyframes grow{from{transform:scaleY(.1);transform-origin:bottom}}
+.chatviz{width:74%;display:grid;gap:10px}
+.bub{padding:12px 15px;border-radius:14px;font-size:14px;max-width:80%}
+.bub.a{background:rgba(233,238,244,.08);justify-self:start;border-bottom-left-radius:4px}
+.bub.b{background:linear-gradient(100deg,var(--em),#7CFFD0);color:#03140C;justify-self:end;border-bottom-right-radius:4px}
+.ringviz{width:60%;aspect-ratio:1;border-radius:50%;border:14px solid rgba(233,238,244,.08);border-top-color:var(--em);border-right-color:var(--vi);animation:spin 6s linear infinite}
+.pin{position:absolute;left:16px;top:16px;font-size:12px;color:var(--dim);letter-spacing:.02em}
+
+.chapters{padding:22vh 0 30vh;display:grid;gap:34vh}
+.chapter h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:clamp(28px,4vw,46px);line-height:1.04;letter-spacing:-.035em;margin:0 0 16px}
+.chapter p{color:var(--dim);margin:0 0 18px;max-width:40ch}
+.chapter .tagline{color:var(--em);font-size:13.5px;margin:0 0 14px}
+.chapter ul{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:14.5px;color:var(--dim)}
+.chapter li{padding-left:20px;position:relative}
+.chapter li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;background:var(--em);opacity:.7}
+@media(max-width:900px){.storygrid{grid-template-columns:1fr;gap:0}.viz{height:56vh;top:70px}.chapters{padding:12vh 0 18vh;gap:22vh}}
+
+/* decode headings */
+.dec{visibility:hidden}.dec.on{visibility:visible}
+
+/* pricing / services strip */
+section.blk{padding:110px 0;border-top:1px solid var(--line)}
+h2.sec{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(30px,4.6vw,54px);letter-spacing:-.04em;margin:0 0 14px}
+.lead{color:var(--dim);max-width:46ch;margin:0 0 46px}
+.glass{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gcard{padding:28px 24px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(233,238,244,.055),rgba(233,238,244,.015));backdrop-filter:blur(8px);transition:.3s;
+ opacity:0;transform:translateY(24px)}
+.gcard.in{opacity:1;transform:none}
+.gcard:hover{border-color:rgba(61,245,168,.5);transform:translateY(-4px)}
+.gcard h3{font-family:'Bricolage Grotesque';font-weight:700;font-size:20px;margin:0 0 8px;letter-spacing:-.02em}
+.gcard p{margin:0 0 16px;color:var(--dim);font-size:14.5px}
+.gcard .pr{font-family:'Bricolage Grotesque';font-weight:700;font-size:26px;letter-spacing:-.03em}
+@media(max-width:880px){.glass{grid-template-columns:1fr}}
+
+.quote{padding:110px 0;border-top:1px solid var(--line);text-align:center}
+.quote p{font-family:'Bricolage Grotesque';font-weight:500;font-size:clamp(22px,3.4vw,38px);line-height:1.28;letter-spacing:-.03em;max-width:24ch;margin:0 auto 22px}
+.quote cite{color:var(--dim);font-style:normal;font-size:14.5px}
+
+.end{padding:140px 0;text-align:center;border-top:1px solid var(--line)}
+.end h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(34px,6vw,72px);letter-spacing:-.045em;line-height:1;margin:0 auto 26px;max-width:15ch}
+footer{padding:30px 0 60px;color:var(--dim);font-size:13.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.gcard{opacity:1;transform:none}.dec{visibility:visible}}
+</style>
+</head>
+<body>
+<canvas id="field"></canvas><div class="veil"></div>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="#"><span class="node"></span>coreline</a>
+  <div class="nl"><a href="#story">How we work</a><a href="#services">Services</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a></div>
+  <a class="btn btn-p" href="#contact">Start a project</a>
+</div></nav>
+
+<main>
+<section class="hero"><div class="wrap">
+  <h1 class="bg">Sites that load. Systems that run. <span class="grad">Growth that compounds.</span></h1>
+  <p class="sub">We build the whole stack for small businesses in Thane and Mumbai. Website, AI agents, automations, search. One team, start to finish.</p>
+  <div class="hb"><a class="btn btn-p" href="#contact">Book a call</a><a class="btn" href="#story">See how we work</a></div>
+  <div class="stats">
+    <div><b>10 days</b><span>content to live</span></div>
+    <div><b>₹15,000</b><span>starting price</span></div>
+    <div><b>8</b><span>services, one team</span></div>
+    <div><b>0</b><span>handoffs between vendors</span></div>
+  </div>
+</div></section>
+
+<section class="story" id="story"><div class="wrap storygrid">
+  <div class="chapters">
+    <div class="chapter" data-s="1">
+      <p class="tagline">01 · Foundation</p>
+      <h2 class="bg dec">A website that earns its keep.</h2>
+      <p>Most sites are brochures nobody reads. We build ones that load fast, rank locally and put a call button in front of every visitor.</p>
+      <ul><li>Hand-coded, no bloated page builders</li><li>Under two seconds on mobile data</li><li>Written for customers, not for you</li></ul>
+    </div>
+    <div class="chapter" data-s="2">
+      <p class="tagline">02 · Visibility</p>
+      <h2 class="bg dec">Found by people already searching.</h2>
+      <p>Your customers are typing your service and your area into Google today. We make sure the result they tap is yours.</p>
+      <ul><li>Google Business, fixed properly</li><li>A landing page per service and area</li><li>Monthly report you can actually read</li></ul>
+    </div>
+    <div class="chapter" data-s="3">
+      <p class="tagline">03 · Automation</p>
+      <h2 class="bg dec">An agent that never shuts.</h2>
+      <p>Trained on your services, prices and timings. It answers at midnight, captures the number and hands you a warm enquiry by morning.</p>
+      <ul><li>Answers on WhatsApp and on your site</li><li>Books appointments straight into your calendar</li><li>Sends reminders and review requests on its own</li></ul>
+    </div>
+    <div class="chapter" data-s="4">
+      <p class="tagline">04 · Compounding</p>
+      <h2 class="bg dec">It gets better every month.</h2>
+      <p>A site is not a delivery, it is an asset. We keep it fast, keep it ranking and keep adding what the numbers say to add.</p>
+      <ul><li>Edits and new pages included</li><li>Speed and uptime watched, not assumed</li><li>Cancel the retainer whenever you like</li></ul>
+    </div>
+  </div>
+  <div class="viz"><div class="vizbox">
+    <span class="pin" id="pinlabel">foundation</span>
+    <div class="scene on" data-v="1"><div class="orbit"><i></i><i></i></div></div>
+    <div class="scene" data-v="2"><div class="barsviz"><span style="height:34%"></span><span style="height:52%"></span><span style="height:44%"></span><span style="height:70%"></span><span style="height:88%"></span><span style="height:100%"></span></div></div>
+    <div class="scene" data-v="3"><div class="chatviz">
+      <div class="bub a">Kal subah ka slot hai?</div>
+      <div class="bub b">Yes — 10:30 or 11:15 tomorrow. Which one?</div>
+      <div class="bub a">10:30</div>
+      <div class="bub b">Booked. Confirmation sent on WhatsApp.</div>
+    </div></div>
+    <div class="scene" data-v="4"><div class="ringviz"></div></div>
+  </div></div>
+</div></section>
+
+<section class="blk" id="services"><div class="wrap">
+  <h2 class="sec bg">Everything under one roof.</h2>
+  <p class="lead">Eight disciplines. The same team designs it, ships it, ranks it and runs it.</p>
+  <div class="glass">
+    <div class="gcard"><h3 class="bg">Websites</h3><p>Fast, mobile-first, built to convert. Live in ten working days.</p><span class="pr">from ₹15,000</span></div>
+    <div class="gcard"><h3 class="bg">AI agents</h3><p>A chat assistant trained on your business, working around the clock.</p><span class="pr">from ₹12,000</span></div>
+    <div class="gcard"><h3 class="bg">Automations</h3><p>Confirmations, follow-ups and invoices that send themselves.</p><span class="pr">from ₹8,000</span></div>
+    <div class="gcard"><h3 class="bg">Local SEO</h3><p>Rank for what people nearby are already searching for.</p><span class="pr">₹6,000/mo</span></div>
+    <div class="gcard"><h3 class="bg">Software &amp; CRM</h3><p>Custom tools that replace the spreadsheet you have outgrown.</p><span class="pr">on scope</span></div>
+    <div class="gcard"><h3 class="bg">Brand &amp; design</h3><p>Logo, palette, cards, signage. One consistent face everywhere.</p><span class="pr">from ₹10,000</span></div>
+  </div>
+</div></section>
+
+<section class="quote"><div class="wrap">
+  <p class="bg">“They sent a working preview of our own shop. Every other agency sent a PDF.”</p>
+  <cite>Owner, jewellery retailer · Thane West</cite>
+</div></section>
+
+<section class="end" id="contact"><div class="wrap">
+  <h2 class="bg">Tell us what you sell.<br>We'll show you what it should look like.</h2>
+  <div class="hb" style="justify-content:center"><a class="btn btn-p" href="#">Message us on WhatsApp</a><a class="btn" href="#">hello@corelinedigital.in</a></div>
+</div></section>
+
+<div class="wrap"><footer><div>© 2026 Coreline Digital</div><div>Wagle Estate, Thane · Maharashtra</div></footer></div>
+</main>
+
+<script>
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ---- node field ---- */
+const cv=document.getElementById('field'),cx=cv.getContext('2d');
+let W,H,pts=[],mouse={x:-999,y:-999},vel=0,lastY=scrollY;
+function size(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;
+ cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';
+ const n=Math.min(70,Math.round(innerWidth/22));
+ pts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.22*devicePixelRatio,vy:(Math.random()-.5)*.22*devicePixelRatio}));}
+size();addEventListener('resize',size);
+addEventListener('mousemove',e=>{mouse.x=e.clientX*devicePixelRatio;mouse.y=e.clientY*devicePixelRatio});
+addEventListener('scroll',()=>{vel=Math.min(Math.abs(scrollY-lastY)/26,1.6);lastY=scrollY},{passive:true});
+function draw(){
+  cx.clearRect(0,0,W,H);
+  const D=140*devicePixelRatio;
+  for(const p of pts){p.x+=p.vx*(1+vel*2.6);p.y+=p.vy*(1+vel*2.6);
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;}
+  for(let i=0;i<pts.length;i++){
+    for(let j=i+1;j<pts.length;j++){
+      const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<D){cx.strokeStyle=`rgba(108,123,255,${(1-d/D)*.26})`;cx.lineWidth=devicePixelRatio*.6;
+        cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}
+    }
+    const dm=Math.hypot(pts[i].x-mouse.x,pts[i].y-mouse.y);
+    const near=dm<190*devicePixelRatio;
+    cx.fillStyle=near?'rgba(61,245,168,.9)':'rgba(233,238,244,.32)';
+    cx.beginPath();cx.arc(pts[i].x,pts[i].y,(near?2.4:1.5)*devicePixelRatio,0,7);cx.fill();
+  }
+  vel*=.92;
+  requestAnimationFrame(draw);
+}
+if(!RM)draw();else cv.style.display='none';
+
+/* ---- scrollytelling ---- */
+const chapters=[...document.querySelectorAll('.chapter')],scenes=[...document.querySelectorAll('.scene')],
+ labels={1:'foundation',2:'visibility',3:'automation',4:'compounding'},pin=document.getElementById('pinlabel');
+const so=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const s=e.target.dataset.s;
+  scenes.forEach(v=>v.classList.toggle('on',v.dataset.v===s));
+  pin.textContent=labels[s];
+}),{rootMargin:'-45% 0px -45% 0px'});
+chapters.forEach(c=>so.observe(c));
+
+/* ---- decode headings ---- */
+const CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ#@%&*';
+function decode(el){
+  const txt=el.dataset.txt;let f=0;
+  const iv=setInterval(()=>{
+    el.textContent=txt.split('').map((c,i)=>{
+      if(c===' ')return ' ';
+      if(i<f)return txt[i];
+      return CH[Math.floor(Math.random()*CH.length)];
+    }).join('');
+    f+=1/2;
+    if(f>=txt.length){clearInterval(iv);el.textContent=txt}
+  },28);
+}
+document.querySelectorAll('.dec').forEach(el=>el.dataset.txt=el.textContent);
+const dio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;e.target.classList.add('on');
+  if(!RM)decode(e.target);dio.unobserve(e.target);
+}),{threshold:.7});
+document.querySelectorAll('.dec').forEach(el=>dio.observe(el));
+
+/* card reveal */
+const cio=new IntersectionObserver(es=>es.forEach((e,i)=>{
+  if(!e.isIntersecting)return;
+  setTimeout(()=>e.target.classList.add('in'),i*70);cio.unobserve(e.target);
+}),{threshold:.2});
+document.querySelectorAll('.gcard').forEach(el=>cio.observe(el));
+</script>
+</body>
+</html>

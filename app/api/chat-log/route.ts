@@ -82,7 +82,10 @@ export async function POST(request: Request) {
       problem: field(input.problem),
       frequency: field(input.frequency, 40),
       website: field(input.website, 40),
-      intent: field(input.intent, 40),
+      path: field(input.path, 20),
+      goal: field(input.goal, 60),
+      obstacle: field(input.obstacle, 60),
+      fit: field(input.fit, 20),
       transcript: transcriptField(input.transcript),
     });
   } catch (error) {

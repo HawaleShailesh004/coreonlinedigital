@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /samples/
+Disallow: /api/
+
+Host: https://www.corelinedigital.in
+Sitemap: https://www.corelinedigital.in/sitemap.xml

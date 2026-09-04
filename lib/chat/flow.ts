@@ -1,43 +1,46 @@
 /**
- * The scripted spine of the site assistant.
+ * The scripted spine of the site assistant - v2.
  *
  * WHY THIS EXISTS RATHER THAN "JUST LET THE MODEL TALK"
  *
- * The assistant has one job: understand the visitor's business, how bad the
- * leak actually is, whether they have a site today, and how serious they are
- * about fixing it - and only THEN talk price, to someone it now knows by
- * name. That is a fixed sequence with a fixed set of things it must never get
- * wrong (the price, the delivery window, the payment terms). A model asked to
- * run that sequence will do it correctly most of the time, which is not good
- * enough when the failure mode is quoting a stranger the wrong price - and it
- * will also happily lead with price if asked to, which is exactly the instinct
- * a real qualifying conversation has to resist.
+ * The assistant's job is to run an actual consultative sales conversation -
+ * PAS (Pain, Agitate, Solve) plus SPIN's Implication and Need-payoff moves -
+ * not fill in a form. That means a fixed sequence with a fixed set of things
+ * it must never get wrong (the price, the delivery window, the payment
+ * terms, and the ORDER those get revealed in). A model asked to run that
+ * sequence will do it correctly most of the time, which is not good enough
+ * when the failure mode is quoting a stranger the wrong price - and it will
+ * also happily lead with price the moment it's asked to, which is exactly
+ * the instinct a real qualifying conversation has to resist.
  *
- * So the sequence is deterministic and renders instantly on the client, and the
- * model is a sidecar: it handles whatever the visitor asks off-script, then the
- * flow picks up where it left off. The visitor gets a real conversation; the
- * numbers cannot drift, and they cannot appear before the assistant has
- * actually earned the right to show them.
+ * So the sequence is deterministic and renders instantly on the client, and
+ * the model is a sidecar: it handles whatever the visitor asks off-script,
+ * then the flow picks up where it left off. The visitor gets a real
+ * conversation; the numbers cannot drift, and they cannot appear before the
+ * assistant has actually earned the right to show them.
  *
- * THE SEQUENCE, IN ORDER, AND WHY IT ISN'T SHORTER
- *   1. business  - what kind of business, so the next question can be specific
- *   2. problem   - the one leak that vertical actually has (not generic)
- *   3. impact    - how OFTEN it happens - this is the qualifying step that was
- *                  missing before: a bot that goes straight from "what's wrong"
- *                  to "here's the price" hasn't actually assessed anything
- *   4. website   - what they have today, so the pitch doesn't repeat itself
- *   5. intent    - how serious they are right now - lets the close match the
- *                  visitor instead of pushing everyone the same way
- *   6. name      - asked before the price, not after: knowing who you are
- *                  talking to is what makes the diagnosis that follows read as
- *                  actually FOR them, not a template with their words dropped in
- *   7. contact   - the number, still last, still always skippable
+ * TWO PATHS, ONE WIDGET
+ *
+ * Right after the greeting, the visitor picks their own pace:
+ *
+ *   "consult" - the full sales conversation. Identify the business, surface
+ *     the pain, reflect its cost back (Implication), get them to name the
+ *     win they want (Need-payoff), surface what's actually stopped them so
+ *     far, hear what they have today, THEN bridge to a solution and check
+ *     for agreement - and only once they've said yes does price ever appear.
+ *     Someone who says "not right now" gets released gracefully, never
+ *     pushed for a phone number.
+ *
+ *   "quick" - business type, an optional one-line problem question they can
+ *     skip, the facts card, name, phone. No probing. For someone who just
+ *     wants the number and doesn't want a conversation - respecting that is
+ *     also good salesmanship.
  *
  * Everything here is pure and framework-free so the questions can be read,
- * argued with and edited without opening a component. Icons are referenced by
- * a plain string key (IconKey, below) rather than a component import, for the
- * same reason - components/chat/ChatIcons.tsx is the one place a key becomes
- * an actual glyph.
+ * argued with and edited without opening a component. Icons are referenced
+ * by a plain string key (IconKey, below) rather than a component import, for
+ * the same reason - components/chat/ChatIcons.tsx is the one place a key
+ * becomes an actual glyph.
  */
 
 import { offer } from "@/lib/chat/facts";
@@ -60,9 +63,17 @@ export type IconKey =
   | "frequencyHigh"
   | "frequencyMid"
   | "frequencyLow"
-  | "intentReady"
-  | "intentWeighing"
-  | "intentExploring"
+  | "confirmYes"
+  | "confirmManageable"
+  | "goalGrowth"
+  | "goalRepeat"
+  | "goalLegit"
+  | "goalFound"
+  | "obstacleTime"
+  | "obstacleBurned"
+  | "obstacleWorth"
+  | "fitYes"
+  | "fitNotNow"
   | "person"
   | "phone"
   | "skip"
@@ -105,6 +116,13 @@ export type Vertical = {
   answers: string[];
   /** Fallback leak, used when they typed something too long to quote back. */
   leak: string;
+  /**
+   * The Implication half of the amplify step: what the leak actually costs,
+   * in plain terms, tacked onto a frequency phrase. Written to be TRUE
+   * regardless of how often it happens - the frequency phrase in front of it
+   * is what carries the intensity.
+   */
+  consequence: string;
 };
 
 export const verticals: Record<VerticalId, Vertical> = {
@@ -127,6 +145,7 @@ export const verticals: Record<VerticalId, Vertical> = {
       "Do patients call to book, or do they just walk in and wait? And what happens to a call that comes in when the front desk is busy?",
     answers: ["Mostly walk-ins", "They call to book", "Calls get missed"],
     leak: "calls coming in while the front desk is busy",
+    consequence: "That's people who tried to reach you and didn't get through.",
   },
   shop: {
     id: "shop",
@@ -156,6 +175,8 @@ export const verticals: Record<VerticalId, Vertical> = {
       "Where do most orders come in - WhatsApp, phone, or people walking in? And do you ever lose track of one?",
     answers: ["WhatsApp mostly", "Phone calls", "Walk-ins only"],
     leak: "orders arriving across WhatsApp and phone with nothing holding them together",
+    consequence:
+      "That's orders you can't be completely sure you didn't lose track of.",
   },
   gym: {
     id: "gym",
@@ -176,6 +197,7 @@ export const verticals: Record<VerticalId, Vertical> = {
       "How many people message asking about fees and timings each week? And how many of those actually turn up for a trial?",
     answers: ["Many ask, few turn up", "Only a handful ask", "I lose count"],
     leak: "people asking about fees and timings who never turn up",
+    consequence: "That's people who showed real interest and never walked in.",
   },
   coaching: {
     id: "coaching",
@@ -196,6 +218,8 @@ export const verticals: Record<VerticalId, Vertical> = {
       "When parents ask about your results and batch fees, where do they see that right now?",
     answers: ["I tell them on call", "On a pamphlet", "Nowhere really"],
     leak: "parents who ask about results and fees and have nothing to look at",
+    consequence:
+      "That's parents deciding without the one thing that would have reassured them.",
   },
   jeweller: {
     id: "jeweller",
@@ -204,8 +228,14 @@ export const verticals: Record<VerticalId, Vertical> = {
     trade: "a jewellery business",
     question:
       "Do people find your designs online before coming to the shop, or only once they're in the showroom?",
-    answers: ["Only in the showroom", "Some see Instagram", "They find us on Google"],
+    answers: [
+      "Only in the showroom",
+      "Some see Instagram",
+      "They find us on Google",
+    ],
     leak: "people who never see your designs until they're already in the showroom",
+    consequence:
+      "That's people who never got excited enough to walk in at all.",
   },
   ca: {
     id: "ca",
@@ -230,8 +260,14 @@ export const verticals: Record<VerticalId, Vertical> = {
     trade: "a CA or professional practice",
     question:
       "During tax and filing deadlines, how many client queries pile up on WhatsApp before you get to them?",
-    answers: ["Quite a few, every season", "A steady trickle all year", "We manage, mostly"],
+    answers: [
+      "Quite a few, every season",
+      "A steady trickle all year",
+      "We manage, mostly",
+    ],
     leak: "client queries piling up on WhatsApp around every deadline",
+    consequence:
+      "That's clients feeling ignored right when they need you most.",
   },
   realty: {
     id: "realty",
@@ -250,6 +286,8 @@ export const verticals: Record<VerticalId, Vertical> = {
       "How many site-visit requests turn out to be people who were never going to buy?",
     answers: ["Most of them", "About half", "Hard to tell"],
     leak: "site visits with people who were never going to buy",
+    consequence:
+      "That's your time spent on visits that were never going to close.",
   },
   interior: {
     id: "interior",
@@ -269,6 +307,8 @@ export const verticals: Record<VerticalId, Vertical> = {
       "Can someone see your past work anywhere online before they call you?",
     answers: ["Only on WhatsApp", "On Instagram", "Nowhere"],
     leak: "people who can't see your past work before deciding whether to call",
+    consequence:
+      "That's people who couldn't tell if you're any good before they called.",
   },
   school: {
     id: "school",
@@ -287,6 +327,8 @@ export const verticals: Record<VerticalId, Vertical> = {
       "During admission season, how many enquiry calls does the office miss?",
     answers: ["Plenty, honestly", "A few", "We manage"],
     leak: "admission enquiries the office never gets to",
+    consequence:
+      "That's admissions that quietly went to a school that answered.",
   },
   travel: {
     id: "travel",
@@ -307,6 +349,8 @@ export const verticals: Record<VerticalId, Vertical> = {
       "Do people ask you for the same itinerary and price details over and over?",
     answers: ["Every single day", "Quite often", "Not really"],
     leak: "the same itinerary and price questions answered by hand every day",
+    consequence:
+      "That's you re-explaining the same trip instead of closing it.",
   },
   other: {
     id: "other",
@@ -317,6 +361,8 @@ export const verticals: Record<VerticalId, Vertical> = {
       "What's the main way customers reach you right now - phone, WhatsApp, or walk-in?",
     answers: ["WhatsApp", "Phone calls", "Walk-ins"],
     leak: "enquiries arriving faster than one person can answer them",
+    consequence:
+      "That's customers who reached out and didn't hear back in time.",
   },
 };
 
@@ -333,7 +379,8 @@ export const verticalChips: VerticalId[] = [
 export function matchVertical(text: string): VerticalId {
   const value = text.toLowerCase();
   for (const vertical of Object.values(verticals)) {
-    if (vertical.keywords.some((word) => value.includes(word))) return vertical.id;
+    if (vertical.keywords.some((word) => value.includes(word)))
+      return vertical.id;
   }
   return "other";
 }
@@ -349,16 +396,17 @@ export const problemAcknowledgement =
   "That's more common than most owners realise, and it adds up faster than it looks.";
 
 /* -------------------------------------------------------------------------- */
-/* Impact - how often the leak actually happens                                */
+/* Amplify - frequency, then the Implication reflection                        */
 /* -------------------------------------------------------------------------- */
 
 export type Frequency = "high" | "mid" | "low";
 
-export const frequencyChips: { id: Frequency; label: string; icon: IconKey }[] = [
-  { id: "high", label: "Most days", icon: "frequencyHigh" },
-  { id: "mid", label: "A few times a week", icon: "frequencyMid" },
-  { id: "low", label: "Only occasionally", icon: "frequencyLow" },
-];
+export const frequencyChips: { id: Frequency; label: string; icon: IconKey }[] =
+  [
+    { id: "high", label: "Most days", icon: "frequencyHigh" },
+    { id: "mid", label: "A few times a week", icon: "frequencyMid" },
+    { id: "low", label: "Only occasionally", icon: "frequencyLow" },
+  ];
 
 export const frequencyLabel: Record<Frequency, string> = {
   high: "Most days",
@@ -366,16 +414,85 @@ export const frequencyLabel: Record<Frequency, string> = {
   low: "Only occasionally",
 };
 
-/** Free text at the impact step, best effort. Null means "ask the model". */
+/** Free text at the frequency sub-step, best effort. Null means "ask the model". */
 export function classifyFrequency(text: string): Frequency | null {
   const value = text.toLowerCase();
-  if (/\b(every ?day|daily|constant|all the time|non-?stop|most days|a lot)\b/.test(value)) {
+  if (
+    /\b(every ?day|daily|constant|all the time|non-?stop|most days|a lot)\b/.test(
+      value,
+    )
+  ) {
     return "high";
   }
-  if (/\b(rare|rarely|occasion|once in a while|not much|hardly|seldom)\b/.test(value)) {
+  if (
+    /\b(rare|rarely|occasion|once in a while|not much|hardly|seldom)\b/.test(
+      value,
+    )
+  ) {
     return "low";
   }
-  if (/\b(sometimes|few times|often|weekly|couple times)\b/.test(value)) return "mid";
+  if (/\b(sometimes|few times|often|weekly|couple times)\b/.test(value))
+    return "mid";
+  return null;
+}
+
+const FREQUENCY_PHRASE: Record<Frequency, string> = {
+  high: "most days",
+  mid: "a few times a week",
+  low: "every now and then",
+};
+
+/**
+ * The SPIN "Implication" move: reflect the cost of the leak back in the
+ * visitor's own terms, using what they actually said where it's short enough
+ * to quote, rather than lecturing them with a made-up statistic. This is what
+ * separates a bot that has "assessed" a business from one that has just
+ * collected a form field.
+ */
+export function amplifyReflection(profile: Profile): string {
+  const vertical = verticals[profile.vertical ?? "other"];
+  const said = profile.problemText.trim().replace(/[.!]+$/, "");
+  const quotable = said.length > 0 && said.length <= 90;
+  // Only the leading letter gets lowercased, so a mid-sentence brand name the
+  // visitor typed or tapped - "WhatsApp mostly", "Google ads" - keeps its
+  // capital instead of reading like a typo.
+  const leak = quotable
+    ? said.charAt(0).toLowerCase() + said.slice(1)
+    : vertical.leak;
+  const frequencyPhrase = FREQUENCY_PHRASE[profile.frequency ?? "mid"];
+
+  return `So ${leak} - and that's happening ${frequencyPhrase}. ${vertical.consequence} Does that sound about right?`;
+}
+
+export type AmplifyConfirm = "yes" | "manageable" | "unsure";
+
+export const amplifyConfirmChips: {
+  id: AmplifyConfirm;
+  label: string;
+  icon: IconKey;
+}[] = [
+  { id: "yes", label: "Yes, that's the issue", icon: "confirmYes" },
+  {
+    id: "manageable",
+    label: "Annoying but manageable",
+    icon: "confirmManageable",
+  },
+  { id: "unsure", label: "Not sure", icon: "question" },
+];
+
+export function classifyAmplifyConfirm(text: string): AmplifyConfirm | null {
+  const value = text.toLowerCase();
+  if (/\b(yes|yeah|yep|exactly|right|true|that's it|spot on)\b/.test(value))
+    return "yes";
+  if (
+    /\b(manageable|annoying|ok|okay|fine|not that bad|deal with it)\b/.test(
+      value,
+    )
+  ) {
+    return "manageable";
+  }
+  if (/\b(not sure|maybe|don't know|dunno|hard to say)\b/.test(value))
+    return "unsure";
   return null;
 }
 
@@ -384,10 +501,106 @@ export function classifyFrequency(text: string): Frequency | null {
  * is what makes the case, not an adjective the bot picked.
  */
 function severityLine(frequency: Frequency | null): string {
-  if (frequency === "high") return "That's happening most days, and it adds up fast.";
-  if (frequency === "mid") return "A few times a week is still real money walking past you.";
-  if (frequency === "low") return "Even now and then, that's a customer who found someone else instead.";
+  if (frequency === "high")
+    return "That's happening most days, and it adds up fast.";
+  if (frequency === "mid")
+    return "A few times a week is still real money walking past you.";
+  if (frequency === "low")
+    return "Even now and then, that's a customer who found someone else instead.";
   return "";
+}
+
+/* -------------------------------------------------------------------------- */
+/* Goal - the SPIN Need-payoff move: get them to name the win                  */
+/* -------------------------------------------------------------------------- */
+
+export type Goal = "bookings" | "stopRepeating" | "lookLegit" | "getFound";
+
+export const goalChips: { id: Goal; label: string; icon: IconKey }[] = [
+  { id: "bookings", label: "More bookings or orders", icon: "goalGrowth" },
+  {
+    id: "stopRepeating",
+    label: "Stop repeating myself all day",
+    icon: "goalRepeat",
+  },
+  { id: "lookLegit", label: "Look legit online", icon: "goalLegit" },
+  { id: "getFound", label: "Get found on Google", icon: "goalFound" },
+];
+
+export const goalLabel: Record<Goal, string> = {
+  bookings: "More bookings or orders",
+  stopRepeating: "Stop repeating myself all day",
+  lookLegit: "Look legit online",
+  getFound: "Get found on Google",
+};
+
+export function classifyGoal(text: string): Goal | null {
+  const value = text.toLowerCase();
+  if (/\b(book|order|sale|revenue|customers?|clients?)\b/.test(value))
+    return "bookings";
+  if (/\b(repeat|same questions|answer|reply|time|tired of)\b/.test(value))
+    return "stopRepeating";
+  if (/\b(legit|professional|serious|trust|credib)\b/.test(value))
+    return "lookLegit";
+  if (/\b(found|google|search|seo|visible|show up)\b/.test(value))
+    return "getFound";
+  return null;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Obstacle - surface the real objection before the pitch, not after          */
+/* -------------------------------------------------------------------------- */
+
+export type Obstacle =
+  | "neverGotToIt"
+  | "notSureWhatINeed"
+  | "gotBurned"
+  | "notSureWorthIt";
+
+export const obstacleChips: { id: Obstacle; label: string; icon: IconKey }[] = [
+  { id: "neverGotToIt", label: "Never got around to it", icon: "obstacleTime" },
+  {
+    id: "notSureWhatINeed",
+    label: "Not sure what I actually need",
+    icon: "question",
+  },
+  { id: "gotBurned", label: "Got burned before", icon: "obstacleBurned" },
+  {
+    id: "notSureWorthIt",
+    label: "Wasn't sure it's worth it",
+    icon: "obstacleWorth",
+  },
+];
+
+export const obstacleLabel: Record<Obstacle, string> = {
+  neverGotToIt: "Never got around to it",
+  notSureWhatINeed: "Not sure what they need",
+  gotBurned: "Got burned before",
+  notSureWorthIt: "Wasn't sure it's worth it",
+};
+
+export function classifyObstacle(text: string): Obstacle | null {
+  const value = text.toLowerCase();
+  if (
+    /\b(burned|scammed|ripped off|bad experience|last time|previous (guy|developer|freelancer))\b/.test(
+      value,
+    )
+  ) {
+    return "gotBurned";
+  }
+  if (/\b(worth|expensive|cost|afford|budget|price)\b/.test(value))
+    return "notSureWorthIt";
+  if (
+    /\b(don't know|not sure|no idea|confus|what i need|which)\b/.test(value)
+  ) {
+    return "notSureWhatINeed";
+  }
+  if (
+    /\b(never|busy|no time|got around|procrastinat|lazy|forgot)\b/.test(value)
+  ) {
+    return "neverGotToIt";
+  }
+  return null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -396,7 +609,11 @@ function severityLine(frequency: Frequency | null): string {
 
 export type WebsiteState = "none" | "dead" | "fine";
 
-export const websiteChips: { id: WebsiteState; label: string; icon: IconKey }[] = [
+export const websiteChips: {
+  id: WebsiteState;
+  label: string;
+  icon: IconKey;
+}[] = [
   { id: "none", label: "No, never had one", icon: "websiteNone" },
   { id: "dead", label: "Yes, but it does nothing", icon: "websiteDead" },
   { id: "fine", label: "Yes, it's fine", icon: "websiteFine" },
@@ -440,7 +657,9 @@ export function classifyWebsite(text: string): WebsiteState | null {
     return "dead";
   }
 
-  if (/\b(yes|yeah|yup|yep|haan|hai|got one|have one|there is one)\b/.test(value)) {
+  if (
+    /\b(yes|yeah|yup|yep|haan|hai|got one|have one|there is one)\b/.test(value)
+  ) {
     return /\b(fine|good|works|working|ok|okay|happy|decent|nice)\b/.test(value)
       ? "fine"
       : "dead";
@@ -452,122 +671,184 @@ export function classifyWebsite(text: string): WebsiteState | null {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Intent - how serious they are, right now                                    */
+/* Fit - diagnosis, solution bridge, agreement (no price yet)                  */
 /* -------------------------------------------------------------------------- */
 
-export type Intent = "ready" | "weighing" | "exploring";
+export type Fit = "yes" | "questions" | "no";
 
-export const intentChips: { id: Intent; label: string; icon: IconKey }[] = [
-  { id: "ready", label: "Ready to move soon", icon: "intentReady" },
-  { id: "weighing", label: "Weighing up my options", icon: "intentWeighing" },
-  { id: "exploring", label: "Just exploring, no rush", icon: "intentExploring" },
+export const fitChips: { id: Fit; label: string; icon: IconKey }[] = [
+  { id: "yes", label: "Yes, let's do it", icon: "fitYes" },
+  { id: "questions", label: "I've got more questions", icon: "question" },
+  { id: "no", label: "Not right now", icon: "fitNotNow" },
 ];
 
-export const intentLabel: Record<Intent, string> = {
-  ready: "Ready to move soon",
-  weighing: "Weighing up options",
-  exploring: "Just exploring",
-};
+/**
+ * The bridge from diagnosis to solution - deliberately carries no rupee
+ * amounts. Price only ever appears after this gets a yes, which is the whole
+ * point of the fit step: agree on direction first, negotiate nothing before
+ * that agreement exists.
+ *
+ * When the obstacle was "got burned before", this is the one place that
+ * objection gets answered directly rather than left hanging - a real
+ * salesperson does not pitch past a stated bad experience without addressing
+ * it, and the honest answer here is the same payment structure that already
+ * protects against it.
+ */
+export function solutionBridge(profile: Profile): string {
+  const vertical = verticals[profile.vertical ?? "other"];
+  const trade =
+    vertical.id === "other"
+      ? "businesses like yours"
+      : `${vertical.trade}s like yours`.replace("a ", "");
+  const base = `From what you've said, a site that answers ${vertical.leak.startsWith("the") ? vertical.leak : "that"} when you can't - and shows up when people search - sounds like it could help. Shailesh builds exactly that for ${trade}.`;
 
-/** Free text at the intent step, best effort. Null means "ask the model". */
-export function classifyIntent(text: string): Intent | null {
-  const value = text.toLowerCase();
-  if (/\b(asap|soon|ready|now|urgent|quick(ly)?|straight ?away)\b/.test(value)) return "ready";
-  if (/\b(just looking|just browsing|no rush|exploring|not sure yet|maybe later|someday)\b/.test(value)) {
-    return "exploring";
+  if (profile.obstacle === "gotBurned") {
+    return `${base} And given what happened last time - you'd see it before it's live, and only pay the rest once it's actually working, not before.`;
   }
-  if (/\b(comparing|weighing|thinking|considering|options|deciding)\b/.test(value)) return "weighing";
+  return base;
+}
+
+/** The agreement question itself, asked right after the solution bridge. */
+export const fitQuestion = "Does that direction sound worth looking into?";
+
+/**
+ * Free text at the fit step, best effort. Null routes to the model rather
+ * than guessing - wrongly reading a reply as "no" ends the conversation, and
+ * wrongly reading it as "yes" skips straight to asking for a phone number
+ * nobody agreed to give yet. Both are worse than one extra AI turn.
+ */
+export function classifyFit(text: string): Fit | null {
+  const value = text.toLowerCase();
+  if (
+    /\b(yes|yeah|yep|sure|let'?s do it|sounds good|go ahead|definitely|why not)\b/.test(
+      value,
+    )
+  ) {
+    return "yes";
+  }
+  if (
+    /\b(no|not now|not right now|maybe later|not interested|nah|not yet)\b/.test(
+      value,
+    )
+  ) {
+    return "no";
+  }
   return null;
 }
 
-/**
- * A one-line reaction that lands differently depending on how serious they
- * said they are, right before asking for their name. This is the whole point
- * of asking intent at all - a bot that closes the same way regardless of the
- * answer has not actually used the answer for anything.
- */
-export function intentAcknowledgement(intent: Intent | null): string {
-  if (intent === "ready") return "Good - let's move quickly, then.";
-  if (intent === "exploring") return "Totally fine - this is exactly the right time to just look around.";
-  return "No pressure at all - let's at least get you the real numbers.";
-}
+/** Shown when fit === "no" - the graceful exit. No phone ask, ever. */
+export const gracefulExit =
+  "Fair enough - no pressure. WhatsApp is on the site whenever you want a second opinion. Shailesh replies himself, usually within a few hours.";
 
 /* -------------------------------------------------------------------------- */
 /* Steps                                                                       */
 /* -------------------------------------------------------------------------- */
 
+export type Path = "consult" | "quick";
+
 export type Step =
+  | "route"
   | "business"
   | "problem"
-  | "impact"
+  | "amplify"
+  | "goal"
+  | "obstacle"
   | "website"
-  | "intent"
+  | "fit"
+  | "quickProblem"
+  | "quickFacts"
   | "name"
   | "contact"
   | "done";
 
-/** Drawn as nodes on the progress rail in the panel header. */
-export const stepOrder: Step[] = [
-  "business",
-  "problem",
-  "impact",
-  "website",
-  "intent",
-  "name",
-  "contact",
-];
+/**
+ * Drawn as nodes on the progress rail in the panel header - differs by path.
+ * "quickFacts" is not a rail stop: nothing ever waits there for an answer -
+ * the facts card is shown as content during the quickProblem -> name
+ * transition, so the step machine never actually pauses on it.
+ */
+export function stepOrderForPath(path: Path | null): Step[] {
+  if (path === "quick") return ["business", "quickProblem", "name", "contact"];
+  return [
+    "business",
+    "problem",
+    "amplify",
+    "goal",
+    "obstacle",
+    "website",
+    "fit",
+    "name",
+    "contact",
+  ];
+}
 
 export type Profile = {
+  path: Path | null;
   vertical: VerticalId | null;
   /** What they actually said, so the diagnosis can quote them back. */
   businessText: string;
   problemText: string;
   frequency: Frequency | null;
+  amplifyConfirm: AmplifyConfirm | null;
+  goal: Goal | null;
+  obstacle: Obstacle | null;
   website: WebsiteState | null;
-  intent: Intent | null;
+  fit: Fit | null;
   name: string;
   phone: string;
 };
 
 export const emptyProfile: Profile = {
+  path: null,
   vertical: null,
   businessText: "",
   problemText: "",
   frequency: null,
+  amplifyConfirm: null,
+  goal: null,
+  obstacle: null,
   website: null,
-  intent: null,
+  fit: null,
   name: "",
   phone: "",
 };
 
 /** The question the flow is currently waiting on, for a given step. */
 export function pendingQuestion(step: Step, profile: Profile): string {
+  if (step === "route") {
+    return "Want me to ask a few questions about your business, or would you rather type freely?";
+  }
   if (step === "business") return "What kind of business do you run?";
-  if (step === "problem") return verticals[profile.vertical ?? "other"].question;
-  if (step === "impact") return "How often would you say that happens?";
+  if (step === "problem" || step === "quickProblem") {
+    return verticals[profile.vertical ?? "other"].question;
+  }
+  if (step === "amplify") {
+    return profile.frequency
+      ? amplifyReflection(profile)
+      : "How often would you say that happens?";
+  }
+  if (step === "goal")
+    return "If this were sorted, what would that actually look like for you?";
+  if (step === "obstacle") return "What's stopped you from fixing this so far?";
   if (step === "website") return "Do you have a website right now?";
-  if (step === "intent") {
-    return "Are you looking to sort this soon, or just weighing things up for now?";
+  if (step === "fit") return fitQuestion;
+  if (step === "quickFacts") {
+    return "Here's what Shailesh charges and how it works - leave your name and number if you want him to take a look, or skip straight to WhatsApp.";
   }
   if (step === "name") return "What should I call you?";
-  if (step === "contact") return "Can I take your number so Shailesh can reply?";
+  if (step === "contact")
+    return "Can I take your number so Shailesh can reply on WhatsApp?";
   return "";
 }
 
 /* -------------------------------------------------------------------------- */
-/* The diagnosis - given only once the visitor has been properly qualified     */
+/* The diagnosis - shown inside `fit`, before the solution bridge              */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Restates the leak in their words where possible, folds in how often they
- * said it happens, and opens with their name once they've given one. A quoted
- * chip reads far more personal than a paraphrase, and unlike a paraphrase it
- * cannot be wrong.
- *
- * This now runs after business, problem, impact, website, intent AND name -
- * six real exchanges, not three - which is the point: price and terms only
- * show up once the assistant has actually assessed the business, not the
- * moment it has enough to fill in a template.
+ * Restates the leak in their words where possible and folds in how often
+ * they said it happens. A quoted chip reads far more personal than a
+ * paraphrase, and unlike a paraphrase it cannot be wrong.
  */
 export function diagnosis(profile: Profile): string {
   const vertical = verticals[profile.vertical ?? "other"];
@@ -575,36 +856,23 @@ export function diagnosis(profile: Profile): string {
   const quotable = said.length > 0 && said.length <= 90;
   const leak = quotable ? `"${said.toLowerCase()}"` : vertical.leak;
   const severity = severityLine(profile.frequency);
-  const firstName = profile.name.trim().split(/\s+/)[0];
-  const opener = firstName ? `${firstName} - here's` : "Here's";
 
   if (profile.website === "fine") {
-    return `${opener} what I'm seeing: the leak is ${leak}. ${severity} A rebuild won't fix that on its own - being found, and being answered quickly, will. That's worth twenty minutes with Shailesh to work out which.`.replace(
+    return `Here's what I'm seeing: the leak is ${leak}. ${severity} A rebuild won't fix that on its own - being found, and being answered quickly, will.`.replace(
       /\s+/g,
       " ",
     );
   }
 
-  return `${opener} what I'm seeing: the leak is ${leak}. ${severity} Those are customers you're already paying rent and staff for - they reach out, and nobody gets back to them in time.`.replace(
+  return `Here's what I'm seeing: the leak is ${leak}. ${severity} Those are customers you're already paying rent and staff for - they reach out, and nobody gets back to them in time.`.replace(
     /\s+/g,
     " ",
   );
 }
 
-/**
- * The ask, matched to how serious they said they were at the intent step -
- * "leave your number" reads differently to someone who just said they are
- * ready to move versus someone who said they are only exploring.
- */
-export function closingAsk(intent: Intent | null): string {
-  if (intent === "ready") {
-    return "Leave your number and Shailesh will look at how your business shows up on Google right now, then message you on WhatsApp with next steps.";
-  }
-  if (intent === "exploring") {
-    return "No obligation either way - leave your number if you want, and Shailesh will send a short honest opinion on WhatsApp, on your own time.";
-  }
-  return "If you want, leave your number and Shailesh will look at how your business shows up on Google right now and send you a short honest opinion on WhatsApp. Free - and he'll tell you if you don't need one.";
-}
+/** The ask, once fit has landed on "yes" and the facts card is on screen. */
+export const closingAsk =
+  "Leave your number and Shailesh will look at how your business shows up on Google right now, then message you on WhatsApp with next steps.";
 
 /* -------------------------------------------------------------------------- */
 /* Phone                                                                       */
@@ -644,11 +912,14 @@ export function formatPhone(phone: string): string {
 /* -------------------------------------------------------------------------- */
 
 export type LeadSummary = {
+  path: string;
   business: string;
   problem: string;
   frequency: string;
+  goal: string;
+  obstacle: string;
   website: string;
-  intent: string;
+  fit: string;
   name: string;
   phone: string;
 };
@@ -656,11 +927,14 @@ export type LeadSummary = {
 export function buildSummary(profile: Profile): LeadSummary {
   const vertical = verticals[profile.vertical ?? "other"];
   return {
+    path: profile.path === "quick" ? "Quick lead" : "Consultative",
     business: profile.businessText.trim() || vertical.label,
     problem: profile.problemText.trim() || "-",
     frequency: profile.frequency ? frequencyLabel[profile.frequency] : "-",
+    goal: profile.goal ? goalLabel[profile.goal] : "-",
+    obstacle: profile.obstacle ? obstacleLabel[profile.obstacle] : "-",
     website: profile.website ? websiteLabel[profile.website] : "-",
-    intent: profile.intent ? intentLabel[profile.intent] : "-",
+    fit: profile.fit ?? "-",
     name: profile.name.trim(),
     phone: profile.phone,
   };
@@ -673,10 +947,13 @@ export function whatsappMessage(summary: LeadSummary): string {
     "",
     `Business: ${summary.business}`,
     `Website today: ${summary.website}`,
-    `Where I'm losing customers: ${summary.problem}`,
-    `How often: ${summary.frequency}`,
   ];
-  if (summary.intent !== "-") lines.push(`Where I'm at: ${summary.intent}`);
+  if (summary.problem !== "-")
+    lines.push(`Where I'm losing customers: ${summary.problem}`);
+  if (summary.frequency !== "-") lines.push(`How often: ${summary.frequency}`);
+  if (summary.goal !== "-") lines.push(`What I want: ${summary.goal}`);
+  if (summary.obstacle !== "-")
+    lines.push(`What's stopped me: ${summary.obstacle}`);
   if (summary.name) lines.push(`Name: ${summary.name}`);
   lines.push(
     "",
@@ -729,7 +1006,8 @@ export function looksLikeQuestion(text: string): boolean {
   const value = text.trim();
   if (value.endsWith("?")) return true;
   if (STRONG_QUESTION_SIGNAL.test(value)) return true;
-  if (QUESTION_STARTERS.test(value) && value.split(/\s+/).length > 2) return true;
+  if (QUESTION_STARTERS.test(value) && value.split(/\s+/).length > 2)
+    return true;
 
   const words = value.split(/\s+/).filter(Boolean);
   return words.length <= HINT_WORD_LIMIT && QUESTION_HINTS.test(value);
@@ -739,23 +1017,38 @@ export function looksLikeQuestion(text: string): boolean {
 export function stageNote(step: Step, profile: Profile): string {
   const vertical = profile.vertical ? verticals[profile.vertical] : null;
   const known = [
+    profile.path
+      ? `Path: ${profile.path === "quick" ? "quick lead, low friction" : "consultative"}.`
+      : null,
     vertical ? `They run ${vertical.trade}.` : null,
-    profile.problemText ? `They described their problem as: "${profile.problemText}".` : null,
-    profile.frequency ? `It happens: ${frequencyLabel[profile.frequency]}.` : null,
+    profile.problemText
+      ? `They described their problem as: "${profile.problemText}".`
+      : null,
+    profile.frequency
+      ? `It happens: ${frequencyLabel[profile.frequency]}.`
+      : null,
+    profile.goal ? `What they want: ${goalLabel[profile.goal]}.` : null,
+    profile.obstacle
+      ? `What's stopped them: ${obstacleLabel[profile.obstacle]}.`
+      : null,
     profile.website ? `Website today: ${websiteLabel[profile.website]}.` : null,
-    profile.intent ? `Where they're at: ${intentLabel[profile.intent]}.` : null,
-    profile.name ? `Their name is ${profile.name.trim().split(/\s+/)[0]}.` : null,
+    profile.name
+      ? `Their name is ${profile.name.trim().split(/\s+/)[0]}.`
+      : null,
   ]
     .filter(Boolean)
     .join(" ");
 
   const waiting = pendingQuestion(step, profile);
+  const atFit = step === "fit";
 
   return [
     known || "You know nothing about them yet.",
-    waiting
-      ? `The conversation is waiting on this question: "${waiting}". Answer what they asked, then hand back to it in one short line.`
-      : "They have already been through the questions - answer briefly and point them to WhatsApp.",
+    atFit
+      ? `They are mid-way through deciding whether to go ahead - do not quote a price or push. Answer their question, then hand back to: "${fitQuestion}"`
+      : waiting
+        ? `The conversation is waiting on this question: "${waiting}". Answer what they asked, then hand back to it in one short line.`
+        : "They have already been through the questions - answer briefly and point them to WhatsApp.",
   ].join(" ");
 }
 
@@ -763,8 +1056,7 @@ export function stageNote(step: Step, profile: Profile): string {
 export const budgetSpent = `That's about as far as I can take it here. Send Shailesh a WhatsApp message and he'll answer properly - he replies himself. Builds start at ${offer.priceFrom}, take ${offer.deliveryShort}, and you pay half only once it's live.`;
 
 /** After a handoff, if they keep talking - do not replay the ending. */
-export const reopenAsk =
-  "Sure - what kind of business are you in?";
+export const reopenAsk = "Sure - what kind of business are you in?";
 
 /** Short social lines after a handoff - not a business, not a FAQ chip. */
 export function looksLikeSocial(text: string): boolean {
@@ -779,6 +1071,5 @@ export const postFlowReplies: Record<string, string> = {
     "Then you shouldn't get one. Shailesh would rather say that on WhatsApp than take money for a site you don't need.",
   "Can I see your samples?":
     "They're on the Work page of this site - you can click into any of them.",
-  "How does payment work?":
-    `Half to start, half only when the site is live. Builds start at ${offer.priceFrom} and usually take ${offer.deliveryShort}.`,
+  "How does payment work?": `Half to start, half only when the site is live. Builds start at ${offer.priceFrom} and usually take ${offer.deliveryShort}.`,
 };
