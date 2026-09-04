@@ -896,7 +896,7 @@
   mask-position: 0% 0%;
   animation:
     v3-drift 16s linear infinite,
-    v3-going-missing 40s linear 2.5s infinite;
+    v3-going-missing 40s linear 0.6s infinite;
   will-change: background-position, mask-position;
 }
 
@@ -911,8 +911,11 @@
    actual dissolve in the eased-in middle - the opposite of "slow and
    noticed." Linear keeps the pace constant throughout, so the fade
    itself reads as unhurried the whole way, not just the two ends. The
-   2.5s delay is separate: it holds the word fully still on first paint
-   so it doesn't start dissolving before the visitor has even read it. */
+   delay is separate and deliberately short (0.6s, not the 2.5s this
+   started at): a visitor who scrolls past the hero in the first couple
+   of seconds needs to have already seen the dissolve start, or they
+   never see it at all - a long, unhurried fade only earns that if
+   people actually catch it beginning. */
 @keyframes v3-going-missing {
   0%,
   100% {
@@ -1123,14 +1126,16 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #ff3b30;
+  background: linear-gradient(155deg, #ff5c53 0%, #d81e2c 100%);
   color: #fff;
-  border: 2px solid var(--ink);
-  /* The glow, not the border, is what should read as "alive" - the border
-     stays as-is, purely for legibility against the emerald launcher behind
-     it. Static, not pulsing: one more looping animation on top of the hero's
-     own wasn't worth it for a badge sitting in the corner of the screen. */
-  box-shadow: 0 0 9px 2px rgba(255, 59, 48, 0.65);
+  /* No border - it read as a flat outline sitting on top of the launcher
+     rather than part of it. The glow plus the drop-shadow separating it
+     from the emerald behind it are what make it legible instead. Static,
+     not pulsing: one more looping animation on top of the hero's own
+     wasn't worth it for a badge sitting in the corner of the screen. */
+  box-shadow:
+    0 0 10px 3px rgba(216, 30, 44, 0.55),
+    0 1px 3px rgba(0, 0, 0, 0.4);
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
