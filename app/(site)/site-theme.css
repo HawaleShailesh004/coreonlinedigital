@@ -282,7 +282,14 @@
    meant to be read. Sized via vw so it's reliably wider than the viewport
    at any width (8 letters at ~0.62em average advance * 21vw ≈ 104vw), and
    `overflow: hidden` on the wrapper crops it at both edges rather than
-   shrinking to fit - the crop is the point, not a side effect. */
+   shrinking to fit - the crop is the point, not a side effect.
+
+   No top margin - it should bleed flush against whatever section precedes
+   the footer, like a continuation, not sit in its own padded block. And it
+   doesn't stop with a hard edge: a top-to-bottom mask dissolves it into
+   the footer's black before the logo/nav row starts, so the content below
+   reads as emerging from the word rather than following after a gap - the
+   negative bottom margin pulls that row up into the faded tail to sell it. */
 
 .v3-footer-mark-wrap {
   overflow: hidden;
@@ -300,8 +307,10 @@
   letter-spacing: -0.04em;
   font-size: clamp(5.5rem, 21vw, 15rem);
   line-height: 0.78;
-  color: rgba(239, 237, 230, 0.045);
-  margin: clamp(1rem, 5vw, 3.5rem) 0 0;
+  color: rgba(239, 237, 230, 0.09);
+  margin: 0 0 clamp(-2.5rem, -6vw, -1.25rem);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 88%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 88%);
   -webkit-user-select: none;
   user-select: none;
 }
