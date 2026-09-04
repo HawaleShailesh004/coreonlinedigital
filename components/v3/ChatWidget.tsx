@@ -27,7 +27,7 @@ function extractPhone(text: string): string | null {
 }
 
 const DISMISS_KEY = "v3-chat-dismissed";
-const AUTO_OPEN_MS = 20_000;
+const AUTO_OPEN_MS = 7_500;
 const MAX_CHARS = 500;
 const HISTORY_TURNS = 10;
 
@@ -179,11 +179,26 @@ export function ChatWidget() {
     }
     if (dismissed.current) return;
 
-    const timer = window.setTimeout(() => setOpen(true), AUTO_OPEN_MS);
+    /*
+     * Both triggers below were scheduled once at mount and fired blindly,
+     * with no check for what happened in between - so closing the chat
+     * before either one fired didn't cancel it, it just meant the panel
+     * popped back open on its own later (the timer landing, or the visitor
+     * scrolling past services), which read as the widget re-opening itself
+     * right after being dismissed. Re-checking `dismissed.current` inside
+     * the callback, at the moment it actually fires, is what makes a close
+     * stick for the rest of the session regardless of what's still pending.
+     */
+    const tryAutoOpen = () => {
+      if (dismissed.current) return;
+      setOpen(true);
+    };
+
+    const timer = window.setTimeout(tryAutoOpen, AUTO_OPEN_MS);
     const services = document.getElementById("services");
     const io = services
       ? new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting) setOpen(true);
+          if (entry.isIntersecting) tryAutoOpen();
         })
       : null;
     if (services && io) io.observe(services);
@@ -493,7 +508,11 @@ export function ChatWidget() {
           }}
         >
           <ChatBubbleIcon className="size-[23px]" />
-          {unread > 0 ? <span className="v3-chat-badge" aria-hidden="true" /> : null}
+          {unread > 0 ? (
+            <span className="v3-chat-badge" aria-hidden="true">
+              {unread}
+            </span>
+          ) : null}
         </button>
       )}
 
