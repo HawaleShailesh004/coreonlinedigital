@@ -287,16 +287,32 @@
    No top margin - it should bleed flush against whatever section precedes
    the footer, like a continuation, not sit in its own padded block. And it
    doesn't stop with a hard edge: a top-to-bottom mask dissolves it into
-   the footer's black before the logo/nav row starts, so the content below
-   reads as emerging from the word rather than following after a gap - the
-   negative bottom margin pulls that row up into the faded tail to sell it. */
+   the footer's black before the logo/nav row starts.
+
+   The wrap owns a fixed height (well under the font-size, so only the
+   upper portion of the letters ever shows) and the negative bottom margin
+   that pulls the logo/nav row up into the faded tail - both live on the
+   wrap, not the text. Putting either on `.v3-footer-mark` itself was the
+   first version's bug: that element sits inside the wrap's own
+   overflow:hidden, so a negative margin there shrank the wrap's own
+   auto-height and hard-clipped the letters before the mask finished
+   fading - which is what read as "not a smooth gradient." The text is
+   `position: absolute; inset: 0` with `line-height: 1` (no tight
+   line-height trick) so it renders at its natural size and the mask's 0%
+   -100% stops resolve against the wrap's own height - not the text's
+   full, mostly-offscreen height - so the fade actually completes inside
+   the visible window instead of barely starting by the time it's clipped. */
 
 .v3-footer-mark-wrap {
+  position: relative;
   overflow: hidden;
-  line-height: 0;
+  height: clamp(3.5rem, 12vw, 9.5rem);
+  margin-bottom: clamp(-2rem, -5vw, -1rem);
 }
 
 .v3-footer-mark {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   white-space: nowrap;
@@ -306,11 +322,10 @@
   font-variation-settings: "wdth" 100, "wght" 800;
   letter-spacing: -0.04em;
   font-size: clamp(5.5rem, 21vw, 15rem);
-  line-height: 0.78;
-  color: rgba(239, 237, 230, 0.09);
-  margin: 0 0 clamp(-2.5rem, -6vw, -1.25rem);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 88%);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 88%);
+  line-height: 1;
+  color: rgba(239, 237, 230, 0.1);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
   -webkit-user-select: none;
   user-select: none;
 }
